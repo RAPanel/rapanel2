@@ -66,7 +66,7 @@ class RA
             }
 
             return self::dropDownList($columns, 'rere.model');
-        } catch(Exception $e){
+        } catch (Exception $e) {
             return [];
         }
 
@@ -93,13 +93,13 @@ class RA
         return self::$_cache[$method];
     }
 
-    public static function module($value = null)
+    public static function module($value = null, $return = 'url')
     {
-        $data = self::cache(__METHOD__, function () {
-            return ArrayHelper::map(Module::find()->select(['id', 'url'])->asArray()->all(), 'id', 'url');
+        $data = self::cache(serialize([__METHOD__, $return]), function () use ($return) {
+            return ArrayHelper::map(Module::find()->select(['id', $return])->asArray()->all(), 'id', $return);
         });
         if (is_numeric($value)) return $data[$value];
         elseif (is_string($value)) return array_reverse($data)[$value];
-        else return $data[__METHOD__];
+        else return $data;
     }
 }

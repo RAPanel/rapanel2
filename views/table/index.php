@@ -11,8 +11,8 @@ use yii\grid\GridView;
 $this->title = $module->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('rere.view', 'Modules'), 'url' => ['module/index']];
 
-if($model->hasMethod('parents')){
-    foreach (array_reverse($model->parents()->all()) as $row)
+if($model->hasMethod('parents') && $model->parent_id){
+    foreach (array_reverse($model->parents()>andWhere(['>', 'level', 0])->all()) as $row)
         $this->params['breadcrumbs'][] =['label' => $row->name, 'url' => ['index', 'url'=>RA::module($row->module_id), 'id'=>$row->id]];
     $this->params['breadcrumbs'][] = $model->name;
 } else $this->params['breadcrumbs'][] = $this->title;

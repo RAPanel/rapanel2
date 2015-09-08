@@ -32,9 +32,9 @@ use yii\widgets\ActiveForm;
         <? if ($value = Yii::$app->request->get('page_id'))
             echo $form->field($model, 'characterShows[0][page_id]')->hiddenInput(compact('value'))->label(false) ?>
         <? if ($value = Yii::$app->request->get('module_id'))
-            echo $form->field($model, 'characterShows[][module_id]')->hiddenInput(compact('value'))->label(false) ?>
+            echo $form->field($model, 'characterShows[0][module_id]')->hiddenInput(compact('value'))->label(false) ?>
         <? if ($value = Yii::$app->request->get('filter'))
-            echo $form->field($model, 'characterShows[][filter]')->hiddenInput(compact('value'))->label(false) ?>
+            echo $form->field($model, 'characterShows[0][filter]')->hiddenInput(compact('value'))->label(false) ?>
     <? endif ?>
 
     <div class="form-group">
