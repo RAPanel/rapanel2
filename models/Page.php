@@ -7,6 +7,7 @@ use app\admin\helpers\RA;
 use creocoder\nestedsets\NestedSetsBehavior;
 use Yii;
 use yii\behaviors\SluggableBehavior;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "{{%page}}".
@@ -147,7 +148,6 @@ class Page extends \yii\db\ActiveRecord
     }
 
 
-
     private $_save;
 
     public function behaviors()
@@ -247,11 +247,7 @@ class Page extends \yii\db\ActiveRecord
         $module = RA::module($this->module_id);
         $action = 'show';
         $additional = [];
-        if ($module == 'category') {
-            $action = 'index';
-            $url = Page::find()->where(['id' => $this->parents])->andWhere('url!="/"')->orderBy('id')->select('url')->scalar();
-            if ($url) $module = $url;
-        } elseif ($this->parent && $this->parent->module_id = RA::module('category')) {
+        if ($this->parent && $this->parent->module_id = RA::module('category')) {
             if (strpos($this->parent->url, '/') !== false)
                 return str_replace('//', '/', $this->parent->url . '/' . $this->url);
             if ($module != $this->parent->url) $additional['category'] = $this->parent->url;

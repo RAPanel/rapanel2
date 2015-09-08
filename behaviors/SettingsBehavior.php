@@ -52,12 +52,14 @@ class SettingsBehavior extends Behavior
         $moduleClassName = $owner->{$relationName}()->modelClass;
         $moduleClass = new $moduleClassName;
 
+
         if (!empty($data))
             $owner->on($owner::EVENT_AFTER_INSERT, function ($event) use ($moduleClass) {
                 $module_id = $event->sender->id;
                 foreach ($event->data as $url => $value) {
                     $model = clone $moduleClass;
                     $model->setAttributes(compact('module_id', 'url', 'value'), false);
+                    var_dump($model->attributes);
                     $model->save(false);
                 }
             }, $value);
@@ -78,6 +80,7 @@ class SettingsBehavior extends Behavior
             if (!empty($event->data))
                 foreach ($event->data as $url => $value) {
                     $model = clone $moduleClass;
+//                    if(is_array($value) || is_object($value)) $value = serialize($value);
                     $model->setAttributes(compact('module_id', 'url', 'value'), false);
                     $model->save(false);
                 }

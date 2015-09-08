@@ -32,44 +32,40 @@ class RA
      */
     public static function tableColumns($model, $values = [])
     {
-        try {
-            $model = new $model;
-            $columns = [];
-            foreach ($model->getTableSchema()->columns as $key => $value) {
-                if ($key == 'module_id') continue;
-                if (strpos($key, '_id')) {
-                    $name = str_replace('_id', '', $key);
-                    $get = 'get' . ucfirst($name);
-                    if (method_exists($model, $get)) {
-                        $modelClass = $model->$get()->modelClass;
-                        /** @var \yii\db\ActiveRecord $class */
-                        $class = new $modelClass;
-                        foreach (array_keys($class->attributes) as $attribute)
-                            if (in_array($attribute, ['username', 'name', 'value']))
-                                break;
-                        if (isset($attribute)) {
-                            $key = "{$name}.{$attribute}";
-                        }
+        if (!class_exists($model)) return [];
+        $model = new $model;
+        $columns = [];
+        foreach ($model->getTableSchema()->columns as $key => $value) {
+            if ($key == 'module_id') continue;
+            if (strpos($key, '_id')) {
+                $name = str_replace('_id', '', $key);
+                $get = 'get' . ucfirst($name);
+                if (method_exists($model, $get)) {
+                    $modelClass = $model->$get()->modelClass;
+                    /** @var \yii\db\ActiveRecord $class */
+                    $class = new $modelClass;
+                    foreach (array_keys($class->attributes) as $attribute)
+                        if (in_array($attribute, ['username', 'name', 'value']))
+                            break;
+                    if (isset($attribute)) {
+                        $key = "{$name}.{$attribute}";
                     }
                 }
-
-                $columns[$key] = $key;
             }
 
-            if ($values) {
-                $columnsResort = $columns;
-                $columns = [];
-                foreach ($values as $key)
-                    if (isset($columnsResort[$key]))
-                        $columns[$key] = $columnsResort[$key];
-                $columns = ArrayHelper::merge($columns, $columnsResort);
-            }
-
-            return self::dropDownList($columns, 'rere.model');
-        } catch (Exception $e) {
-            return [];
+            $columns[$key] = $key;
         }
 
+        if ($values) {
+            $columnsResort = $columns;
+            $columns = [];
+            foreach ($values as $key)
+                if (isset($columnsResort[$key]))
+                    $columns[$key] = $columnsResort[$key];
+            $columns = ArrayHelper::merge($columns, $columnsResort);
+        }
+
+        return self::dropDownList($columns, 'rere.model');
     }
 
     /**
@@ -98,8 +94,9 @@ class RA
         $data = self::cache(serialize([__METHOD__, $return]), function () use ($return) {
             return ArrayHelper::map(Module::find()->select(['id', $return])->asArray()->all(), 'id', $return);
         });
-        if (is_numeric($value)) return $data[$value];
-        elseif (is_string($value)) return array_reverse($data)[$value];
-        else return $data;
+        if (is_null($value)) return $data;
+        if (is_numeric($value) && isset($data[$value])) return $data[$value];
+        elseif (is_string($value) && ($data = array_flip($data)) && isset($data[$value])) return $data[$value];
+        return false;
     }
 }
