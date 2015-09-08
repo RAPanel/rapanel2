@@ -2,7 +2,11 @@
 
 namespace app\admin\models;
 
+use app\admin\behaviors\PageHasManyBehavior;
+use app\admin\helpers\RA;
+use creocoder\nestedsets\NestedSetsBehavior;
 use Yii;
+use yii\behaviors\SluggableBehavior;
 
 /**
  * This is the model class for table "{{%page}}".
@@ -237,8 +241,50 @@ class Page extends \yii\db\ActiveRecord
         return parent::save($runValidation, $attributeNames);
     }
 
+    public function getHref($normalizeUrl = true, $scheme = false)
+    {
+        if (strpos($this->url, '/') !== false) return $this->url;
+        $module = RA::module($this->module_id);
+        $action = 'show';
+        $additional = [];
+        if ($module == 'category') {
+            $action = 'index';
+            $url = Page::find()->where(['id' => $this->parents])->andWhere('url!="/"')->orderBy('id')->select('url')->scalar();
+            if ($url) $module = $url;
+        } elseif ($this->parent && $this->parent->module_id = RA::module('category')) {
+            if (strpos($this->parent->url, '/') !== false)
+                return str_replace('//', '/', $this->parent->url . '/' . $this->url);
+            if ($module != $this->parent->url) $additional['category'] = $this->parent->url;
+
+            $action = 'show';
+        }
+        if (RA::module($this->url)) $url = ["/{$this->url}/index"];
+        else $url = ["/{$module}/{$action}", 'url' => $this->url] + $additional;
+        return $normalizeUrl ? Url::to($url, $scheme) : $url;
+    }
+
     public function getRoot()
     {
         return $this->hasOne($this, ['module_id' => 'module_id'])->where(['lft' => 1, 'level' => 0])->andWhere('rgt>lft');
+    }
+
+    public function getData()
+    {
+        return $this->pageData;
+    }
+
+    public function getContent()
+    {
+        return $this->data->content;
+    }
+
+    public function getLabel()
+    {
+        return $this->name;
+    }
+
+    public function getActive()
+    {
+        return $this->getHref() == \Yii::$app->request->pathInfo;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace app\admin\models;
 
-use app\behaviors\SettingsBehavior;
+use app\admin\behaviors\SettingsBehavior;
 use Yii;
 
 /**
@@ -97,7 +97,7 @@ class Module extends \yii\db\ActiveRecord
         /** @var \yii\db\ActiveRecord $model */
         $model = $this->class;
         if (!$rootId = $model::find()->select('id')->where(['module_id' => $this->id, 'lft' => 1, 'level' => 0])->andWhere('rgt>lft')->scalar()) {
-            /** @var $root \app\models\Page */
+            /** @var $root \app\admin\models\Page */
             \Yii::$app->db->createCommand()->insert($model::tableName(), [
                 'id' => $this->id,
                 'is_category' => 1,
