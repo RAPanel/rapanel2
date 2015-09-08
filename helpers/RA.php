@@ -9,7 +9,7 @@
 namespace app\admin\helpers;
 
 
-use app\models\Module;
+use app\admin\models\Module;
 use Yii;
 use yii\base\Exception;
 use yii\helpers\ArrayHelper;
