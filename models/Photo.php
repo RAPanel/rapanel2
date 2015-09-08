@@ -92,7 +92,7 @@ class Photo extends \yii\db\ActiveRecord
     public static function add($file, $about, $owner_id, $model)
     {
         $name = basename($file);
-        $newFile = Yii::getAlias('@webroot/' . self::$tmpPath . '/' . $name);
+        $newFile = Yii::getAlias('@app/../' . self::$tmpPath . '/' ) . $name;
 
         FileHelper::createDirectory(dirname($newFile));
         if (Image::thumbnail($file, 1920)->save($newFile, [

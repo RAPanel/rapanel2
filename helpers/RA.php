@@ -9,6 +9,7 @@
 namespace app\admin\helpers;
 
 
+use app\admin\models\Character;
 use app\admin\models\Module;
 use Yii;
 use yii\base\Exception;
@@ -93,6 +94,17 @@ class RA
     {
         $data = self::cache(serialize([__METHOD__, $return]), function () use ($return) {
             return ArrayHelper::map(Module::find()->select(['id', $return])->asArray()->all(), 'id', $return);
+        });
+        if (is_null($value)) return $data;
+        if (is_numeric($value) && isset($data[$value])) return $data[$value];
+        elseif (is_string($value) && ($data = array_flip($data)) && isset($data[$value])) return $data[$value];
+        return false;
+    }
+
+    public static function character($value = null, $return = 'url')
+    {
+        $data = self::cache(serialize([__METHOD__, $return]), function () use ($return) {
+            return ArrayHelper::map(Character::find()->select(['id', $return])->asArray()->all(), 'id', $return);
         });
         if (is_null($value)) return $data;
         if (is_numeric($value) && isset($data[$value])) return $data[$value];

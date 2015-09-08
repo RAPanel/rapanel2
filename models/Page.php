@@ -7,6 +7,7 @@ use app\admin\helpers\RA;
 use creocoder\nestedsets\NestedSetsBehavior;
 use Yii;
 use yii\behaviors\SluggableBehavior;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
 /**
@@ -52,9 +53,11 @@ class Page extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['is_category', 'status', 'lft', 'rgt', 'level', 'name'], 'required'],
+            [['name', 'module_id'], 'required'],
             [['is_category', 'status', 'lft', 'rgt', 'level', 'parent_id', 'module_id', 'user_id'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
+            [['url', 'name', 'about'], 'string', 'max' => 255],
+            [['url', 'name', 'about'], 'string', 'max' => 255],
             [['url', 'name', 'about'], 'string', 'max' => 255],
             [['pageData', 'pageCharacters', 'photos'], 'safe']
         ];
@@ -192,6 +195,15 @@ class Page extends \yii\db\ActiveRecord
             ->where(['model' => self::tableName()])->orderBy(['sort_id' => SORT_ASC]);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPhoto()
+    {
+        return $this->hasOne(Photo::className(), ['owner_id' => 'id'])
+            ->where(['model' => self::tableName()])->orderBy(['sort_id' => SORT_ASC]);
+    }
+
     public function getExistCharacters()
     {
         return $this->hasMany(Character::className(), ['id' => 'character_id'])->viaTable(CharacterShow::tableName(), ['module_id' => 'module_id', 'filter' => 'is_category']);
@@ -231,6 +243,8 @@ class Page extends \yii\db\ActiveRecord
                 /** @var $this NestedSetsBehavior|self */
                 if ($this->isNewRecord || $this->isAttributeChanged('parent_id')) {
                     $parent = $this->parent_id ? self::findOne($this->parent_id) : $this->root;
+                    if (!$this->parent_id)
+                        $this->parent_id = $this->root->id;
                     $this->appendTo($parent, $runValidation, $attributeNames);
                 }
             }
@@ -261,7 +275,7 @@ class Page extends \yii\db\ActiveRecord
 
     public function getRoot()
     {
-        return $this->hasOne($this, ['module_id' => 'module_id'])->where(['lft' => 1, 'level' => 0])->andWhere('rgt>lft');
+        return $this->hasOne($this, ['module_id' => 'module_id'])->where(['is_category' => 1, 'level' => 0, 'parent_id' => null])->andWhere('rgt>lft');
     }
 
     public function getData()
@@ -282,5 +296,10 @@ class Page extends \yii\db\ActiveRecord
     public function getActive()
     {
         return $this->getHref() == \Yii::$app->request->pathInfo;
+    }
+
+    public function getCharacters()
+    {
+        return ArrayHelper::map($this->pageCharacters, 'character_id', 'value');
     }
 }

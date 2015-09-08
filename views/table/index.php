@@ -11,9 +11,9 @@ use yii\grid\GridView;
 $this->title = $module->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('rere.view', 'Modules'), 'url' => ['module/index']];
 
-if($model->hasMethod('parents') && $model->parent_id){
-    foreach (array_reverse($model->parents()>andWhere(['>', 'level', 0])->all()) as $row)
-        $this->params['breadcrumbs'][] =['label' => $row->name, 'url' => ['index', 'url'=>RA::module($row->module_id), 'id'=>$row->id]];
+if ($model->hasMethod('parents') && $model->parent_id) {
+    foreach (array_reverse($model->parents()->andWhere(['>', 'level', 0])->all()) as $row)
+        $this->params['breadcrumbs'][] = ['label' => $row->name, 'url' => ['index', 'url' => RA::module($row->module_id), 'id' => $row->id]];
     $this->params['breadcrumbs'][] = $model->name;
 } else $this->params['breadcrumbs'][] = $this->title;
 
@@ -56,7 +56,7 @@ foreach ($model->getTableSchema()->columns as $key => $value) {
             'attribute' => $key,
             'label' => Yii::t('rere.model', mb_convert_case(str_replace(['_', '.'], ' ', $key), MB_CASE_TITLE)),
             'value' => $key == 'name' && (!empty($module->settings['hasCategory']) || !empty($module->settings['hasChild'])) && ($format = 'html') ? function ($data) use ($key, $module) {
-                return Html::a($data->$key, ['index', 'url' => $module->url, 'id' => $data->id]);
+                return $data->is_category ? Html::a($data->$key, ['index', 'url' => $module->url, 'id' => $data->id]) : $data->$key;
             } : null,
             'format' => $format,
         ];
@@ -78,7 +78,7 @@ if (count($relations))
         <?= Html::a('', ['module/update', 'id' => $module->id, 'back' => Yii::$app->request->url], ['class' => 'btn btn-info glyphicon glyphicon-cog pull-right']) ?>
 
         <? if (!empty($module->settings['hasCategory'])): ?>
-            <?= Html::a(Yii::t('rere.view', 'Create Category'), ['create', 'url' => $module->url, 'parent_id' => Yii::$app->request->get('id'), 'is_category'=>1], ['class' => 'btn btn-success']) ?>
+            <?= Html::a(Yii::t('rere.view', 'Create Category'), ['create', 'url' => $module->url, 'parent_id' => Yii::$app->request->get('id'), 'is_category' => 1], ['class' => 'btn btn-success']) ?>
         <? endif ?>
 
         <?= Html::a(Yii::t('rere.view', 'Create Element'), ['create',
@@ -106,7 +106,7 @@ if (count($relations))
                 'buttons' => [
                     'add' => function ($url, $model, $key) use ($module) {
                         return Html::a('<span class="glyphicon glyphicon-plus"></span>',
-                            ['create', 'url' => RA::module($model->module_id), 'parent_id'=>$model->id, 'is_category'=>!empty($module->settings['hasChild'])], [
+                            ['create', 'url' => RA::module($model->module_id), 'parent_id' => $model->id, 'is_category' => !empty($module->settings['hasChild'])], [
                                 'title' => 'Добавить запись в ' . $model->name,
                                 'data-toggle' => 'tooltip',
                                 'data-placement' => 'top',
