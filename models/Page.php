@@ -1,0 +1,244 @@
+<?php
+
+namespace app\admin\models;
+
+use Yii;
+
+/**
+ * This is the model class for table "{{%page}}".
+ *
+ * @property string $id
+ * @property integer $is_category
+ * @property integer $status
+ * @property string $lft
+ * @property string $rgt
+ * @property integer $level
+ * @property string $parent_id
+ * @property string $module_id
+ * @property integer $user_id
+ * @property string $url
+ * @property string $name
+ * @property string $about
+ * @property string $updated_at
+ * @property string $created_at
+ *
+ * @property CharacterShow[] $characterShows
+ * @property Page $parent
+ * @property Page[] $pages
+ * @property User $user
+ * @property Module $module
+ * @property PageCharacters[] $pageCharacters
+ * @property PageComments[] $pageComments
+ * @property PageData $pageData
+ */
+class Page extends \yii\db\ActiveRecord
+{
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return '{{%page}}';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['is_category', 'status', 'lft', 'rgt', 'level', 'name'], 'required'],
+            [['is_category', 'status', 'lft', 'rgt', 'level', 'parent_id', 'module_id', 'user_id'], 'integer'],
+            [['updated_at', 'created_at'], 'safe'],
+            [['url', 'name', 'about'], 'string', 'max' => 255],
+            [['pageData', 'pageCharacters', 'photos'], 'safe']
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('rere.model', 'ID'),
+            'is_category' => Yii::t('rere.model', 'Is Category'),
+            'status' => Yii::t('rere.model', 'Status'),
+            'lft' => Yii::t('rere.model', 'Lft'),
+            'rgt' => Yii::t('rere.model', 'Rgt'),
+            'level' => Yii::t('rere.model', 'Level'),
+            'parent_id' => Yii::t('rere.model', 'Parent ID'),
+            'module_id' => Yii::t('rere.model', 'Module ID'),
+            'user_id' => Yii::t('rere.model', 'User ID'),
+            'url' => Yii::t('rere.model', 'Url'),
+            'name' => Yii::t('rere.model', 'Name'),
+            'about' => Yii::t('rere.model', 'About'),
+            'updated_at' => Yii::t('rere.model', 'Updated At'),
+            'created_at' => Yii::t('rere.model', 'Created At'),
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCharacterShows()
+    {
+        return $this->hasMany(CharacterShow::className(), ['page_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getParent()
+    {
+        return $this->hasOne(Page::className(), ['id' => 'parent_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPages()
+    {
+        return $this->hasMany(Page::className(), ['parent_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getModule()
+    {
+        return $this->hasOne(Module::className(), ['id' => 'module_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPageCharacters()
+    {
+        return $this->hasMany(PageCharacters::className(), ['page_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPageComments()
+    {
+        return $this->hasMany(PageComments::className(), ['page_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPageData()
+    {
+        return $this->hasOne(PageData::className(), ['page_id' => 'id']);
+    }
+
+
+
+    private $_save;
+
+    public function behaviors()
+    {
+        return [
+            'hasMany' => PageHasManyBehavior::className(),
+            'tree' => [
+                'class' => NestedSetsBehavior::className(),
+                'treeAttribute' => 'module_id',
+                'depthAttribute' => 'level',
+            ],
+            'sluggable' => [
+                'class' => SluggableBehavior::className(),
+                'attribute' => 'name',
+                'slugAttribute' => 'url',
+                'immutable' => true,
+                'ensureUnique' => true,
+            ],
+        ];
+    }
+
+    public function init()
+    {
+        parent::init();
+        if ($this->module_id) $this->on(self::EVENT_AFTER_FIND, function ($event) {
+            /* @var $class \yii\db\ActiveRecord */
+            $row = $event->sender->attributes;
+            $class = Module::find()->where(['id' => $event->sender->module_id])->select('class')->scalar();
+            $model = $class::instantiate($row);
+            $class::populateRecord($model, $row);
+
+            $event->sender = $model;
+        });
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPhotos()
+    {
+        return $this->hasMany(Photo::className(), ['owner_id' => 'id'])
+            ->where(['model' => self::tableName()])->orderBy(['sort_id' => SORT_ASC]);
+    }
+
+    public function getExistCharacters()
+    {
+        return $this->hasMany(Character::className(), ['id' => 'character_id'])->viaTable(CharacterShow::tableName(), ['module_id' => 'module_id', 'filter' => 'is_category']);
+    }
+
+    public function setPageData($data)
+    {
+        $model = $this->pageData;
+        if (!$model && ($class = $this->getPageData()->modelClass)) {
+            $model = new $class;
+            $model->page_id = $this->id;
+        }
+        $model->setAttributes($data);
+        if ($this->isNewRecord) $this->on(self::EVENT_AFTER_INSERT, function ($event) {
+            $event->data->setAttributes(['page_id' => $event->sender->id]);
+            $event->data->save(false);
+        }, $model);
+        else $model->save(false);
+    }
+
+    public function setPageCharacters($value)
+    {
+        $this->set($value, 'pageCharacters');
+    }
+
+    public function setPhotos($value)
+    {
+        $this->set($value, 'photos');
+
+    }
+
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        if ($this->_save !== true) {
+            if ($this->is_category) {
+                $this->_save = true;
+                /** @var $this NestedSetsBehavior|self */
+                if ($this->isNewRecord || $this->isAttributeChanged('parent_id')) {
+                    $parent = $this->parent_id ? self::findOne($this->parent_id) : $this->root;
+                    $this->appendTo($parent, $runValidation, $attributeNames);
+                }
+            }
+
+            $this->detachBehavior('tree');
+        }
+
+        return parent::save($runValidation, $attributeNames);
+    }
+
+    public function getRoot()
+    {
+        return $this->hasOne($this, ['module_id' => 'module_id'])->where(['lft' => 1, 'level' => 0])->andWhere('rgt>lft');
+    }
+}
