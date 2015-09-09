@@ -8,17 +8,21 @@
 
 namespace app\admin\controllers;
 
+use app\admin\models\Module;
 use app\admin\models\Page;
 use Yii;
 use yii\web\HttpException;
 
 class PageController extends Controller
 {
-    public $model = '\rere\core\models\Page';
-
     public function actionIndex($url = null)
     {
         if (is_null($url)) $url = "/$this->id";
+        return $this->actionShow($url);
+    }
+
+    public function actionCategory($url = null)
+    {
         return $this->actionShow($url);
     }
 
@@ -31,17 +35,15 @@ class PageController extends Controller
 
     public function page($condition)
     {
-        /** @var Page $model */
-        $model = new $this->model;
-        $page = $model::find()->where($condition)->one();
+        $class = Module::find()->select('class')->where(['url' => $this->id])->scalar();
+        /** @var Page $class */
+        $page = $class::find()->where($condition)->one();
         if (!$condition || !$page) throw new HttpException(404, Yii::t('rere.error', 'Can`t find page'));
         return $page;
     }
 
     public function render($view, $params = [])
     {
-        // @todo Для старых проектов
-        if (empty($params['model']) && !empty($params['base'])) $params['model'] = $params['base'];
         /** @var $base Page */
         if (isset($params['model'])) {
             if (method_exists($params['model'], 'getData') && ($data = $params['model']->data)) {
@@ -50,6 +52,14 @@ class PageController extends Controller
                 if (!empty($data['keywords'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['keywords']]);
             }
             $this->getView()->params['model'] = $params['base'] = $params['model'];
+            $this->getView()->params['breadcrumbs'] = function () {
+                $model = $this->getView()->params['model'];
+                $result = [];
+                if ($model->parent_id) foreach ($model->parents()->all() as $row)
+                    $result[] = ['label' => $row->name, 'url' => $row->href];
+                $result[] = $model->name;
+                return $result;
+            };
         }
         return parent::render($view, $params);
     }

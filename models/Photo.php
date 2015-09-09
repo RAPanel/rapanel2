@@ -3,8 +3,10 @@
 namespace app\admin\models;
 
 use app\admin\helpers\Image;
+use Exception;
 use Yii;
 use yii\helpers\FileHelper;
+use yii\helpers\Url;
 use yii\web\HttpException;
 
 /**
@@ -72,7 +74,6 @@ class Photo extends \yii\db\ActiveRecord
     }
 
 
-
     public static $tmpPath = 'image/tmp';
     public static $path = 'image';
 
@@ -92,7 +93,7 @@ class Photo extends \yii\db\ActiveRecord
     public static function add($file, $about, $owner_id, $model)
     {
         $name = basename($file);
-        $newFile = Yii::getAlias('@app/../' . self::$tmpPath . '/' ) . $name;
+        $newFile = Yii::getAlias('@app/../' . self::$tmpPath . '/') . $name;
 
         FileHelper::createDirectory(dirname($newFile));
         if (Image::thumbnail($file, 1920)->save($newFile, [
@@ -112,9 +113,9 @@ class Photo extends \yii\db\ActiveRecord
         throw new HttpException(400, implode("\n", $class->errors));
     }
 
-    public function getFile()
+    public function getFile($global = false)
     {
-        return Yii::getAlias('@web/' . self::$tmpPath . '/' . $this->name);
+        return Yii::getAlias(($global ? '@app/..' : '@web') . '/' . self::$tmpPath . '/' . $this->name);
     }
 
     /**
@@ -123,5 +124,33 @@ class Photo extends \yii\db\ActiveRecord
     public function getPage()
     {
         return $this->hasOne(Page::className(), ['id' => 'owner_id']);
+    }
+
+    public function beforeSave($insert)
+    {
+        if ($insert && ($file = $this->getFile(true))) {
+            if (file_exists($file)) {
+                list($this->width, $this->height) = getimagesize($file);
+                $this->hash = md5_file($file);
+            } else throw new Exception('File not found in tmp dir ' . $file);
+        }
+
+        return parent::beforeSave($insert);
+    }
+
+    public function getHref($type, $scheme = false)
+    {
+        return Url::to(['/image/index', 'type' => $type, 'name' => $this->name], $scheme);
+    }
+
+    public function beforeDelete()
+    {
+        if ($fileName = $this->name)
+            FileHelper::findFiles(Yii::getAlias('@webroot/image'), ['filter' => function ($file) use ($fileName) {
+                if (basename($file) == $fileName) unlink($file);
+                return is_dir($file);
+            }, 'recursive' => true]);
+
+        return parent::beforeDelete();
     }
 }

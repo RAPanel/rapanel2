@@ -261,12 +261,8 @@ class Page extends \yii\db\ActiveRecord
         $module = RA::module($this->module_id);
         $action = 'show';
         $additional = [];
-        if ($this->parent && $this->parent->module_id = RA::module('category')) {
-            if (strpos($this->parent->url, '/') !== false)
-                return str_replace('//', '/', $this->parent->url . '/' . $this->url);
-            if ($module != $this->parent->url) $additional['category'] = $this->parent->url;
-
-            $action = 'show';
+        if ($this->is_category) {
+            $action = 'category';
         }
         if (RA::module($this->url)) $url = ["/{$this->url}/index"];
         else $url = ["/{$module}/{$action}", 'url' => $this->url] + $additional;
@@ -285,7 +281,7 @@ class Page extends \yii\db\ActiveRecord
 
     public function getContent()
     {
-        return $this->data->content;
+        return $this->data ? $this->data->content : null;
     }
 
     public function getLabel()
@@ -301,5 +297,10 @@ class Page extends \yii\db\ActiveRecord
     public function getCharacters()
     {
         return ArrayHelper::map($this->pageCharacters, 'character_id', 'value');
+    }
+
+    public function getPhotoHref($size)
+    {
+        return $this->photo ? $this->photo->getHref($size) : '/image/_'.$size.'/default.jpg';
     }
 }

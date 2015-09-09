@@ -45,6 +45,10 @@ class Image
      */
     const DRIVER_GMAGICK = 'gmagick';
 
+    const IMAGE_RESIZE = 0;
+    const IMAGE_CROP = 1;
+    const IMAGE_BOX = 2;
+
     /**
      * @var array|string the driver to use. This can be either a single driver name or an array of driver names.
      * If the latter, the first available driver will be used.
@@ -104,9 +108,8 @@ class Image
         self::$_imagine = $imagine;
     }
 
-    public static function thumbnail($filename, $width = 0, $height = 0, $inside = true)
+    public static function thumbnail($filename, $width = 0, $height = 0, $crop = self::IMAGE_RESIZE)
     {
-
         $image = self::getImagine()->open($filename);
 
         // Уменьшаем размеры
@@ -115,49 +118,71 @@ class Image
         if (!$width) $width = $height * $k;
         if (!$height) $height = $width / $k;
 
-        $newWidth = $width;
-        $newHeight = $height;
+        // Считаем насколько больше ли новые размеры
+        $resize = max($width / $image->getSize()->getWidth(), $height / $image->getSize()->getHeight());
+        if ($resize < 1) $resize = 1;
 
-        if ($inside && $k != $width / $height) {
-            $newWidth = $k > 1 ? $newWidth * $k : $newWidth / $k;
-            $newHeight = $k > 1 ? $newHeight * $k : $newHeight / $k;
-        }
+        // Запрещаем увеличение
+        $newWidth = $width = $width / $resize;
+        $newHeight = $height = $height / $resize;
 
-        if ($newWidth / $newHeight > $k) $newWidth = round($newHeight * $k);
-        else $newHeight = round($newWidth / $k);
+        if ($k != $width / $height) {
+            if (!$crop) {
+                if ($k > 0)
+                    $newWidth = $newHeight * $k;
+                else
+                    $newHeight = $newWidth / $k;
+            }else{
+                if ($k > $width / $height) {
+                    if ($crop)
+                        $newWidth = $k > 1 ? $newHeight * $k : $newHeight / $k;
+                    else
+                        $newHeight = $k > 1 ? $newWidth / $k : $newWidth * $k;
+                } else {
+                    if ($crop)
+                        $newWidth = $k > 1 ? $newHeight * $k : $newHeight / $k;
+                    else
+                        $newHeight = $k > 1 ? $newWidth / $k : $newWidth * $k;
+                }
+            }
+
+        } else $crop = false;
 
         $image->resize(new Box($newWidth, $newHeight), ImageInterface::FILTER_LANCZOS);
 
-        $box = new Box($width, $height);
+        if ($crop) {
+            $box = new Box($width, $height);
 
-        // Обрезаем лишнее
-        $startX = 0;
-        $startY = 0;
-        $size = $image->getSize();
-        if ($size->getWidth() > $width) {
-            $startX = ceil($size->getWidth() - $width) / 2;
-        }
-        if ($size->getHeight() > $height) {
-            $startY = ceil($size->getHeight() - $height) / 2;
-        }
-
-        $image->crop(new Point($startX, $startY), $box);
-
-        // Делаем белый фон
-        if ($size->getWidth() < round($width) || $size->getHeight() < round($height)) {
-            $thumb = Image::getImagine()->create(new Box($width, $height));
-
-            $size = $image->getSize();
-
+            // Обрезаем лишнее
             $startX = 0;
             $startY = 0;
-            if ($size->getWidth() < $width) {
-                $startX = ceil($width - $size->getWidth()) / 2;
+            $size = $image->getSize();
+            if ($size->getWidth() > $width) {
+                $startX = ceil($size->getWidth() - $width) / 2;
             }
-            if ($size->getHeight() < $height) {
-                $startY = ceil($height - $size->getHeight()) / 2;
+            if ($size->getHeight() > $height) {
+                $startY = ceil($size->getHeight() - $height) / 2;
             }
-            $thumb->paste($image, new Point($startX, $startY));
+
+            $image->crop(new Point($startX, $startY), $box);
+
+            // Делаем белый фон
+            if (($size->getWidth() < round($width) || $size->getHeight() < round($height))) {
+                $thumb = Image::getImagine()->create($box);
+
+                $size = $image->getSize();
+
+                $startX = 0;
+                $startY = 0;
+                if ($size->getWidth() < $width) {
+                    $startX = ceil($width - $size->getWidth()) / 2;
+                }
+                if ($size->getHeight() < $height) {
+                    $startY = ceil($height - $size->getHeight()) / 2;
+                }
+                $thumb->paste($image, new Point($startX, $startY));
+            } else
+                $thumb = $image;
         } else
             $thumb = $image;
 

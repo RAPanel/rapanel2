@@ -15,14 +15,10 @@ $config = [
     'modules' => [
         'rapanel' => [
             'class' => 'app\admin\AdminModule',
-            'settings' => [
-                'rere\admin\actions\ModulesAction' => 'Модули и их конфигурация',
-                'rere\admin\actions\ParamsAction' => 'Параметры и настройки',
-                'rere\admin\actions\ReplacesAction' => 'Список замен в редакторе',
-                'rere\admin\actions\UsersAction' => 'Список пользователей сайта',
-                'rere\admin\actions\UpdateAction' => 'Обновление модулей',
-            ],
         ],
+    ],
+    'controllerMap' => [
+        'image' => 'app\admin\controllers\ImageController',
     ],
     'components'=>[
         'urlManager' => [
