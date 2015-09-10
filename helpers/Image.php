@@ -132,14 +132,14 @@ class Image
                     $newWidth = $newHeight * $k;
                 else
                     $newHeight = $newWidth / $k;
-            }else{
+            } else {
                 if ($k > $width / $height) {
-                    if ($crop)
+                    if ($crop == 1)
                         $newWidth = $k > 1 ? $newHeight * $k : $newHeight / $k;
                     else
                         $newHeight = $k > 1 ? $newWidth / $k : $newWidth * $k;
                 } else {
-                    if ($crop)
+                    if ($crop == 2)
                         $newWidth = $k > 1 ? $newHeight * $k : $newHeight / $k;
                     else
                         $newHeight = $k > 1 ? $newWidth / $k : $newWidth * $k;

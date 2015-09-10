@@ -172,18 +172,13 @@ class Page extends \yii\db\ActiveRecord
         ];
     }
 
-    public function init()
+    public static function instantiate($row)
     {
-        parent::init();
-        if ($this->module_id) $this->on(self::EVENT_AFTER_FIND, function ($event) {
-            /* @var $class \yii\db\ActiveRecord */
-            $row = $event->sender->attributes;
-            $class = Module::find()->where(['id' => $event->sender->module_id])->select('class')->scalar();
-            $model = $class::instantiate($row);
-            $class::populateRecord($model, $row);
-
-            $event->sender = $model;
-        });
+        if (!empty($row['module_id'])) {
+            $class = Module::find()->where(['id' => $row['module_id']])->select('class')->scalar();
+            return new $class;
+        }
+        return new static;
     }
 
     /**
@@ -263,6 +258,8 @@ class Page extends \yii\db\ActiveRecord
         $additional = [];
         if ($this->is_category) {
             $action = 'category';
+        } elseif ($this->parent && $this->parent->is_category) {
+            $additional['parent'] = $this->parent->url;
         }
         if (RA::module($this->url)) $url = ["/{$this->url}/index"];
         else $url = ["/{$module}/{$action}", 'url' => $this->url] + $additional;
@@ -294,13 +291,27 @@ class Page extends \yii\db\ActiveRecord
         return $this->getHref() == \Yii::$app->request->pathInfo;
     }
 
-    public function getCharacters()
+    public function getCharacters($url = null)
     {
-        return ArrayHelper::map($this->pageCharacters, 'character_id', 'value');
+        $result = [];
+        foreach ($this->pageCharacters as $row)
+            $result[RA::character($row->character_id)] = $row->value;
+        return is_null($url) ? $result : (isset($result[$url]) ? $result[$url] : false);
     }
 
     public function getPhotoHref($size)
     {
-        return $this->photo ? $this->photo->getHref($size) : '/image/_'.$size.'/default.jpg';
+        return $this->photo ? $this->photo->getHref($size) : '/image/_' . $size . '/default.jpg';
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getItems()
+    {
+        return $this->hasMany(Page::className(), ['parent_id' => 'id'])->viaTable(self::tableName(), ['module_id' => 'module_id'],
+            function ($query) {
+                $query->onCondition(['between', 'lft', $this->lft, $this->rgt]);
+            })->where(['is_category' => 0, 'module_id' => $this->module_id]);
     }
 }

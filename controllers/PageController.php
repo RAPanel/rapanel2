@@ -8,6 +8,7 @@
 
 namespace app\admin\controllers;
 
+use app\admin\helpers\RA;
 use app\admin\models\Module;
 use app\admin\models\Page;
 use Yii;
@@ -55,8 +56,19 @@ class PageController extends Controller
             $this->getView()->params['breadcrumbs'] = function () {
                 $model = $this->getView()->params['model'];
                 $result = [];
-                if ($model->parent_id) foreach ($model->parents()->all() as $row)
-                    $result[] = ['label' => $row->name, 'url' => $row->href];
+                if ($model->parent_id) {
+                    if (!$model->level) {
+                        $parent = $model::findOne($model->parent_id);
+                    }
+                    $get = isset($parent) ? $parent : $model;
+                    $query = $get->parents();
+                    if(!RA::moduleSetting($model->module_id, 'controller'))
+                        $query->andWhere(['<>', 'parent_id', null]);
+                    $rows = $query->all();
+                    if(isset($parent)) $rows[] = $parent;
+                    foreach ($rows as $row)
+                        $result[] = ['label' => $row->name, 'url' => $row->href];
+                }
                 $result[] = $model->name;
                 return $result;
             };

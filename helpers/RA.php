@@ -11,6 +11,7 @@ namespace app\admin\helpers;
 
 use app\admin\models\Character;
 use app\admin\models\Module;
+use app\admin\models\ModuleSettings;
 use Yii;
 use yii\base\Exception;
 use yii\helpers\ArrayHelper;
@@ -78,7 +79,7 @@ class RA
     {
         $list = [];
         foreach ($data as $key => $value)
-            $list[is_int($key) ? $value : $key] = Yii::t($alias, mb_convert_case(trim(preg_replace('#[^\w]#', ' ', $value)), MB_CASE_TITLE));
+            $list[is_int($key) ? $value : $key] = $alias ? Yii::t($alias, mb_convert_case(trim(preg_replace('#[^\w]#', ' ', $value)), MB_CASE_TITLE)): $value;
         return $list;
     }
 
@@ -88,6 +89,11 @@ class RA
             self::$_cache[$method] = call_user_func($function);
         }
         return self::$_cache[$method];
+    }
+
+    public static function moduleId($module){
+        if(!is_numeric($module)) return self::module($module);
+        return $module;
     }
 
     public static function module($value = null, $return = 'url')
@@ -101,6 +107,16 @@ class RA
         return false;
     }
 
+    public static function moduleSetting($module, $name = null)
+    {
+        $module_id = self::moduleId($module);
+        $data = self::cache(serialize([__METHOD__, $module_id]), function () use ($module_id) {
+            return ArrayHelper::map(ModuleSettings::find()->where(compact('module_id'))->select(['url', 'value'])->asArray()->all(), 'url', 'value');
+        });
+        if(is_null($name)) return $data;
+        return isset($data[$name]) ? $data[$name] : false;
+    }
+
     public static function character($value = null, $return = 'url')
     {
         $data = self::cache(serialize([__METHOD__, $return]), function () use ($return) {
@@ -110,5 +126,19 @@ class RA
         if (is_numeric($value) && isset($data[$value])) return $data[$value];
         elseif (is_string($value) && ($data = array_flip($data)) && isset($data[$value])) return $data[$value];
         return false;
+    }
+
+    public static function characterCondition($name, $value)
+    {
+        return ['pageCharacters' => function ($query) use ($name, $value) {
+            /** @var $query \yii\db\ActiveQuery */
+            /** @var \yii\db\ActiveRecord $class */
+            $class = $query->modelClass;
+            $tableName = 'pc_' . $name;
+            $query->from([$tableName => $class::tableName()])->where([
+                $tableName . '.character_id' => RA::character($name),
+                $tableName . '.value' => $value,
+            ]);
+        }];
     }
 }

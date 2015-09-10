@@ -30,8 +30,9 @@ class ImageController extends Controller
         if (!file_exists($dir)) FileHelper::createDirectory($dir);
 
         $crop = 1;
-        if (strpos('x', $type) !== false) {
-            list($width, $height) = explode('x', $type);
+        if (strpos($type, 'x') !== false) {
+            if(strpos($type, '!')) $crop = 2;
+            list($width, $height) = explode('x', trim($type, '!'));
             if(!$width || !$height) $crop = 0;
         } else {
             $width = $height = $type;
