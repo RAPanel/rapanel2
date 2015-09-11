@@ -11,27 +11,39 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="settings-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="row content-panel">
 
-    <p>
-        <?= Html::a(Yii::t('rere.view', 'Create Settings'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+        <div class="col-lg-12">
+            <div class="pull-right">
+                <?= Html::a(Yii::t('rere.view', 'Create Settings'), ['create'], ['class' => 'btn btn-success']) ?>
+            </div>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            <h4><i class="fa fa-angle-right"></i> <?= Html::encode($this->title) ?></h4>
 
-            'id',
-            'path',
-            'inputType',
-            'name',
-            'value:ntext',
-            // 'update_at',
-            // 'create_at',
+            <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => [
+//                    ['class' => 'yii\grid\SerialColumn'],
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+                    'id',
+                    'path',
+                    'inputType',
+                    'name',
+                    [
+                        'attribute' => 'value',
+                        'contentOptions' => ['style' => 'width:50%', 'class' => 'editable'],
+                        'format' => 'raw',
+                        'value' => function ($model) {
+                            return Html::tag('div', $model->value, ['data-id' => $model->id, 'data-name'=>'value']);
+                        },
+                    ],
+                    // 'update_at',
+                    // 'create_at',
 
+//                    ['class' => 'yii\grid\ActionColumn'],
+                ],
+            ]); ?>
+
+        </div>
+    </div>
 </div>

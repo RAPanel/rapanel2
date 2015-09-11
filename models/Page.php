@@ -314,4 +314,9 @@ class Page extends \yii\db\ActiveRecord
                 $query->onCondition(['between', 'lft', $this->lft, $this->rgt]);
             })->where(['is_category' => 0, 'module_id' => $this->module_id]);
     }
+
+    public function getModuleUrl()
+    {
+        return RA::module($this->module_id);
+    }
 }

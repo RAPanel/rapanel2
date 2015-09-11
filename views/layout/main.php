@@ -24,54 +24,38 @@ AppAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 
-<?php
-NavBar::begin([
-    'brandLabel' => 'RAPanel',
-    'brandUrl' => ['default/index'],
-    'options' => [
-        'class' => 'navbar-default navbar-static-top',
-    ],
-]);
+<? require(__DIR__ . '/_header.php') ?>
 
-$list = [];
-foreach (\app\admin\models\Module::find()->all() as $row)
-    $list[] = ['label' => $row->name, 'url' => ['table/index', 'url' => $row->url]];
+<? require(__DIR__ . '/_aside.php') ?>
 
-echo Nav::widget([
-    'options' => ['class' => 'navbar-nav navbar-right'],
-    'items' => [
-        ['label' => 'Модули', 'items' => $list],
-        ['label' => 'Система', 'items' => [
-            ['label' => 'Модули', 'url' => ['module/index']],
-            ['label' => 'Характеристики', 'url' => ['character/index']],
-            ['label' => 'Параметры', 'url' => ['setting/index']],
-            ['label' => 'Сообщения', 'url' => ['message/index']],
-            ['label' => 'Замены', 'url' => ['replace/index']],
-        ]],
-        Yii::$app->user->isGuest ?
-            ['label' => 'Вход', 'url' => ['/site/login']] :
-            [
-                'label' => 'Выход (' . Yii::$app->user->identity->username . ')',
-                'url' => ['/site/logout'],
-                'linkOptions' => ['data-method' => 'post']
-            ],
-    ],
-]);
-NavBar::end();
-?>
+<main id="main-content">
+    <section class="wrapper">
+        <div class="row">
 
-<main>
+            <?php \yii\widgets\Pjax::begin(['timeout' => 3000, 'id' => 'pjax-admin-content']); ?>
 
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'homeLink' => [
-                'label' => Yii::t('rere.view', 'Home'),
-                'url' => '/rapanel',
-            ],
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= $content ?>
-    </div>
+            <?= Breadcrumbs::widget([
+                'options' => [
+                    'class' => 'breadcrumb',
+                    'style' => 'margin-bottom: 0;',
+                ],
+                'homeLink' => [
+                    'label' => Yii::t('rere.view', 'Home'),
+                    'url' => '/rapanel',
+                ],
+                'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+            ]) ?>
+
+            <div class="col-lg-12">
+
+                <?= $content ?>
+
+            </div>
+
+            <?php \yii\widgets\Pjax::end(); ?>
+
+        </div>
+    </section>
 </main>
 
 <footer class="footer">

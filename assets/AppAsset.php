@@ -17,14 +17,18 @@ class AppAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
+
     public $css = [
 //        'css/site.css',
     ];
+
     public $js = [
+        '/rere/admin/assets/app.js',
     ];
+
     public $depends = [
         'yii\web\YiiAsset',
         'yii\jui\JuiAsset',
-        'yii\bootstrap\BootstrapAsset',
+        'app\admin\widgets\adminTheme\AdminThemeAsset',
     ];
 }

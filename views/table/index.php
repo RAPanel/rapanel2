@@ -8,17 +8,12 @@ use yii\grid\GridView;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $model yii\db\ActiveRecord */
 
-$this->title = $module->name;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('rere.view', 'Modules'), 'url' => ['module/index']];
-
-if ($model->hasMethod('parents') && $model->parent_id) {
-    foreach (array_reverse($model->parents()->andWhere(['>', 'level', 0])->all()) as $row)
-        $this->params['breadcrumbs'][] = ['label' => $row->name, 'url' => ['index', 'url' => RA::module($row->module_id), 'id' => $row->id]];
-    $this->params['breadcrumbs'][] = $model->name;
-} else $this->params['breadcrumbs'][] = $this->title;
+$this->title = $model->name;
+require_once(__DIR__ . '/_breadcrumbs.php');
 
 
 $moduleColumns = empty($module->settings['columns']) ? [] : $module->settings['columns'];
+if(empty($moduleColumns)) $moduleColumns = null;
 $columns = $relations = [];
 $i = 0;
 foreach ($model->getTableSchema()->columns as $key => $value) {
@@ -50,14 +45,10 @@ foreach ($model->getTableSchema()->columns as $key => $value) {
             $format = 'integer';
     }
 
-
-    if (empty($moduleColumns) || in_array($key, $moduleColumns)) {
+    if (is_null($moduleColumns) || in_array($key, $moduleColumns)) {
         $columns[empty($moduleColumns) ? $i++ : current(array_keys($moduleColumns, $key))] = [
             'attribute' => $key,
             'label' => Yii::t('rere.model', mb_convert_case(str_replace(['_', '.'], ' ', $key), MB_CASE_TITLE)),
-            'value' => $key == 'name' && (!empty($module->settings['hasCategory']) || !empty($module->settings['hasChild'])) && ($format = 'html') ? function ($data) use ($key, $module) {
-                return $data->is_category ? Html::a($data->$key, ['index', 'url' => $module->url, 'id' => $data->id]) : $data->$key;
-            } : null,
             'format' => $format,
         ];
         if (in_array($key, $moduleColumns)) unset($moduleColumns[array_search($key, $moduleColumns)]);
@@ -72,55 +63,99 @@ if (count($relations))
 ?>
 <div class="page-index">
 
-    <!--    <h1>--><? //= Html::encode($this->title) ?><!--</h1>-->
+    <div class="row content-panel">
 
-    <p>
-        <?= Html::a('', ['module/update', 'id' => $module->id, 'back' => Yii::$app->request->url], ['class' => 'btn btn-info glyphicon glyphicon-cog pull-right']) ?>
+        <div class="col-lg-12">
+            <div class="pull-right">
+                <?
+                $list = [];
+                $list['file'] = ['create',
+                    'url' => $module->url,
+                    'parent_id' => Yii::$app->request->get('id'),
+                    'is_category' => !empty($module->settings['hasChild']),
+                ];
+                if (!empty($module->settings['hasCategory']))
+                    $list['folder'] = ['create', 'url' => $module->url, 'parent_id' => Yii::$app->request->get('id'), 'is_category' => 1];
 
-        <? if (!empty($module->settings['hasCategory'])): ?>
-            <?= Html::a(Yii::t('rere.view', 'Create Category'), ['create', 'url' => $module->url, 'parent_id' => Yii::$app->request->get('id'), 'is_category' => 1], ['class' => 'btn btn-success']) ?>
-        <? endif ?>
+                foreach ($list as $key => $url)
+                    echo Html::a(' <i class="fa fa-plus"></i> &nbsp; <i class="fa fa-' . $key . '"></i>', $url, [
+                            'class' => 'btn btn-theme03 tooltips',
+                            'title' => Yii::t('rere.view', mb_convert_case('add ' . $key, MB_CASE_TITLE)),
+                        ]) . "\n";
+                ?>
 
-        <?= Html::a(Yii::t('rere.view', 'Create Element'), ['create',
-            'url' => $module->url,
-            'parent_id' => Yii::$app->request->get('id'),
-            'is_category' => !empty($module->settings['hasChild']),
-        ], ['class' => 'btn btn-success']) ?>
-    </p>
+                <?= Html::a('<i class="fa fa-cog"></i>', [
+                    'module/update', 'id' => $module->id, 'back' => Yii::$app->request->url
+                ], ['class' => 'btn btn-theme tooltips', 'title' => Yii::t('rere.view', 'Module Settings')]) ?>
+            </div>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'columns' => array_merge(array_merge([
-            [
-                'attribute' => 'id',
-                'contentOptions' => ['style' => 'width:80px'],
-            ],
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'contentOptions' => ['style' => 'width:70px'],
-                'template' => '{add} {view} {update}',
-                'buttonOptions' => [
-                    'data-toggle' => 'tooltip',
-                    'data-placement' => 'top',
-                ],
-                'buttons' => [
-                    'add' => function ($url, $model, $key) use ($module) {
-                        return Html::a('<span class="glyphicon glyphicon-plus"></span>',
-                            ['create', 'url' => RA::module($model->module_id), 'parent_id' => $model->id, 'is_category' => !empty($module->settings['hasChild'])], [
-                                'title' => 'Добавить запись в ' . $model->name,
-                                'data-toggle' => 'tooltip',
-                                'data-placement' => 'top',
-                            ]);
-                    },
-                ],
-            ],
-        ], $columns), \yii\helpers\ArrayHelper::merge($moduleColumns, [
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'contentOptions' => ['style' => 'width:25px'],
-                'template' => '{delete}',
-            ],
-        ])),
-    ]); ?>
+            <h4>
+                <span>
+                    <i class="fa fa-angle-right"></i>
+                    <? if ($model->parent_id) echo Html::a('<i class="fa fa-chevron-left"></i>', ['index', 'url' => RA::module($model->module_id), 'id' => $model->parent_id], ['class' => 'hide']) ?>
+                </span> <?= Html::encode($this->title) ?> <?= Html::a('<i class="fa fa-pencil"></i>', ['update', 'id' => $model->id]) ?>
+            </h4>
 
-</div>
+            <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => array_merge(array_merge([
+                    [
+                        'attribute' => 'id',
+                        'contentOptions' => ['style' => 'width:80px'],
+                    ],
+                    [
+                        'class' => 'yii\grid\ActionColumn',
+                        'contentOptions' => ['style' => 'width:90px'],
+                        'template' => '{add} {view} {update} &nbsp; {status}',
+                        'buttonOptions' => [
+                            'data-toggle' => 'tooltip',
+                            'data-placement' => 'top',
+                        ],
+                        'buttons' => [
+                            'add' => function ($url, $model, $key) use ($module) {
+                                return Html::a('<span class="glyphicon glyphicon-plus"></span>',
+                                    ['create', 'url' => RA::module($model->module_id), 'parent_id' => $model->id, 'is_category' => !empty($module->settings['hasChild'])], [
+                                        'title' => 'Добавить запись в ' . $model->name,
+                                        'data-toggle' => 'tooltip',
+                                        'data-placement' => 'top',
+                                    ]);
+                            },
+                            'status' => function ($url, $model, $key) {
+                                return Html::a('<i class="fa fa-toggle-' . ($model->status ? 'on' : 'off') . '"></i>', ['save', 'id' => $model->id, 'status' => !$model->status], [
+                                    'class' => 'changeStatus',
+                                ]);
+                            }
+                        ],
+                    ],
+                    [
+                        'attribute' => 'name',
+                        'label' => 'Наименование',
+                        'contentOptions' => ['style' => 'width:40%'],
+                        'value' => function ($data) use ($module) {
+                            $prev = '';
+                            if ($data->is_category) {
+                                if (!empty($module->settings['hasCategory'])) $prev .= '<i class="fa fa-folder"></i> ';
+                                if (!empty($module->settings['hasChild'])) $prev .= '<i class="fa fa-file"></i> ';
+                                return ($data->photo ? Html::img($data->photo->getHref('x35'), ['style' => 'margin: -8px;float: right;']) : '') .
+                                Html::a($prev . $data->name, ['index', 'url' => $module->url, 'id' => $data->id]);
+                            }
+                            return $data->name;
+                        },
+                        'format' => 'raw',
+                    ],
+                ], $columns), \yii\helpers\ArrayHelper::merge($moduleColumns, [
+                    [
+                        'attribute' => 'created_at',
+                        'label' => 'Создано',
+                        'format' => 'date',
+                        'contentOptions' => ['style' => 'width:81px'],
+                    ],
+                    [
+                        'class' => 'yii\grid\ActionColumn',
+                        'contentOptions' => ['style' => 'width:25px'],
+                        'template' => '{delete}',
+                    ],
+                ])),
+            ]); ?>
+
+        </div>
