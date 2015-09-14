@@ -32,7 +32,7 @@ AppAsset::register($this);
     <section class="wrapper">
         <div class="row">
 
-            <?php \yii\widgets\Pjax::begin(['timeout' => 3000, 'id' => 'pjax-admin-content']); ?>
+            <?php // \yii\widgets\Pjax::begin(['timeout' => 3000, 'id' => 'pjax-admin-content']); ?>
 
             <?= Breadcrumbs::widget([
                 'options' => [
@@ -52,7 +52,7 @@ AppAsset::register($this);
 
             </div>
 
-            <?php \yii\widgets\Pjax::end(); ?>
+            <?php // \yii\widgets\Pjax::end(); ?>
 
         </div>
     </section>

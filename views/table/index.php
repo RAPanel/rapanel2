@@ -8,52 +8,52 @@ use yii\grid\GridView;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $model yii\db\ActiveRecord */
 
-$this->title = $model->name;
+$this->title = $model->name ? $model->name : $module->name;
 require_once(__DIR__ . '/_breadcrumbs.php');
 
 
 $moduleColumns = empty($module->settings['columns']) ? [] : $module->settings['columns'];
-if (empty($moduleColumns)) $moduleColumns = null;
 $columns = $relations = [];
 $i = 0;
-foreach ($model->getTableSchema()->columns as $key => $value) {
-    if (!$model->isAttributeSafe($key) || $key == 'module_id') continue;
-    $format = 'text';
-    if (strpos($key, '_id')) {
-        $name = str_replace('_id', '', $key);
-        $get = 'get' . ucfirst($name);
-        if (method_exists($model, $get)) {
-            $modelClass = $model->$get()->modelClass;
-            /** @var yii\db\ActiveRecord $class */
-            $class = new $modelClass;
-            foreach (array_keys($class->attributes) as $attribute)
-                if (in_array($attribute, ['username', 'name', 'value']))
-                    break;
-            if (isset($attribute)) {
-                $key = "{$name}.{$attribute}";
-                $relations[$name] = function ($query) use ($name, $class) {
-                    $query->from(["{$name}_alias" => $class::tableName()]);
-                };
+if (count($moduleColumns))
+    foreach ($model->getTableSchema()->columns as $key => $value) {
+        if (!$model->isAttributeSafe($key) || $key == 'module_id') continue;
+        $format = 'text';
+        if (strpos($key, '_id')) {
+            $name = str_replace('_id', '', $key);
+            $get = 'get' . ucfirst($name);
+            if (method_exists($model, $get)) {
+                $modelClass = $model->$get()->modelClass;
+                /** @var yii\db\ActiveRecord $class */
+                $class = new $modelClass;
+                foreach (array_keys($class->attributes) as $attribute)
+                    if (in_array($attribute, ['username', 'name', 'value']))
+                        break;
+                if (isset($attribute)) {
+                    $key = "{$name}.{$attribute}";
+                    $relations[$name] = function ($query) use ($name, $class) {
+                        $query->from(["{$name}_alias" => $class::tableName()]);
+                    };
+                }
             }
+        } else {
+            if (in_array($value->type, ['timestamp', 'date', 'datetime']))
+                $format = 'date';
+            if (strpos($value->type, 'int') !== false && $value->size == 1)
+                $format = 'boolean';
+            if (strpos($value->type, 'int') !== false && $value->size == 11)
+                $format = 'integer';
         }
-    } else {
-        if (in_array($value->type, ['timestamp', 'date', 'datetime']))
-            $format = 'date';
-        if (strpos($value->type, 'int') !== false && $value->size == 1)
-            $format = 'boolean';
-        if (strpos($value->type, 'int') !== false && $value->size == 11)
-            $format = 'integer';
-    }
 
-    if (is_null($moduleColumns) || in_array($key, $moduleColumns)) {
-        $columns[empty($moduleColumns) ? $i++ : current(array_keys($moduleColumns, $key))] = [
-            'attribute' => $key,
-            'label' => Yii::t('rere.model', mb_convert_case(str_replace(['_', '.'], ' ', $key), MB_CASE_TITLE)),
-            'format' => $format,
-        ];
-        if (in_array($key, $moduleColumns)) unset($moduleColumns[array_search($key, $moduleColumns)]);
+        if (empty($moduleColumns) || in_array($key, $moduleColumns)) {
+            $columns[empty($moduleColumns) ? $i++ : current(array_keys($moduleColumns, $key))] = [
+                'attribute' => $key,
+                'label' => Yii::t('rere.model', mb_convert_case(str_replace(['_', '.'], ' ', $key), MB_CASE_TITLE)),
+                'format' => $format,
+            ];
+            if (in_array($key, $moduleColumns)) unset($moduleColumns[array_search($key, $moduleColumns)]);
+        }
     }
-}
 
 ksort($columns);
 

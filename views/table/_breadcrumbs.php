@@ -11,7 +11,7 @@
 use app\admin\helpers\RA;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('rere.view', 'Modules'), 'url' => ['module/index']];
-if (RA::module($model->module_id, 'name') != $this->title)
+if (isset($model->module_id) && RA::module($model->module_id, 'name') != $this->title)
     $this->params['breadcrumbs'][$model->module_id] = ['label' => RA::module($model->module_id, 'name'), 'url' => ['table/index', 'url' => RA::module($model->module_id)]];
 
 if ($model->parent && $model->parent->hasMethod('parents')) {
