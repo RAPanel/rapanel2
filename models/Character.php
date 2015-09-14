@@ -18,6 +18,7 @@ use Yii;
  */
 class Character extends \yii\db\ActiveRecord
 {
+    use \app\admin\traits\AutoSet;
     /**
      * @inheritdoc
      */
@@ -72,11 +73,6 @@ class Character extends \yii\db\ActiveRecord
 
     public function setCharacterShows($list)
     {
-        $this->on(self::EVENT_AFTER_INSERT, function ($event) {
-            foreach ($event->data as $row) {
-                $row['character_id'] = $event->sender->id;
-                Yii::$app->db->createCommand()->insert(CharacterShow::tableName(), $row)->execute();
-            }
-        }, $list);
+        $this->setRelations('characterShows', $list);
     }
 }

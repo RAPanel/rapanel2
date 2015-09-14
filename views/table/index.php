@@ -13,7 +13,7 @@ require_once(__DIR__ . '/_breadcrumbs.php');
 
 
 $moduleColumns = empty($module->settings['columns']) ? [] : $module->settings['columns'];
-if(empty($moduleColumns)) $moduleColumns = null;
+if (empty($moduleColumns)) $moduleColumns = null;
 $columns = $relations = [];
 $i = 0;
 foreach ($model->getTableSchema()->columns as $key => $value) {
@@ -106,23 +106,25 @@ if (count($relations))
                     [
                         'class' => 'yii\grid\ActionColumn',
                         'contentOptions' => ['style' => 'width:90px'],
-                        'template' => '{add} {view} {update} &nbsp; {status}',
+                        'template' => '{status} {view} {update} {add}',
                         'buttonOptions' => [
                             'data-toggle' => 'tooltip',
                             'data-placement' => 'top',
                         ],
                         'buttons' => [
                             'add' => function ($url, $model, $key) use ($module) {
-                                return Html::a('<span class="glyphicon glyphicon-plus"></span>',
+                                return $model->is_category ? Html::a('<span class="glyphicon glyphicon-plus"></span>',
                                     ['create', 'url' => RA::module($model->module_id), 'parent_id' => $model->id, 'is_category' => !empty($module->settings['hasChild'])], [
                                         'title' => 'Добавить запись в ' . $model->name,
                                         'data-toggle' => 'tooltip',
                                         'data-placement' => 'top',
-                                    ]);
+                                    ]) : false;
                             },
                             'status' => function ($url, $model, $key) {
                                 return Html::a('<i class="fa fa-toggle-' . ($model->status ? 'on' : 'off') . '"></i>', ['save', 'id' => $model->id, 'status' => !$model->status], [
-                                    'class' => 'changeStatus',
+                                    'data-toggle' => 'tooltip',
+                                    'title' => ($model->status ? 'Скрыть' : 'Отобразить'),
+                                    'class' => 'changeStatus pull-right',
                                 ]);
                             }
                         ],

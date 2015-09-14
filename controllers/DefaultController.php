@@ -2,6 +2,7 @@
 
 namespace app\admin\controllers;
 
+use app\admin\models\Character;
 use yii\web\Controller;
 
 class DefaultController extends Controller

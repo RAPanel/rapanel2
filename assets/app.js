@@ -2,6 +2,8 @@
  * Created by semyonchick on 10.09.2015.
  */
 $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+
     $('body')
         .on('click', 'td.editable', function () {
             if ($(':input', this).length) return;
@@ -27,6 +29,9 @@ $(function () {
                     var to = el.hasClass('fa-toggle-on') ? 1 : 0;
                     var from = to ? 0 : 1;
                     a.attr('href').replace('status=' + from, 'status=' + to)
+                    if(to) a.attr('href').title('Скрыть');
+                    else a.attr('href').title('Отобразить');
+
                 }
             });
             return false;
