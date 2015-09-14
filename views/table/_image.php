@@ -28,7 +28,7 @@ $name = "photos[{$data->sort_id}]";
             <div class="col-md-7 right text form-group">
                 <div class="row">
                     <div class="col-sm-6 type"><?=
-                        Html::activeDropDownList($model, "{$name}type", RA::dropDownList(['main']), ['class' => 'form-control']) ?></div>
+                        Html::activeDropDownList($model, "{$name}[type]", RA::dropDownList(['main']), ['class' => 'form-control']) ?></div>
                     <div class="col-sm-4 size"><span class="width"><?= $data->width ?></span> x <span
                             class="height"><?= $data->height ?></span></div>
                     <div class="col-sm-2"><?=

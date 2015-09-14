@@ -138,7 +138,7 @@ if (count($relations))
                             if ($data->is_category) {
                                 if (!empty($module->settings['hasCategory'])) $prev .= '<i class="fa fa-folder"></i> ';
                                 if (!empty($module->settings['hasChild'])) $prev .= '<i class="fa fa-file"></i> ';
-                                return ($data->photo ? Html::img($data->photo->getHref('x35'), ['style' => 'margin: -8px;float: right;']) : '') .
+                                return (method_exists($data, 'getPhoto') && $data->photo ? Html::img($data->photo->getHref('x35'), ['style' => 'margin: -8px;float: right;']) : '') .
                                 Html::a($prev . $data->name, ['index', 'url' => $module->url, 'id' => $data->id]);
                             }
                             return $data->name;
