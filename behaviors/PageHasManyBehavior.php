@@ -46,18 +46,14 @@ class PageHasManyBehavior extends Behavior
                     } else
                         $row->delete();
                 }
-
-                if (!empty($event->data))
-                    foreach ($event->data as $value) {
-                        $model = clone $moduleClass;
-                        $model->setAttributes($value, false);
-                        $model->save(false);
-                    }
-            } else foreach ($event->data as $value) {
-                $model = clone $moduleClass;
-                $model->setAttributes($value, false);
-                $model->save(false);
             }
+
+            if (!empty($event->data))
+                foreach ($event->data as $value) {
+                    $model = clone $moduleClass;
+                    $model->setAttributes($value, false);
+                    $model->save(false);
+                }
         };
 
         if (!empty($value))
