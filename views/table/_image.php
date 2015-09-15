@@ -14,12 +14,12 @@ if (isset($index)) $data->sort_id = $index;
 else $index = $data->sort_id;
 
 $model = $data->page;
-$name = "photos[{$data->sort_id}]";
+$name = "photos[{$index}]";
 
 ?>
-<div class="image col-md-<?= $data->sort_id ? 6 : 12 ?>" id="photo<?= $data->id ?>">
+<div class="image col-md-<?= $index ? 6 : 12 ?>" id="photo<?= $data->id ?>">
     <div class="thumbnail">
-        <?= Html::activeHiddenInput($model, "{$name}[id]") ?>
+        <?= Html::activeHiddenInput($model, "{$name}[id]", ['value' => $data->id]) ?>
         <?= Html::activeHiddenInput($model, "{$name}[sort_id]", ['value' => $index]) ?>
         <div class="row">
             <div class="col-md-5 photo">
@@ -28,7 +28,7 @@ $name = "photos[{$data->sort_id}]";
             <div class="col-md-7 right text form-group">
                 <div class="row">
                     <div class="col-sm-6 type"><?=
-                        Html::activeDropDownList($model, "{$name}[type]", RA::dropDownList(['main']), ['class' => 'form-control']) ?></div>
+                        Html::activeDropDownList($model, "{$name}[type]", RA::dropDownList(['main']), ['class' => 'form-control', 'value' => $data->type]) ?></div>
                     <div class="col-sm-4 size"><span class="width"><?= $data->width ?></span> x <span
                             class="height"><?= $data->height ?></span></div>
                     <div class="col-sm-2"><?=
@@ -37,7 +37,7 @@ $name = "photos[{$data->sort_id}]";
                 <br>
 
                 <div>
-                    <?= Html::activeTextarea($model, "{$name}[about]", ['rows' => 2, 'class' => 'form-control']) ?>
+                    <?= Html::activeTextarea($model, "{$name}[about]", ['rows' => 2, 'class' => 'form-control', ['value' => $data->about]]) ?>
                 </div>
                 <div class="name"></div>
             </div>

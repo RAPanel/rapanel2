@@ -26,12 +26,19 @@ class ShoppingCart extends Component
      */
     public function update($model, $quantity, $add = false)
     {
-        $data = ['session_id' => $this->getSessionId(), 'item_id' => $model->getId(), 'status' => 0, 'order_id' => 0];
-        $item = Cart::findOne($data);
-        if (!$item) {
+        foreach ($this->getItems() as $row)
+            if ($row->item_id == $model->getId()) {
+                $item = $row;
+                break;
+            }
+        if (isset($item) && !$quantity) {
+            $item->delete();
+            return;
+        }
+        if (empty($item)) {
             $item = new Cart;
             $item->data = serialize($model);
-            $item->setAttributes($data, false);
+            $item->setAttributes(['session_id' => $this->getSessionId(), 'item_id' => $model->getId(), 'status' => 0, 'order_id' => 0], false);
         }
         $item->price = $model->getPrice();
         $item->quantity = $add ? ($item->quantity + $quantity) : $quantity;
@@ -64,6 +71,25 @@ class ShoppingCart extends Component
         foreach ($this->getItems() as $row)
             $total += $row['price'] * $row['quantity'];
         return $total;
+    }
+
+    public function clear()
+    {
+        foreach ($this->getItems() as $row)
+            $row->delete();
+        $this->_items = false;
+    }
+
+    public function toOrder($order_id)
+    {
+        $transaction = \Yii::$app->db->beginTransaction();
+        foreach ($this->getItems() as $row) {
+            $row->status = 1;
+            $row->order_id = $order_id;
+            $row->update(false, ['status', 'order_id']);
+        }
+        $this->_items = false;
+        $transaction->commit();
     }
 
     public function getSessionId()
