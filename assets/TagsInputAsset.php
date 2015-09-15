@@ -7,10 +7,10 @@ use yii\web\AssetBundle;
 
 class TagsInputAsset extends AssetBundle
 {
-    public $sourcePath = '@bower/jquery-tags-input';
+    public $sourcePath = '@bower/jquery-tags-input/dist';
 
     public $css = [
-        'jquery.tagsinput.css',
+        'jquery.tagsinput.min.css',
     ];
 
     public $depends = [
@@ -23,7 +23,7 @@ class TagsInputAsset extends AssetBundle
         parent::init();
 
         $this->js = [
-            'jquery.tagsinput' . (YII_DEBUG ? '' : '.min') . '.js'
+            'jquery.tagsinput.min.js'
         ];
     }
 }

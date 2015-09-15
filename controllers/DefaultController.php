@@ -3,6 +3,7 @@
 namespace app\admin\controllers;
 
 use app\admin\models\Character;
+use Yii;
 use yii\web\Controller;
 
 class DefaultController extends Controller
@@ -37,5 +38,15 @@ class DefaultController extends Controller
                 $model->save(false);
             }
         }
+    }
+
+    public function actionUpdate()
+    {
+        if(Yii::$app->request->isPost){
+            $dir = Yii::getAlias('@app');
+            echo `php-cli {$dir}/composer.phar update -o --working-dir={$dir}/ --no-progress`;
+            return $this->refresh();
+        }
+        return $this->render('update');
     }
 }
