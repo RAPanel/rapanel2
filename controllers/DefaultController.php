@@ -42,11 +42,14 @@ class DefaultController extends Controller
 
     public function actionUpdate()
     {
+        $dir = Yii::getAlias('@app');
+
         if(Yii::$app->request->isPost){
-            $dir = Yii::getAlias('@app');
+            echo `php-cli {$dir}/composer.phar self-update --working-dir={$dir}/ --no-progress`;
             echo `php-cli {$dir}/composer.phar update -o --working-dir={$dir}/ --no-progress`;
             return $this->refresh();
         }
-        return $this->render('update');
+
+        return $this->render('update', compact('dir'));
     }
 }
