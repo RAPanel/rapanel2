@@ -1,6 +1,7 @@
 <?php
 
 namespace app\admin\traits;
+use Yii;
 
 /**
  * Created by PhpStorm.
