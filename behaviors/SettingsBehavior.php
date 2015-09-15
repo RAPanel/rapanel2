@@ -52,21 +52,16 @@ class SettingsBehavior extends Behavior
         $moduleClassName = $owner->{$relationName}()->modelClass;
         $moduleClass = new $moduleClassName;
 
-
-        if (!empty($data))
-            $owner->on($owner::EVENT_AFTER_INSERT, function ($event) use ($moduleClass) {
-                $module_id = $event->sender->id;
-                foreach ($event->data as $url => $value) {
-                    $model = clone $moduleClass;
-                    $model->setAttributes(compact('module_id', 'url', 'value'), false);
-                    var_dump($model->attributes);
-                    $model->save(false);
-                }
-            }, $value);
-
-        $owner->on($owner::EVENT_AFTER_UPDATE, function ($event) use ($moduleClass, $relation) {
+        $functionAdd = function ($event) use ($moduleClass) {
             $module_id = $event->sender->id;
+            foreach ($event->data as $url => $value) {
+                $model = clone $moduleClass;
+                $model->setAttributes(compact('module_id', 'url', 'value'), false);
+                $model->save(false);
+            }
+        };
 
+        $functionUpdate = function ($event) use ($moduleClass, $relation, $functionAdd) {
             /** @var \yii\db\ActiveRecord $row */
             foreach ($event->sender->{$relation} as $row) {
                 if (isset($event->data[$row['url']])) {
@@ -78,12 +73,12 @@ class SettingsBehavior extends Behavior
             }
 
             if (!empty($event->data))
-                foreach ($event->data as $url => $value) {
-                    $model = clone $moduleClass;
-//                    if(is_array($value) || is_object($value)) $value = serialize($value);
-                    $model->setAttributes(compact('module_id', 'url', 'value'), false);
-                    $model->save(false);
-                }
-        }, $value);
+                call_user_func($functionAdd, $event);
+
+        };
+
+        $owner->on($owner::EVENT_AFTER_INSERT, $functionAdd, $value);
+
+        $owner->on($owner::EVENT_AFTER_UPDATE, $functionUpdate, $value);
     }
 }

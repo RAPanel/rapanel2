@@ -61,4 +61,42 @@ class PageData extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Page::className(), ['id' => 'page_id']);
     }
+
+    public function beforeSave($insert)
+    {
+        if (empty($this->title) && $this->page->name)
+            $this->title = $this->page->name;
+
+        return parent::beforeSave($insert);
+    }
+
+    public function afterFind()
+    {
+        if (strpos($this->content, '<iframe'))
+            $this->content = preg_replace('%(<iframe.+)(<\\/iframe>|\\/>)%', '<div class="flex-video">$1$2</div>', $this->content);
+    }
+
+    public function getContent()
+    {
+        $content = $this->content;
+        $list = Replaces::find()->select('name')->asArray()->column();
+        if (!empty($list)) {
+            preg_match_all('@{{(' . implode('|', $list) . ')[^}]*}}@', $this->content, $matches);
+            if (!empty($matches[1])) {
+                $search = $replace = [];
+                $forReplace = Replaces::find()->select('name, value')->where(['name' => $matches[1]])->asArray()->all();
+                foreach ($forReplace as $row) {
+                    if (strpos($row['value'], '?>') !== false || strpos($row['value'], '<?') !== false) {
+                        ob_start();
+                        eval (' ?' . '>' . $row['value'] . '<' . '?php ');
+                        $replace[$row['name']] = ob_get_clean();
+                    } else $replace[$row['name']] = $row['value'];
+                }
+                foreach ($matches[0] as $key => $value)
+                    $search[$matches[1][$key]] = $value;
+                $content = str_replace($search, $replace, $content);
+            }
+        }
+        return $content;
+    }
 }

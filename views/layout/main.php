@@ -22,6 +22,11 @@ AppAsset::register($this);
     <?php $this->head() ?>
 </head>
 <body>
+<style>
+    .header{
+        z-index: 100;
+    }
+</style>
 <?php $this->beginBody() ?>
 
 <? require(__DIR__ . '/_header.php') ?>

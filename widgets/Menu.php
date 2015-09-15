@@ -23,7 +23,7 @@ class Menu extends \yii\widgets\Menu
                     'label' => $row->getLabel(),
                     'url' => $row->getHref(),
                     'active' => $row->getActive(),
-                    'items' => $this->levels && $row->with_child && isset($this->items[$row->id]) ? $this->items[$row->id] : null,
+                    'items' => $this->levels && $row->is_category && isset($this->items[$row->id]) ? $this->items[$row->id] : null,
                 ];
 
             if ($this->items[min(array_keys($this->items))])

@@ -48,9 +48,11 @@ $settings = \app\admin\helpers\RA::moduleSetting($model->module_id);
 
                                 <? elseif ($key == 'position' && $settings[$key]): ?>
 
+                                    <? if($settings['hasChild']) echo $form->field($model, 'is_category')->checkbox(['label'=>Yii::t('rere.view', 'Can has child`s')]) ?>
+
                                     <?= $form->field($model, 'parent_id')->dropDownList(empty($model->parent_id) ? [null => Yii::t('rere.placeholder', 'Select Parent')] : [$model->parent->id => $model->parent->name]) ?>
 
-                                    <?= $form->field($model, 'user_id')->dropDownList(empty($model->user_id) ? [null => Yii::t('rere.placeholder', 'Select User')] : [$model->user->id => $model->user->name]) ?>
+                                    <?= $form->field($model, 'user_id')->dropDownList(empty($model->user_id) ? [null => Yii::t('rere.placeholder', 'Select User')] : [$model->user->id => $model->user->username]) ?>
 
                                 <? elseif ($key == 'seo' && $settings[$key]): ?>
 
