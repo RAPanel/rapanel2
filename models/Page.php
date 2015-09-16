@@ -238,9 +238,11 @@ class Page extends \yii\db\ActiveRecord
                 /** @var $this NestedSetsBehavior|self */
                 if ($this->isNewRecord || $this->isAttributeChanged('parent_id')) {
                     $parent = $this->parent_id ? self::findOne($this->parent_id) : $this->root;
-                    if (!$this->parent_id)
-                        $this->parent_id = $this->root->id;
-                    $this->appendTo($parent, $runValidation, $attributeNames);
+                    if ($this->id != $this->root->id) {
+                        if (!$this->parent_id)
+                            $this->parent_id = $this->root->id;
+                        return $this->appendTo($parent, $runValidation, $attributeNames);
+                    }
                 }
             }
 
@@ -254,12 +256,15 @@ class Page extends \yii\db\ActiveRecord
     {
         if (strpos($this->url, '/') !== false) return $this->url;
         $module = RA::module($this->module_id);
+        $moduleSettings = RA::moduleSetting($this->module_id);
         $action = 'show';
         $additional = [];
-        if ($this->is_category) {
-            $action = 'category';
-        } elseif ($this->parent && $this->parent->is_category) {
-            $additional['parent'] = $this->parent->url;
+        if (!empty($moduleSettings['category'])) {
+            if ($this->is_category) {
+                $action = 'category';
+            } elseif ($this->parent && $this->parent->is_category) {
+                $additional['parent'] = $this->parent->url;
+            }
         }
         if (RA::module($this->url)) $url = ["/{$this->url}/index"];
         else $url = ["/{$module}/{$action}", 'url' => $this->url] + $additional;
