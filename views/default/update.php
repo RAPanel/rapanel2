@@ -11,7 +11,7 @@
     $this->params['breadcrumbs'][] = 'Обновление системы';
 
     if (!file_exists("{$dir}/composer.phar")) {
-        $output = `curl -sS https://getcomposer.org/installer | php -- --install-dir={$dir} --filename=composer.phar`;
+        $output = `curl -sS https://getcomposer.org/installer | php -- --install-dir={$dir} --filename=composer`;
         echo "<pre>$output</pre>";
     }
 
