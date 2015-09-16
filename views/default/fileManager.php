@@ -8,6 +8,8 @@
 
 use app\admin\widgets\responsiveFilemanager\ResponsiveFilemanagerAsset;
 
+$this->params['breadcrumbs'][] = 'Файловый менеджер';
+
 $data = ResponsiveFilemanagerAsset::register($this);
 
 $js = <<<JS
