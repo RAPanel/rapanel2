@@ -52,4 +52,9 @@ class DefaultController extends Controller
 
         return $this->render('update', compact('dir'));
     }
+
+    public function actionFileManager()
+    {
+        return $this->render('fileManager');
+    }
 }

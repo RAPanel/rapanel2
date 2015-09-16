@@ -63,7 +63,7 @@ AppAsset::register($this);
     </section>
 </main>
 
-<footer class="footer">
+<footer class="footer hide">
     <div class="container">
         <p class="pull-left">&copy; ReRe-web <?= date('Y') ?></p>
 

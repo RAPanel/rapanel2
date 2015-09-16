@@ -9,38 +9,38 @@
 namespace app\admin\widgets;
 
 
+use app\admin\widgets\responsiveFilemanager\ResponsiveFilemanagerAsset;
 use yii\web\AssetManager;
 
 class TinyMce extends \dosamigos\tinymce\TinyMce
 {
     public $language = 'ru';
+    public $fileManager = true;
     public $clientOptions = [
         'plugins' => [
             "advlist autolink lists link image charmap print preview hr anchor pagebreak",
             "searchreplace wordcount visualblocks visualchars code fullscreen",
             "insertdatetime media nonbreaking save table contextmenu directionality",
             "emoticons template paste textcolor colorpicker textpattern autoresize",
-//            'responsivefilemanager'
         ],
 
-        'toolbar1' => "responsivefilemanager undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | forecolor backcolor | fullscreen",
-//        'external_filemanager_path' => '@rere/filemanager/vendor/filemanager/',
-        'filemanager_title' => "Управление файлами",
-        'external_plugins' => [
-//            'filemanager' => '@rere/filemanager/vendor/tinymce/plugins/responsivefilemanager/plugin.min.js',
-//            'responsivefilemanager' => '@rere/filemanager/vendor/tinymce/plugins/responsivefilemanager/plugin.min.js',
-        ]
+        'toolbar1' => "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | forecolor backcolor | fullscreen",
+
     ];
 
     public function init()
     {
-        array_walk_recursive($this->clientOptions, function (&$item) {
-            /*if (strpos($item, '@rere/filemanager/vendor') !== false){
-                $publish = (new AssetManager)->publish('@rere/filemanager/vendor');
-                $item = str_replace('@rere/filemanager/vendor', $publish[1], $item);
-            }*/
-//            if (strpos($item, '@') !== false) $item = str_replace(\Yii::getAlias('@webroot'), '', \Yii::getAlias($item));
-        });
+        if($this->fileManager){
+            $data = ResponsiveFilemanagerAsset::register($this->getView());
+            $this->clientOptions['plugins'][] = 'responsivefilemanager';
+            $this->clientOptions['external_filemanager_path'] = $data->baseUrl .'/';
+            $this->clientOptions['image_advtab'] =  true;
+            $this->clientOptions['filemanager_title'] =  "Управление файлами";
+            $this->clientOptions['external_plugins']['filemanager'] = $data->baseUrl . '/tinymce/plugins/responsivefilemanager/plugin.min.js';
+            $this->clientOptions['external_plugins']['responsivefilemanager'] = $data->baseUrl . '/tinymce/plugins/responsivefilemanager/plugin.min.js';
+            $this->clientOptions['toolbar1'] = 'responsivefilemanager ' . $this->clientOptions['toolbar1'];
+        }
+
         parent::init();
     }
 }

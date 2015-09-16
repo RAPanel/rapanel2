@@ -35,6 +35,7 @@
                     ['label' => 'Параметры', 'url' => ['setting/index']],
                     ['label' => 'Сообщения', 'url' => ['message/index']],
                     ['label' => 'Замены', 'url' => ['replace/index']],
+                    ['label' => 'Менеджер файлов', 'url' => ['default/file-manager']],
                     ['label' => 'Обновление', 'url' => ['default/update']],
                 ]],
             ],
