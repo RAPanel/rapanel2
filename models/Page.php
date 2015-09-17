@@ -293,7 +293,7 @@ class Page extends \yii\db\ActiveRecord
 
     public function getActive()
     {
-        return $this->getHref() == \Yii::$app->request->pathInfo;
+        return $this->getHref() == \Yii::$app->request->pathInfo ?: null;
     }
 
     public function getCharacters($url = null)
@@ -323,5 +323,23 @@ class Page extends \yii\db\ActiveRecord
     public function getModuleUrl()
     {
         return RA::module($this->module_id);
+    }
+
+    /**
+     * @param $module string|int
+     * @param array $condition
+     * @return \yii\db\ActiveQuery the newly created [[ActiveQuery]] instance.
+     */
+    public static function findActive($module = null, $condition = [])
+    {
+        $query = self::find()->where(['status' => 1])->orderBy(['lft' => SORT_ASC, 'id' => SORT_ASC]);
+        if (!empty($module))
+            if (is_string($module)) $query->andWhere(['!=', 'id', RA::moduleId($module)])->andWhere(['module_id' => RA::moduleId($module)]);
+            elseif (is_array($module)) {
+                $subQuery = Module::find()->select('id')->where(['or', ['id' => $module], ['url' => $module]]);
+                $query->andWhere(['not', ['id' => $subQuery]])->andWhere(['module_id' => $subQuery]);
+            }
+        if (!empty($condition)) $query->andWhere($condition);
+        return $query;
     }
 }

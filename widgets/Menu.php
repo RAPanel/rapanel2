@@ -21,7 +21,7 @@ class Menu extends \yii\widgets\Menu
             foreach (array_reverse($this->data) as $row)
                 $this->items[$row->hasAttribute('parent_id') ? $row->parent_id : 0][] = [
                     'label' => $row->getLabel(),
-                    'url' => $row->getHref(),
+                    'url' => $row->getHref(false),
                     'active' => $row->getActive(),
                     'items' => $this->levels && $row->is_category && isset($this->items[$row->id]) ? array_reverse($this->items[$row->id]) : null,
                 ];
