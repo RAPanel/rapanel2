@@ -55,6 +55,8 @@ class DefaultController extends Controller
 
     public function actionFileManager()
     {
+        $dir = Yii::getAlias('@webroot/source');
+        if(!file_exists($dir)) mkdir($dir);
         return $this->render('fileManager');
     }
 }
