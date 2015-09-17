@@ -41,10 +41,10 @@ class Replaces extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'name' => Yii::t('rere.model', 'Name'),
-            'value' => Yii::t('rere.model', 'Value'),
-            'update_at' => Yii::t('rere.model', 'Update At'),
-            'create_at' => Yii::t('rere.model', 'Create At'),
+            'name' => Yii::t('ra/model', 'Name'),
+            'value' => Yii::t('ra/model', 'Value'),
+            'update_at' => Yii::t('ra/model', 'Update At'),
+            'create_at' => Yii::t('ra/model', 'Create At'),
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace app\admin\models;
 
 use Yii;
+use yii\helpers\Inflector;
 
 /**
  * This is the model class for table "{{%character}}".
@@ -19,6 +20,8 @@ use Yii;
 class Character extends \yii\db\ActiveRecord
 {
     use \app\admin\traits\AutoSet;
+    private $_name;
+
     /**
      * @inheritdoc
      */
@@ -33,10 +36,10 @@ class Character extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['url', 'type', 'multi'], 'required'],
+            [['name', 'type', 'multi'], 'required'],
             [['type', 'data'], 'string'],
             [['multi'], 'integer'],
-            [['url'], 'string', 'max' => 32],
+            [['name'], 'string', 'max' => 25],
             [['characterShows'], 'safe'],
         ];
     }
@@ -47,11 +50,12 @@ class Character extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'url' => Yii::t('rere.model', 'Url'),
-            'type' => Yii::t('rere.model', 'Type'),
-            'multi' => Yii::t('rere.model', 'Multi'),
-            'data' => Yii::t('rere.model', 'Data'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'url' => Yii::t('ra/model', 'Url'),
+            'type' => Yii::t('ra/model', 'Type'),
+            'multi' => Yii::t('ra/model', 'Multi'),
+            'data' => Yii::t('ra/model', 'Data'),
+            'name' => Yii::t('ra/model', 'Name'),
         ];
     }
 
@@ -74,5 +78,29 @@ class Character extends \yii\db\ActiveRecord
     public function setCharacterShows($list)
     {
         $this->setRelations('characterShows', $list);
+    }
+
+    public function getName()
+    {
+        if ($this->_name === false)
+            $this->_name = $this->url ? Yii::t('app/character', Inflector::camel2words($this->url)) : $this->url;
+        return $this->_name;
+    }
+
+    public function setName($value)
+    {
+        if (!$value) return;
+        if(!$this->url){
+            $translate = Yii::$app->translation->translate(Yii::$app->language, Yii::$app->sourceLanguage, $value);
+            if (isset($translate['code']) && $translate['code'] == 200) {
+                $translation = current($translate['text']);
+                $translation = preg_replace('#[^\w\d]#', ' ', strtolower($translation));
+                $translation = preg_replace('#\s+#', '-', trim($translation));
+                $this->url = $translation;
+            }
+        }
+        if ($this->url)
+            Message::add('app/character', Inflector::camel2words($this->url), Yii::$app->language, $value);
+        $this->_name = $value;
     }
 }

@@ -44,11 +44,11 @@ class UserRole extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'name' => Yii::t('rere.model', 'Name'),
-            'updated_at' => Yii::t('rere.model', 'Updated At'),
-            'created_at' => Yii::t('rere.model', 'Created At'),
-            'can_admin' => Yii::t('rere.model', 'Can Admin'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'name' => Yii::t('ra/model', 'Name'),
+            'updated_at' => Yii::t('ra/model', 'Updated At'),
+            'created_at' => Yii::t('ra/model', 'Created At'),
+            'can_admin' => Yii::t('ra/model', 'Can Admin'),
         ];
     }
 

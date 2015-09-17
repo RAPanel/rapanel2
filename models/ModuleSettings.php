@@ -44,10 +44,10 @@ class ModuleSettings extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'module_id' => Yii::t('rere.model', 'Module ID'),
-            'sort' => Yii::t('rere.model', 'Sort'),
-            'url' => Yii::t('rere.model', 'Url'),
-            'value' => Yii::t('rere.model', 'Value'),
+            'module_id' => Yii::t('ra/model', 'Module ID'),
+            'sort' => Yii::t('ra/model', 'Sort'),
+            'url' => Yii::t('ra/model', 'Url'),
+            'value' => Yii::t('ra/model', 'Value'),
         ];
     }
 

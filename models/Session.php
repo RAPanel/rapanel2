@@ -40,9 +40,9 @@ class Session extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'expire' => Yii::t('rere.model', 'Expire'),
-            'data' => Yii::t('rere.model', 'Data'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'expire' => Yii::t('ra/model', 'Expire'),
+            'data' => Yii::t('ra/model', 'Data'),
         ];
     }
 }

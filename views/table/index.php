@@ -48,7 +48,7 @@ $moduleColumns = empty($module->settings['columns']) ? [] : $module->settings['c
 //        if (empty($moduleColumns) || in_array($key, $moduleColumns)) {
 //            $columns[empty($moduleColumns) ? $i++ : current(array_keys($moduleColumns, $key))] = [
 //                'attribute' => $key,
-//                'label' => Yii::t('rere.model', mb_convert_case(str_replace(['_', '.'], ' ', $key), MB_CASE_TITLE)),
+//                'label' => Yii::t('ra/model', mb_convert_case(str_replace(['_', '.'], ' ', $key), MB_CASE_TITLE)),
 //                'format' => $format,
 //            ];
 //            if (in_array($key, $moduleColumns)) unset($moduleColumns[array_search($key, $moduleColumns)]);
@@ -78,13 +78,13 @@ $moduleColumns = empty($module->settings['columns']) ? [] : $module->settings['c
                 foreach ($list as $key => $url)
                     echo Html::a(' <i class="fa fa-plus"></i> &nbsp; <i class="fa fa-' . $key . '"></i>', $url, [
                             'class' => 'btn btn-theme03 tooltips',
-                            'title' => Yii::t('rere.view', mb_convert_case('add ' . $key, MB_CASE_TITLE)),
+                            'title' => Yii::t('ra/view', mb_convert_case('add ' . $key, MB_CASE_TITLE)),
                         ]) . "\n";
                 ?>
 
                 <?= Html::a('<i class="fa fa-cog"></i>', [
                     'module/update', 'id' => $module->id, 'back' => Yii::$app->request->url
-                ], ['class' => 'btn btn-theme tooltips', 'title' => Yii::t('rere.view', 'Module Settings')]) ?>
+                ], ['class' => 'btn btn-theme tooltips', 'title' => Yii::t('ra/view', 'Module Settings')]) ?>
             </div>
 
             <h4>

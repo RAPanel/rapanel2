@@ -15,11 +15,11 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(['id'=>'addCharacterForm']); ?>
 
-    <?= $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <div class="row">
         <div class="col-md-8">
-            <?= $form->field($model, 'type')->dropDownList(RA::dropDownList($model->getTableSchema()->columns['type']->enumValues, 'rere.dropDown'), ['prompt' => Yii::t('rere.placeholder', 'Select ' . $model->getAttributeLabel('type'))])->label(false) ?>
+            <?= $form->field($model, 'type')->dropDownList(RA::dropDownList($model->getTableSchema()->columns['type']->enumValues, 'ra/dropdown'), ['prompt' => Yii::t('ra/placeholder', 'Select Type')])->label(false) ?>
         </div>
         <div class="col-md-4">
             <?= $form->field($model, 'multi')->checkbox() ?>
@@ -38,7 +38,7 @@ use yii\widgets\ActiveForm;
     <? endif ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('rere.view', 'Create') : Yii::t('rere.view', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? Yii::t('ra/view', 'Create') : Yii::t('ra/view', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

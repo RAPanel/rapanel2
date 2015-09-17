@@ -42,10 +42,10 @@ class Index extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'owner_id' => Yii::t('rere.model', 'Owner ID'),
-            'model' => Yii::t('rere.model', 'Model'),
-            'type' => Yii::t('rere.model', 'Type'),
-            'data_id' => Yii::t('rere.model', 'Data ID'),
+            'owner_id' => Yii::t('ra/model', 'Owner ID'),
+            'model' => Yii::t('ra/model', 'Model'),
+            'type' => Yii::t('ra/model', 'Type'),
+            'data_id' => Yii::t('ra/model', 'Data ID'),
         ];
     }
 

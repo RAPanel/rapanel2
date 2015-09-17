@@ -24,19 +24,19 @@
                 ['label' => '<i class="fa fa-dashboard"></i> <span>Состояние</span>', 'url' => ['default/index']],
                 ['label' => '<i class="fa fa-cubes"></i> <span>Модули</span>', 'options' => [
                     'class' => 'sub-menu',
-                    'data-pjax'=>0,
+                    'data-pjax' => 0,
                 ], 'url' => 'javascript:;', 'items' => $list],
                 ['label' => '<i class="fa fa-cogs"></i> <span>Система</span>', 'options' => [
                     'class' => 'sub-menu',
-                    'data-pjax'=>0,
+                    'data-pjax' => 0,
                 ], 'url' => 'javascript:;', 'items' => [
-                    ['label' => 'Модули', 'url' => ['module/index']],
-                    ['label' => 'Характеристики', 'url' => ['character/index']],
-                    ['label' => 'Параметры', 'url' => ['setting/index']],
-                    ['label' => 'Сообщения', 'url' => ['message/index']],
-                    ['label' => 'Замены', 'url' => ['replace/index']],
-                    ['label' => 'Менеджер файлов', 'url' => ['default/file-manager']],
-                    ['label' => 'Обновление', 'url' => ['default/update']],
+                    ['label' => Yii::t('ra/view', 'Modules'), 'url' => ['module/index']],
+                    ['label' => Yii::t('ra/view', 'Characters'), 'url' => ['character/index']],
+                    ['label' => Yii::t('ra/view', 'Settings'), 'url' => ['setting/index']],
+                    ['label' => Yii::t('ra/view', 'Messages'), 'url' => ['message/index']],
+                    ['label' => Yii::t('ra/view', 'Replaces'), 'url' => ['replace/index']],
+                    ['label' => Yii::t('ra/view', 'File Manager'), 'url' => ['default/file-manager']],
+                    ['label' => Yii::t('ra/view', 'Update'), 'url' => ['default/update']],
                 ]],
             ],
         ]);

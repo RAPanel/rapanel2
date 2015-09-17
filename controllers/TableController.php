@@ -133,7 +133,7 @@ class TableController extends Controller
 
         if ($model->save(false))
             return $this->redirect(['update', 'id' => $model->id]);
-        throw new HttpException(402, Yii::t('rere.error', 'Can`t create Post'));
+        throw new HttpException(402, Yii::t('ra/error', 'Can`t create Post'));
     }
 
     /**

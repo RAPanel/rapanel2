@@ -48,21 +48,21 @@ $settings = \app\admin\helpers\RA::moduleSetting($model->module_id);
 
                                 <? elseif ($key == 'position' && $settings[$key]): ?>
 
-                                    <? if($settings['hasChild']) echo $form->field($model, 'is_category')->checkbox(['label'=>Yii::t('rere.view', 'Can has child`s')]) ?>
+                                    <? if($settings['hasChild']) echo $form->field($model, 'is_category')->checkbox(['label'=>Yii::t('ra/view', 'Can has child`s')]) ?>
 
-                                    <?= $form->field($model, 'parent_id')->dropDownList(empty($model->parent_id) ? [null => Yii::t('rere.placeholder', 'Select Parent')] : [$model->parent->id => $model->parent->name]) ?>
+                                    <?= $form->field($model, 'parent_id')->dropDownList(empty($model->parent_id) ? [null => Yii::t('ra/placeholder', 'Select Parent')] : [$model->parent->id => $model->parent->name]) ?>
 
-                                    <?= $form->field($model, 'user_id')->dropDownList(empty($model->user_id) ? [null => Yii::t('rere.placeholder', 'Select User')] : [$model->user->id => $model->user->username]) ?>
+                                    <?= $form->field($model, 'user_id')->dropDownList(empty($model->user_id) ? [null => Yii::t('ra/placeholder', 'Select User')] : [$model->user->id => $model->user->username]) ?>
 
                                 <? elseif ($key == 'seo' && $settings[$key]): ?>
 
                                     <?= $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
 
-                                    <?= $form->field($model, 'pageData[title]')->textInput(['maxlength' => true])->label(Yii::t('rere.model', 'Title')) ?>
+                                    <?= $form->field($model, 'pageData[title]')->textInput(['maxlength' => true])->label(Yii::t('ra/model', 'Title')) ?>
 
-                                    <?= $form->field($model, 'pageData[description]')->textarea(['maxlength' => true])->label(Yii::t('rere.model', 'Description')) ?>
+                                    <?= $form->field($model, 'pageData[description]')->textarea(['maxlength' => true])->label(Yii::t('ra/model', 'Description')) ?>
 
-                                    <?= $form->field($model, 'pageData[keywords]')->textarea(['maxlength' => true])->label(Yii::t('rere.model', 'Keywords')) ?>
+                                    <?= $form->field($model, 'pageData[keywords]')->textarea(['maxlength' => true])->label(Yii::t('ra/model', 'Keywords')) ?>
 
                                 <? elseif ($key == 'characters' && $settings[$key]): ?>
 
@@ -76,9 +76,9 @@ $settings = \app\admin\helpers\RA::moduleSetting($model->module_id);
 
                                 <? elseif ($key == 'data' && $settings[$key]): ?>
 
-                                    <?= $form->field($model, 'pageData[content]')->widget(app\admin\widgets\TinyMce::className())->label(Yii::t('rere.model', 'Content')) ?>
+                                    <?= $form->field($model, 'pageData[content]')->widget(app\admin\widgets\TinyMce::className())->label(Yii::t('ra/model', 'Content')) ?>
 
-                                    <?= $form->field($model, 'pageData[tags]')->widget(app\admin\widgets\Tags::className())->label(Yii::t('rere.model', 'Tags')) ?>
+                                    <?= $form->field($model, 'pageData[tags]')->widget(app\admin\widgets\Tags::className())->label(Yii::t('ra/model', 'Tags')) ?>
 
                                 <? endif; ?>
                             </div>
@@ -86,7 +86,7 @@ $settings = \app\admin\helpers\RA::moduleSetting($model->module_id);
                     </div>
 
                     <div class="form-group">
-                        <?= Html::submitButton($model->isNewRecord ? Yii::t('rere.view', 'Create') : Yii::t('rere.view', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+                        <?= Html::submitButton($model->isNewRecord ? Yii::t('ra/view', 'Create') : Yii::t('ra/view', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
                     </div>
 
                     <div class="clearfix"></div>

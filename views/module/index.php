@@ -6,7 +6,7 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('rere.view', 'Modules');
+$this->title = Yii::t('ra/view', 'Modules');
 $this->params['breadcrumbs'][] = $this->title;
 $this->registerJs('$("[data-toggle=\"tooltip\"]").tooltip()');
 ?>

@@ -45,13 +45,13 @@ class Settings extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'path' => Yii::t('rere.model', 'Path'),
-            'inputType' => Yii::t('rere.model', 'Input Type'),
-            'name' => Yii::t('rere.model', 'Name'),
-            'value' => Yii::t('rere.model', 'Value'),
-            'update_at' => Yii::t('rere.model', 'Update At'),
-            'create_at' => Yii::t('rere.model', 'Create At'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'path' => Yii::t('ra/model', 'Path'),
+            'inputType' => Yii::t('ra/model', 'Input Type'),
+            'name' => Yii::t('ra/model', 'Name'),
+            'value' => Yii::t('ra/model', 'Value'),
+            'update_at' => Yii::t('ra/model', 'Update At'),
+            'create_at' => Yii::t('ra/model', 'Create At'),
         ];
     }
 }

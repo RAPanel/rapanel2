@@ -39,10 +39,10 @@ class PageCounts extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'page_id' => Yii::t('rere.model', 'Page ID'),
-            'views' => Yii::t('rere.model', 'Views'),
-            'likes' => Yii::t('rere.model', 'Likes'),
-            'comments' => Yii::t('rere.model', 'Comments'),
+            'page_id' => Yii::t('ra/model', 'Page ID'),
+            'views' => Yii::t('ra/model', 'Views'),
+            'likes' => Yii::t('ra/model', 'Likes'),
+            'comments' => Yii::t('ra/model', 'Comments'),
         ];
     }
 }

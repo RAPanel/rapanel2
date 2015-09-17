@@ -14,11 +14,11 @@ require_once(__DIR__ . '/_breadcrumbs.php');
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('rere.view', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('rere.view', 'Delete'), ['delete', 'id' => $model->id], [
+        <?= Html::a(Yii::t('ra/view', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a(Yii::t('ra/view', 'Delete'), ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => Yii::t('rere.view', 'Are you sure you want to delete this item?'),
+                'confirm' => Yii::t('ra/view', 'Are you sure you want to delete this item?'),
                 'method' => 'post',
             ],
         ]) ?>

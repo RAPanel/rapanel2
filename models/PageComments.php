@@ -47,13 +47,13 @@ class PageComments extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'page_id' => Yii::t('rere.model', 'Page ID'),
-            'user_id' => Yii::t('rere.model', 'User ID'),
-            'parent_id' => Yii::t('rere.model', 'Parent ID'),
-            'rating' => Yii::t('rere.model', 'Rating'),
-            'text' => Yii::t('rere.model', 'Text'),
-            'created_at' => Yii::t('rere.model', 'Created At'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'page_id' => Yii::t('ra/model', 'Page ID'),
+            'user_id' => Yii::t('ra/model', 'User ID'),
+            'parent_id' => Yii::t('ra/model', 'Parent ID'),
+            'rating' => Yii::t('ra/model', 'Rating'),
+            'text' => Yii::t('ra/model', 'Text'),
+            'created_at' => Yii::t('ra/model', 'Created At'),
         ];
     }
 

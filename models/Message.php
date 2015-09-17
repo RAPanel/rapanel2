@@ -40,9 +40,9 @@ class Message extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'category' => Yii::t('rere.model', 'Category'),
-            'message' => Yii::t('rere.model', 'Message'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'category' => Yii::t('ra/model', 'Category'),
+            'message' => Yii::t('ra/model', 'Message'),
         ];
     }
 
@@ -59,6 +59,32 @@ class Message extends \yii\db\ActiveRecord
      */
     public function getMessageTranslate()
     {
-        return $this->hasOne(MessageTranslate::className(), ['id' => 'id'])->where(['language'=>Yii::$app->language]);
+        return $this->hasOne(MessageTranslate::className(), ['id' => 'id'])->where(['language' => Yii::$app->language]);
+    }
+
+    public static function add($category, $message, $language, $translation = '')
+    {
+        if(!$message) return $message;
+        if (!$id = Message::find()->select('id')->where(compact('category', 'message'))->scalar()) {
+            Yii::$app->db->createCommand()->insert(Message::tableName(), [
+                'category' => $category,
+                'message' => $message,
+            ])->execute();
+            $id = Yii::$app->db->getLastInsertID();
+        }
+        if (!MessageTranslate::find()->where(compact('id', 'language'))->exists()){
+            if(!$translation){
+                $translate = Yii::$app->translation->translate(Yii::$app->sourceLanguage, $language, $message);
+                if(isset($translate['code']) && $translate['code'] == 200)
+                    $translation = current($translate['text']);
+            }
+            Yii::$app->db->createCommand()->insert(MessageTranslate::tableName(), [
+                'id' => $id,
+                'language' => $language,
+                'translation' => $translation,
+            ])->execute();
+        }
+        if($translation) return $translation;
+        return false;
     }
 }

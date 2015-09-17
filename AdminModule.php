@@ -30,6 +30,8 @@ class AdminModule extends \yii\base\Module
 
         parent::init();
 
+        $this->registerTranslations();
+
         // инициализация модуля с помощью конфигурации, загруженной из config.php
         Yii::$app->setModule('user', [
             'class' => 'rere\user\Module',
@@ -37,5 +39,15 @@ class AdminModule extends \yii\base\Module
                 'Role' => 'rere\core\models\Role'
             ],
         ]);
+    }
+
+    public function registerTranslations()
+    {
+        Yii::$app->i18n->translations['ra/*'] = [
+            'class'          => 'yii\i18n\PhpMessageSource',
+            'sourceLanguage' => 'en-US',
+            'basePath'       => '@app/admin/messages',
+            'on missingTranslation' => ['app\admin\components\Translation', 'handleMissingAdminTranslation']
+        ];
     }
 }

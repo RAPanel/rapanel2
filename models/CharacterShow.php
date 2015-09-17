@@ -44,10 +44,10 @@ class CharacterShow extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'character_id' => Yii::t('rere.model', 'Character ID'),
-            'module_id' => Yii::t('rere.model', 'Module ID'),
-            'page_id' => Yii::t('rere.model', 'Page ID'),
-            'filter' => Yii::t('rere.model', 'Filter'),
+            'character_id' => Yii::t('ra/model', 'Character ID'),
+            'module_id' => Yii::t('ra/model', 'Module ID'),
+            'page_id' => Yii::t('ra/model', 'Page ID'),
+            'filter' => Yii::t('ra/model', 'Filter'),
         ];
     }
 

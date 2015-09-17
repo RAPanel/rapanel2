@@ -62,22 +62,22 @@ class User extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'role_id' => Yii::t('rere.model', 'Role ID'),
-            'status' => Yii::t('rere.model', 'Status'),
-            'email' => Yii::t('rere.model', 'Email'),
-            'new_email' => Yii::t('rere.model', 'New Email'),
-            'username' => Yii::t('rere.model', 'Username'),
-            'password' => Yii::t('rere.model', 'Password'),
-            'auth_key' => Yii::t('rere.model', 'Auth Key'),
-            'api_key' => Yii::t('rere.model', 'Api Key'),
-            'login_ip' => Yii::t('rere.model', 'Login Ip'),
-            'login_time' => Yii::t('rere.model', 'Login Time'),
-            'create_ip' => Yii::t('rere.model', 'Create Ip'),
-            'created_at' => Yii::t('rere.model', 'Created At'),
-            'updated_at' => Yii::t('rere.model', 'Updated At'),
-            'ban_time' => Yii::t('rere.model', 'Ban Time'),
-            'ban_reason' => Yii::t('rere.model', 'Ban Reason'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'role_id' => Yii::t('ra/model', 'Role ID'),
+            'status' => Yii::t('ra/model', 'Status'),
+            'email' => Yii::t('ra/model', 'Email'),
+            'new_email' => Yii::t('ra/model', 'New Email'),
+            'username' => Yii::t('ra/model', 'Username'),
+            'password' => Yii::t('ra/model', 'Password'),
+            'auth_key' => Yii::t('ra/model', 'Auth Key'),
+            'api_key' => Yii::t('ra/model', 'Api Key'),
+            'login_ip' => Yii::t('ra/model', 'Login Ip'),
+            'login_time' => Yii::t('ra/model', 'Login Time'),
+            'create_ip' => Yii::t('ra/model', 'Create Ip'),
+            'created_at' => Yii::t('ra/model', 'Created At'),
+            'updated_at' => Yii::t('ra/model', 'Updated At'),
+            'ban_time' => Yii::t('ra/model', 'Ban Time'),
+            'ban_reason' => Yii::t('ra/model', 'Ban Reason'),
         ];
     }
 

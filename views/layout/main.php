@@ -45,7 +45,7 @@ AppAsset::register($this);
                     'style' => 'margin-bottom: 0;',
                 ],
                 'homeLink' => [
-                    'label' => Yii::t('rere.view', 'Home'),
+                    'label' => Yii::t('ra/view', 'Home'),
                     'url' => '/rapanel',
                 ],
                 'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],

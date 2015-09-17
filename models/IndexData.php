@@ -40,8 +40,8 @@ class IndexData extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'value' => Yii::t('rere.model', 'Value'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'value' => Yii::t('ra/model', 'Value'),
         ];
     }
 

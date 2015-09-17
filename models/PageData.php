@@ -45,12 +45,12 @@ class PageData extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'page_id' => Yii::t('rere.model', 'Page ID'),
-            'title' => Yii::t('rere.model', 'Title'),
-            'description' => Yii::t('rere.model', 'Description'),
-            'keywords' => Yii::t('rere.model', 'Keywords'),
-            'content' => Yii::t('rere.model', 'Content'),
-            'tags' => Yii::t('rere.model', 'Tags'),
+            'page_id' => Yii::t('ra/model', 'Page ID'),
+            'title' => Yii::t('ra/model', 'Title'),
+            'description' => Yii::t('ra/model', 'Description'),
+            'keywords' => Yii::t('ra/model', 'Keywords'),
+            'content' => Yii::t('ra/model', 'Content'),
+            'tags' => Yii::t('ra/model', 'Tags'),
         ];
     }
 

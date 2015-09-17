@@ -79,15 +79,15 @@ class Order extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'status_id' => Yii::t('rere.model', 'Status ID'),
-            'is_paied' => Yii::t('rere.model', 'Is Paied'),
-            'session_id' => Yii::t('rere.model', 'Session ID'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'status_id' => Yii::t('ra/model', 'Status ID'),
+            'is_paied' => Yii::t('ra/model', 'Is Paied'),
+            'session_id' => Yii::t('ra/model', 'Session ID'),
             'delivery_id' => 'Адрес доставки',
-            'pay_id' => Yii::t('rere.model', 'Pay ID'),
-            'data' => Yii::t('rere.model', 'Data'),
-            'updated_at' => Yii::t('rere.model', 'Updated At'),
-            'created_at' => Yii::t('rere.model', 'Created At'),
+            'pay_id' => Yii::t('ra/model', 'Pay ID'),
+            'data' => Yii::t('ra/model', 'Data'),
+            'updated_at' => Yii::t('ra/model', 'Updated At'),
+            'created_at' => Yii::t('ra/model', 'Created At'),
 
             'name' => 'Имя',
             'phone' => 'Телефон',

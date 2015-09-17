@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\admin\models\Replaces */
 
-$this->title = Yii::t('rere.view', 'Create Replaces');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('rere.view', 'Replaces'), 'url' => ['index']];
+$this->title = Yii::t('ra/view', 'Create Replaces');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('ra/view', 'Replaces'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="replaces-create">

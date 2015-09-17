@@ -51,17 +51,17 @@ class UserProfile extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'user_id' => Yii::t('rere.model', 'User ID'),
-            'updated_at' => Yii::t('rere.model', 'Updated At'),
-            'created_at' => Yii::t('rere.model', 'Created At'),
-            'full_name' => Yii::t('rere.model', 'Full Name'),
-            'city' => Yii::t('rere.model', 'City'),
-            'vk' => Yii::t('rere.model', 'Vk'),
-            'fb' => Yii::t('rere.model', 'Fb'),
-            'ig' => Yii::t('rere.model', 'Ig'),
-            'tw' => Yii::t('rere.model', 'Tw'),
-            'options' => Yii::t('rere.model', 'Options'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'user_id' => Yii::t('ra/model', 'User ID'),
+            'updated_at' => Yii::t('ra/model', 'Updated At'),
+            'created_at' => Yii::t('ra/model', 'Created At'),
+            'full_name' => Yii::t('ra/model', 'Full Name'),
+            'city' => Yii::t('ra/model', 'City'),
+            'vk' => Yii::t('ra/model', 'Vk'),
+            'fb' => Yii::t('ra/model', 'Fb'),
+            'ig' => Yii::t('ra/model', 'Ig'),
+            'tw' => Yii::t('ra/model', 'Tw'),
+            'options' => Yii::t('ra/model', 'Options'),
         ];
     }
 

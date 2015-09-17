@@ -188,7 +188,7 @@ use yii\helpers\Url;
 
     <div class="top-menu">
         <ul class="nav pull-right top-menu">
-            <li><a class="logout" href="<?= \yii\helpers\Url::to(['auth / logout']) ?>">Logout</a></li>
+            <li><a class="logout" href="<?= \yii\helpers\Url::to(['auth/logout']) ?>">Logout</a></li>
         </ul>
     </div>
 </header>

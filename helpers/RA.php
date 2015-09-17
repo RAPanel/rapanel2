@@ -15,6 +15,7 @@ use app\admin\models\ModuleSettings;
 use Yii;
 use yii\base\Exception;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Inflector;
 use yii\web\HttpException;
 
 class RA
@@ -24,7 +25,7 @@ class RA
 
     public static function tabs()
     {
-        return self::dropDownList(self::$tabs, 'rere.tabs');
+        return self::dropDownList(self::$tabs, 'ra/tabs');
     }
 
     /**
@@ -67,7 +68,7 @@ class RA
             $columns = ArrayHelper::merge($columns, $columnsResort);
         }
 
-        return self::dropDownList($columns, 'rere.model');
+        return self::dropDownList($columns, 'ra/model');
     }
 
     /**
@@ -75,11 +76,11 @@ class RA
      * @param string $alias
      * @return array
      */
-    public static function dropDownList(array $data, $alias = 'rere.dropdown')
+    public static function dropDownList(array $data, $alias = 'ra/app/dropdown')
     {
         $list = [];
         foreach ($data as $key => $value)
-            $list[is_int($key) ? $value : $key] = $alias ? Yii::t($alias, mb_convert_case(trim(preg_replace('#[^\w]#', ' ', $value)), MB_CASE_TITLE)): $value;
+            $list[is_int($key) ? $value : $key] = $alias ? Yii::t($alias, Inflector::camel2words($value, true)) : $value;
         return $list;
     }
 
@@ -91,8 +92,9 @@ class RA
         return self::$_cache[$method];
     }
 
-    public static function moduleId($module){
-        if(!is_numeric($module)) return self::module($module);
+    public static function moduleId($module)
+    {
+        if (!is_numeric($module)) return self::module($module);
         return $module;
     }
 
@@ -113,7 +115,7 @@ class RA
         $data = self::cache(serialize([__METHOD__, $module_id]), function () use ($module_id) {
             return ArrayHelper::map(ModuleSettings::find()->where(compact('module_id'))->select(['url', 'value'])->asArray()->all(), 'url', 'value');
         });
-        if(is_null($name)) return $data;
+        if (is_null($name)) return $data;
         return isset($data[$name]) ? $data[$name] : false;
     }
 

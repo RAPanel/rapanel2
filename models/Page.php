@@ -69,20 +69,20 @@ class Page extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'is_category' => Yii::t('rere.model', 'Is Category'),
-            'status' => Yii::t('rere.model', 'Status'),
-            'lft' => Yii::t('rere.model', 'Lft'),
-            'rgt' => Yii::t('rere.model', 'Rgt'),
-            'level' => Yii::t('rere.model', 'Level'),
-            'parent_id' => Yii::t('rere.model', 'Parent ID'),
-            'module_id' => Yii::t('rere.model', 'Module ID'),
-            'user_id' => Yii::t('rere.model', 'User ID'),
-            'url' => Yii::t('rere.model', 'Url'),
-            'name' => Yii::t('rere.model', 'Name'),
-            'about' => Yii::t('rere.model', 'About'),
-            'updated_at' => Yii::t('rere.model', 'Updated At'),
-            'created_at' => Yii::t('rere.model', 'Created At'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'is_category' => Yii::t('ra/model', 'Is Category'),
+            'status' => Yii::t('ra/model', 'Status'),
+            'lft' => Yii::t('ra/model', 'Lft'),
+            'rgt' => Yii::t('ra/model', 'Rgt'),
+            'level' => Yii::t('ra/model', 'Level'),
+            'parent_id' => Yii::t('ra/model', 'Parent ID'),
+            'module_id' => Yii::t('ra/model', 'Module ID'),
+            'user_id' => Yii::t('ra/model', 'User ID'),
+            'url' => Yii::t('ra/model', 'Url'),
+            'name' => Yii::t('ra/model', 'Name'),
+            'about' => Yii::t('ra/model', 'About'),
+            'updated_at' => Yii::t('ra/model', 'Updated At'),
+            'created_at' => Yii::t('ra/model', 'Created At'),
         ];
     }
 

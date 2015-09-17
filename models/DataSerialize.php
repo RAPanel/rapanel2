@@ -39,9 +39,9 @@ class DataSerialize extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'type' => Yii::t('rere.model', 'Type'),
-            'value' => Yii::t('rere.model', 'Value'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'type' => Yii::t('ra/model', 'Type'),
+            'value' => Yii::t('ra/model', 'Value'),
         ];
     }
 }

@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\admin\models\Character */
 
-$this->title = Yii::t('rere.view', 'Create Character');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('rere.view', 'Characters'), 'url' => ['index']];
+$this->title = Yii::t('ra/view', 'Create Character');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('ra/view', 'Characters'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="character-create">

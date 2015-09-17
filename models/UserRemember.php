@@ -40,9 +40,9 @@ class UserRemember extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'user_id' => Yii::t('rere.model', 'User ID'),
-            'key' => Yii::t('rere.model', 'Key'),
-            'value' => Yii::t('rere.model', 'Value'),
+            'user_id' => Yii::t('ra/model', 'User ID'),
+            'key' => Yii::t('ra/model', 'Key'),
+            'value' => Yii::t('ra/model', 'Value'),
         ];
     }
 }

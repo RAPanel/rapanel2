@@ -57,19 +57,19 @@ class Photo extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'sort_id' => Yii::t('rere.model', 'Sort ID'),
-            'owner_id' => Yii::t('rere.model', 'Owner ID'),
-            'model' => Yii::t('rere.model', 'Model'),
-            'type' => Yii::t('rere.model', 'Type'),
-            'name' => Yii::t('rere.model', 'Name'),
-            'width' => Yii::t('rere.model', 'Width'),
-            'height' => Yii::t('rere.model', 'Height'),
-            'about' => Yii::t('rere.model', 'About'),
-            'cropParams' => Yii::t('rere.model', 'Crop Params'),
-            'hash' => Yii::t('rere.model', 'Hash'),
-            'updated_at' => Yii::t('rere.model', 'Updated At'),
-            'created_at' => Yii::t('rere.model', 'Created At'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'sort_id' => Yii::t('ra/model', 'Sort ID'),
+            'owner_id' => Yii::t('ra/model', 'Owner ID'),
+            'model' => Yii::t('ra/model', 'Model'),
+            'type' => Yii::t('ra/model', 'Type'),
+            'name' => Yii::t('ra/model', 'Name'),
+            'width' => Yii::t('ra/model', 'Width'),
+            'height' => Yii::t('ra/model', 'Height'),
+            'about' => Yii::t('ra/model', 'About'),
+            'cropParams' => Yii::t('ra/model', 'Crop Params'),
+            'hash' => Yii::t('ra/model', 'Hash'),
+            'updated_at' => Yii::t('ra/model', 'Updated At'),
+            'created_at' => Yii::t('ra/model', 'Created At'),
         ];
     }
 

@@ -48,15 +48,15 @@ class Cart extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'session_id' => Yii::t('rere.model', 'Session ID'),
-            'status' => Yii::t('rere.model', 'Status'),
-            'item_id' => Yii::t('rere.model', 'Item ID'),
-            'order_id' => Yii::t('rere.model', 'Order ID'),
-            'price' => Yii::t('rere.model', 'Price'),
-            'quantity' => Yii::t('rere.model', 'Quantity'),
-            'data' => Yii::t('rere.model', 'Data'),
-            'updated_at' => Yii::t('rere.model', 'Updated At'),
-            'created_at' => Yii::t('rere.model', 'Created At'),
+            'session_id' => Yii::t('ra/model', 'Session ID'),
+            'status' => Yii::t('ra/model', 'Status'),
+            'item_id' => Yii::t('ra/model', 'Item ID'),
+            'order_id' => Yii::t('ra/model', 'Order ID'),
+            'price' => Yii::t('ra/model', 'Price'),
+            'quantity' => Yii::t('ra/model', 'Quantity'),
+            'data' => Yii::t('ra/model', 'Data'),
+            'updated_at' => Yii::t('ra/model', 'Updated At'),
+            'created_at' => Yii::t('ra/model', 'Created At'),
         ];
     }
 

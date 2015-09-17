@@ -20,7 +20,11 @@ $config = [
     'controllerMap' => [
         'image' => 'app\admin\controllers\ImageController',
     ],
-    'components'=>[
+    'components' => [
+        'translation' => [
+            'class' => 'wfstudioru\translate\Translation',
+            'key' => 'trnsl.1.1.20150430T103740Z.3bbb7c3d5fb6affa.0b2f8a6b338cce2e1b8b554495628fbd158d1784',
+        ],
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
@@ -44,11 +48,21 @@ $config = [
             'cookieValidationKey' => 'lVZD-kar4vfyeUGHVnVZbijmWiwgteuU',
         ],
         'i18n' => [
+            'translations' => [
+                '*' => [
+                    'class' => 'yii\i18n\DbMessageSource',
+                    'messageTable' => '{{%message_translate}}',
+                    'sourceMessageTable' => '{{%message}}',
+                    'on missingTranslation' => ['app\admin\components\Translation', 'handleMissingTranslation'],
+                ],
+            ],
+        ],
+        /*'i18n' => [
             'class' => Zelenin\yii\modules\I18n\components\I18N::className(),
             'languages' => ['ru-RU'],
             'messageTable' => '{{%message_translate}}',
             'sourceMessageTable' => '{{%message}}',
-        ],
+        ],*/
         'raInit' => [
             'class' => 'app\admin\components\RAInit',
         ],

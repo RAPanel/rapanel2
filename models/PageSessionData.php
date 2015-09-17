@@ -44,11 +44,11 @@ class PageSessionData extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'page_id' => Yii::t('rere.model', 'Page ID'),
-            'session' => Yii::t('rere.model', 'Session'),
-            'type' => Yii::t('rere.model', 'Type'),
-            'value' => Yii::t('rere.model', 'Value'),
-            'last_visit' => Yii::t('rere.model', 'Last Visit'),
+            'page_id' => Yii::t('ra/model', 'Page ID'),
+            'session' => Yii::t('ra/model', 'Session'),
+            'type' => Yii::t('ra/model', 'Type'),
+            'value' => Yii::t('ra/model', 'Value'),
+            'last_visit' => Yii::t('ra/model', 'Last Visit'),
         ];
     }
 }

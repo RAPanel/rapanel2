@@ -44,10 +44,10 @@ class PageCharacters extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'page_id' => Yii::t('rere.model', 'Page ID'),
-            'character_id' => Yii::t('rere.model', 'Character ID'),
-            'value' => Yii::t('rere.model', 'Value'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'page_id' => Yii::t('ra/model', 'Page ID'),
+            'character_id' => Yii::t('ra/model', 'Character ID'),
+            'value' => Yii::t('ra/model', 'Value'),
         ];
     }
 
