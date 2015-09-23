@@ -36,9 +36,8 @@ class PageController extends Controller
 
     public function page($condition)
     {
-        $class = Module::find()->select('class')->where(['url' => $this->id])->scalar();
         /** @var Page $class */
-        $page = $class::find()->where($condition)->one();
+        $page = Page::find()->where($condition)->with('pageData')->one();
         if (!$condition || !$page) throw new HttpException(404, Yii::t('ra/error', 'Can`t find page'));
         return $page;
     }

@@ -9,6 +9,7 @@ use yii\grid\GridView;
 /* @var $model yii\db\ActiveRecord */
 
 $this->title = $model->name ? $model->name : $module->name;
+if(Yii::$app->request->get('q')) $this->title .= ': поиск "'.Yii::$app->request->get('q').'"';
 require_once(__DIR__ . '/_breadcrumbs.php');
 
 
@@ -91,7 +92,7 @@ $moduleColumns = empty($module->settings['columns']) ? [] : $module->settings['c
                 <span>
                     <i class="fa fa-angle-right"></i>
                     <? if ($model->parent_id) echo Html::a('<i class="fa fa-chevron-left"></i>', ['index', 'url' => RA::module($model->module_id), 'id' => $model->parent_id], ['class' => 'hide']) ?>
-                </span> <?= Html::encode($this->title) ?> <?= Html::a('<i class="fa fa-pencil"></i>', ['update', 'id' => $model->id]) ?>
+                </span> <?= Html::encode($this->title) ?> <? if($model->id) echo Html::a('<i class="fa fa-pencil"></i>', ['update', 'id' => $model->id]) ?>
             </h4>
 
             <?= GridView::widget([

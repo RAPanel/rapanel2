@@ -14,7 +14,7 @@ use yii\base\Component;
 class ShoppingCart extends Component
 {
     public $attributes;
-    private $_items;
+    private $_items = false;
 
     public function put($model, $quantity = 1)
     {
@@ -47,9 +47,9 @@ class ShoppingCart extends Component
 
     public function getItems()
     {
-        if (!$this->_items)
+        if ($this->_items === false)
             $this->_items = Cart::findAll(['session_id' => $this->getSessionId(), 'status' => 0, 'order_id' => 0]);
-        return $this->_items;
+        return $this->_items?:[];
     }
 
     public function getQuantity()

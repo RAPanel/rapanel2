@@ -3,7 +3,9 @@
 namespace app\admin\models;
 
 use app\admin\behaviors\SettingsBehavior;
+use app\admin\traits\AutoSet;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 
 /**
@@ -21,6 +23,7 @@ use yii\helpers\Inflector;
  */
 class Module extends \yii\db\ActiveRecord
 {
+    use AutoSet;
     private $_name;
 
     /**
@@ -38,7 +41,7 @@ class Module extends \yii\db\ActiveRecord
     {
         return [
             [['url', 'name', 'class'], 'required'],
-            [['settings'], 'safe'],
+            [['settings', 'moduleCharacters'], 'safe'],
             [['created_at'], 'safe'],
             [['url'], 'string', 'max' => 16],
             [['name'], 'string', 'max' => 64],
@@ -139,4 +142,17 @@ class Module extends \yii\db\ActiveRecord
             Message::add('app/module', Inflector::camel2words($this->url), Yii::$app->language, $value);
         $this->_name = $value;
     }*/
+
+    public function getModuleCharacters()
+    {
+        return ArrayHelper::map($this->characterShows, 'character_id', 'character_id');
+    }
+
+    public function setModuleCharacters($values)
+    {
+        $data = [];
+        if (!empty($values)) foreach ($values as $value)
+            $data[] = ['character_id' => $value];
+        $this->setRelations('characterShows', $data);
+    }
 }

@@ -127,6 +127,14 @@ class RA
         if (is_null($value)) return $data;
         if (is_numeric($value) && isset($data[$value])) return $data[$value];
         elseif (is_string($value) && ($data = array_flip($data)) && isset($data[$value])) return $data[$value];
+        elseif (is_array($value)) {
+            if (is_string(reset($value))) $data = array_flip($data);
+            $result = [];
+            foreach ($value as $key => $row)
+                if (isset($data[$row]))
+                    $result[$key] = $data[$row];
+            return $result;
+        };
         return false;
     }
 

@@ -1,7 +1,11 @@
 <?php
 
 namespace app\admin\traits;
+
 use Yii;
+use yii\db\ActiveRecord;
+use yii\db\Query;
+use yii\db\QueryInterface;
 
 /**
  * Created by PhpStorm.
@@ -13,16 +17,32 @@ trait AutoSet
 {
     public function setRelations($name, $value)
     {
+        /** @var string $relationName */
         $relationName = 'get' . ucfirst($name);
+        /** @var Query $relationMethod */
         $relationMethod = $this->$relationName();
 
-        $this->on(self::EVENT_AFTER_INSERT, function ($event) use ($relationMethod) {
+        $insert = function ($event) use ($relationMethod) {
+            $transaction = Yii::$app->db->beginTransaction();
             foreach ($event->data as $row) {
                 $modelClass = $relationMethod->modelClass;
                 $attribute = reset($relationMethod->link);
                 $row[key($relationMethod->link)] = $event->sender->{$attribute};
                 Yii::$app->db->createCommand()->insert($modelClass::tableName(), $row)->execute();
             }
-        }, $value);
+            $transaction->commit();
+        };
+
+        $delete = function ($event) use ($relationMethod) {
+            $transaction = Yii::$app->db->beginTransaction();
+            /** @var ActiveRecord $row */
+            foreach ($relationMethod->all() as $row)
+                $row->delete();
+            $transaction->commit();
+        };
+
+        $this->on(ActiveRecord::EVENT_AFTER_UPDATE, $delete, $value);
+        $this->on(ActiveRecord::EVENT_AFTER_UPDATE, $insert, $value);
+        $this->on(ActiveRecord::EVENT_AFTER_INSERT, $insert, $value);
     }
 }

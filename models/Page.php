@@ -6,6 +6,7 @@ use app\admin\behaviors\PageHasManyBehavior;
 use app\admin\helpers\RA;
 use creocoder\nestedsets\NestedSetsBehavior;
 use Yii;
+use yii\behaviors\AttributeBehavior;
 use yii\behaviors\SluggableBehavior;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
@@ -169,13 +170,25 @@ class Page extends \yii\db\ActiveRecord
                 'immutable' => true,
                 'ensureUnique' => true,
             ],
+            'statusChange' => [
+                'class' => AttributeBehavior::className(),
+                'attributes' => [
+                    self::EVENT_BEFORE_VALIDATE => 'status',
+//                    self::EVENT_BEFORE_UPDATE => 'status',
+                ],
+                'value' => function ($event) {
+                    if ($event->sender->isNewRecord && !$event->sender->status)
+                        return RA::moduleSetting($event->sender->module_id, 'status');
+                    return $event->sender->status;
+                }
+            ]
         ];
     }
 
     public static function instantiate($row)
     {
         if (!empty($row['module_id'])) {
-            $class = Module::find()->where(['id' => $row['module_id']])->select('class')->scalar();
+            $class = RA::module($row['module_id'], 'class');
             return new $class;
         }
         return new static;
@@ -259,7 +272,7 @@ class Page extends \yii\db\ActiveRecord
         $moduleSettings = RA::moduleSetting($this->module_id);
         $action = 'show';
         $additional = [];
-        if (!empty($moduleSettings['category'])) {
+        if (!empty($moduleSettings['hasCategory'])) {
             if ($this->is_category) {
                 $action = 'category';
             } elseif ($this->parent && $this->parent->is_category) {
@@ -304,9 +317,11 @@ class Page extends \yii\db\ActiveRecord
         return is_null($url) ? $result : (isset($result[$url]) ? $result[$url] : false);
     }
 
-    public function getPhotoHref($size)
+    public function getPhotoHref($size, $scheme = false)
     {
-        return $this->photo ? $this->photo->getHref($size) : '/image/_' . $size . '/default.jpg';
+        /** @var Photo $photo */
+        $photo = $this->photo;
+        return $photo ? $photo->getHref($size, $scheme) : '/image/_' . $size . '/default.jpg';
     }
 
     /**
@@ -334,11 +349,10 @@ class Page extends \yii\db\ActiveRecord
     {
         $query = self::find()->where(['status' => 1])->orderBy(['lft' => SORT_ASC, 'id' => SORT_ASC]);
         if (!empty($module))
-            if (is_string($module)) $query->andWhere(['!=', 'id', RA::moduleId($module)])->andWhere(['module_id' => RA::moduleId($module)]);
-            elseif (is_array($module)) {
+            if (is_array($module)) {
                 $subQuery = Module::find()->select('id')->where(['or', ['id' => $module], ['url' => $module]]);
                 $query->andWhere(['not', ['id' => $subQuery]])->andWhere(['module_id' => $subQuery]);
-            }
+            } else $query->andWhere(['!=', 'id', RA::moduleId($module)])->andWhere(['module_id' => RA::moduleId($module)]);
         if (!empty($condition)) $query->andWhere($condition);
         return $query;
     }

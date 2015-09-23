@@ -7,13 +7,13 @@ use yii\web\AssetBundle;
 
 class FoundationJsAsset extends AssetBundle
 {
-    public $sourcePath = '@bower/foundation/js/foundation';
+    public $sourcePath = '@bower/foundation/js';
     public $initializeScript = false;
 
     public $css = [];
 
     public $js = [
-        'foundation.js',
+        'foundation.min.js',
     ];
 
     public $depends = [

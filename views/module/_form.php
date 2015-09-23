@@ -48,7 +48,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'settings[characters]')->checkbox(['label' => Yii::t('ra/settings', 'Show Characters'), 'onchange' => '$(this).parents("div:first").nextAll(".input-toggle:first").toggle()']) ?>
     <div class="input-toggle col-md-offset-1 form-horizontal"
          style="display: <?= !empty($model->settings['characters']) ? 'block' : 'none' ?>">
-        Here we will add characters
+        <?= $form->field($model, 'moduleCharacters')->checkboxList(RA::character())->label(Yii::t('ra/settings', 'Available characters')) ?>
     </div>
     <?= $form->field($model, 'settings[data]')->checkbox(['label' => Yii::t('ra/settings', 'Show Data')]) ?>
     <?= $form->field($model, 'settings[seo]')->checkbox(['label' => Yii::t('ra/settings', 'Show Seo')]) ?>

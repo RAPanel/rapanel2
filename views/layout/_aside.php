@@ -5,10 +5,20 @@
  * Date: 10.09.2015
  * Time: 17:25
  */
+use yii\helpers\Html;
+
 ?>
 
 <aside>
     <div id="sidebar" class="nav-collapse " tabindex="5000" style="overflow: hidden; outline: none;">
+
+        <?= Html::beginForm(['search'], 'get') ?>
+        <div class="search" style="margin: 75px 10px 15px;position: relative;">
+            <?= Html::submitButton('<i class="fa fa-search"></i>', ['class'=>'btn', 'style'=>'position:absolute;right:0']) ?>
+            <? if(Yii::$app->request->get('url')) echo Html::hiddenInput('url', Yii::$app->request->get('url')) ?>
+            <?= Html::input('search', 'q', Yii::$app->request->get('q'), ['class'=>'form-control', 'style'=>'padding-right:40px']) ?>
+        </div>
+        <?= Html::endForm() ?>
 
         <?
         $list = [];
@@ -19,7 +29,7 @@
             'activateParents' => true,
             'encodeLabels' => false,
             'submenuTemplate' => "\n<ul class='sub'>\n{items}\n</ul>\n",
-            'options' => ['class' => 'sidebar-menu', 'id' => 'nav-accordion'],
+            'options' => ['class' => 'sidebar-menu', 'id' => 'nav-accordion', 'style'=>'margin-top:15px'],
             'items' => [
                 ['label' => '<i class="fa fa-dashboard"></i> <span>Состояние</span>', 'url' => ['default/index']],
                 ['label' => '<i class="fa fa-cubes"></i> <span>Модули</span>', 'options' => [

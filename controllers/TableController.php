@@ -2,6 +2,8 @@
 
 namespace app\admin\controllers;
 
+use app\admin\helpers\RA;
+use app\admin\helpers\Text;
 use app\admin\models\Module;
 use app\admin\models\Photo;
 use Yii;
@@ -54,7 +56,7 @@ class TableController extends Controller
 
         /** @var \yii\db\ActiveRecord $model */
         $model = new $module->class;
-        if($id) $model = $model::findOne($id);
+        if ($id) $model = $model::findOne($id);
 
         $query = $model::find()->from(['t' => $model::tableName()]);
 
@@ -69,6 +71,33 @@ class TableController extends Controller
         }
         if ($model->hasAttribute('status')) $query->andWhere(['!=', 't.status', 9]);
         if ($id) $query->andWhere(['t.parent_id' => $id]);
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+
+        return $this->render('index', [
+            'model' => $model,
+            'module' => $module,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Lists all Page models.
+     * @return mixed
+     */
+    public function actionSearch($url = null, $q = null)
+    {
+        $module = $this->getModule($url);
+
+        /** @var \yii\db\ActiveRecord $model */
+        $model = new $module->class;
+
+        $query = $model::find()->from(['t' => $model::tableName()]);
+
+        if ($model->hasAttribute('status')) $query->andWhere(['!=', 't.status', 9]);
+        $query->andWhere(['or', ['id' => $q], ['like', 'name', Text::search($q)]]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -145,6 +174,7 @@ class TableController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $_GET['url'] = RA::module($model->module_id);
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $model->status = !empty($model->module->settings['status']);
@@ -165,10 +195,10 @@ class TableController extends Controller
      */
     public function actionDelete($id, $type = null)
     {
-        if($type == 'photo') Photo::findOne($id)->delete();
+        if ($type == 'photo') Photo::findOne($id)->delete();
         else $this->findModel($id)->delete();
 
-        if(Yii::$app->request->isAjax) return '1';
+        if (Yii::$app->request->isAjax) return '1';
         return $this->redirect(['index']);
     }
 
@@ -188,7 +218,8 @@ class TableController extends Controller
         }
     }
 
-    public function actionSave($id){
+    public function actionSave($id)
+    {
         return Yii::$app->db->createCommand()->update(Page::tableName(), Yii::$app->request->get(), compact('id'))->execute();
     }
 }

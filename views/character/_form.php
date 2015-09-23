@@ -15,7 +15,9 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(['id'=>'addCharacterForm']); ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'value'=>$model->getName()]) ?>
+
+    <? if(!$model->isNewRecord) echo $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
 
     <div class="row">
         <div class="col-md-8">
