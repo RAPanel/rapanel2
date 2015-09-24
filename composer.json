@@ -21,7 +21,7 @@
         "imagine/imagine": "*",
         "creocoder/yii2-nested-sets": "^0.9.0",
         "nex/yii2-chosen": "dev-master",
-        "zelenin/yii2-i18n-module": "dev-master"
+        "wfstudioru/yii2-yandex-translate-api": "dev-master"
     },
     "autoload": {
         "psr-4": {
