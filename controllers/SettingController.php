@@ -49,7 +49,7 @@ class SettingController extends Controller
     public function actionView($id)
     {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => Settings::findOne($id),
         ]);
     }
 
@@ -63,7 +63,7 @@ class SettingController extends Controller
         $model = new Settings();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                 'model' => $model,

@@ -8,6 +8,7 @@
 
 namespace app\admin\components;
 
+use app\admin\helpers\RA;
 use app\models\Shop;
 use Yii;
 use yii\helpers\Url;
@@ -57,16 +58,16 @@ class YmlCatalog extends YmlGenerator
                 'currencyId' => 'RUR',
                 'categoryId' => $row->parent_id,
                 'picture' => $row->parent->photo ? $row->parent->getPhotoHref('800') : false,
-                'store' => true,
-                'pickup' => true,
+                'store' => false,
+                'pickup' => false,
                 'delivery' => true,
-//                'typePrefix'=>trim($type),
+                'local_delivery_cost' => 0,
+                'typePrefix'=>RA::module($row->module_id, 'name'),
                 'vendor' => $row->getCharacters('brand'),
 //                'vendorCode',
-//                'name' => $row->name),
-                'model' => $row->parent->name,
+                'model' => $row->name,
                 'description' => $row->about ?: $row->parent->about,
-                'sales_notes' => 'товар отпускается только по предоплате',
-            ), array(), $row->getQuantity(), 'vendor.model', '10', '10');
+                'sales_notes' => '',
+            ), array(), false, 'vendor.model', '10', '10');
     }
 }
