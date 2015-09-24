@@ -10,6 +10,7 @@
             "email": "semyonchick@gmail.com"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
         "yiisoft/yii2": "*",
         "yiisoft/yii2-jui": "~2.0.0",
