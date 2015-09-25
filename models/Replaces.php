@@ -9,8 +9,8 @@ use Yii;
  *
  * @property string $name
  * @property string $value
- * @property string $update_at
- * @property string $create_at
+ * @property string $updated_at
+ * @property string $created_at
  */
 class Replaces extends \yii\db\ActiveRecord
 {
@@ -30,7 +30,7 @@ class Replaces extends \yii\db\ActiveRecord
         return [
             [['name', 'value'], 'required'],
             [['value'], 'string'],
-            [['update_at', 'create_at'], 'safe'],
+            [['updated_at', 'created_at'], 'safe'],
             [['name'], 'string', 'max' => 32]
         ];
     }
@@ -43,8 +43,8 @@ class Replaces extends \yii\db\ActiveRecord
         return [
             'name' => Yii::t('ra/model', 'Name'),
             'value' => Yii::t('ra/model', 'Value'),
-            'update_at' => Yii::t('ra/model', 'Update At'),
-            'create_at' => Yii::t('ra/model', 'Create At'),
+            'updated_at' => Yii::t('ra/model', 'Updated At'),
+            'created_at' => Yii::t('ra/model', 'Created At'),
         ];
     }
 }

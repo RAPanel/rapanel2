@@ -42,5 +42,6 @@ return [
     'Create At' => 'Создан',
     'Path' => 'Путь',
     'Input Type' => 'Тип поля ввода',
+    'Email' => 'E-mail',
 
 ];

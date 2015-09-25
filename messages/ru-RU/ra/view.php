@@ -30,5 +30,6 @@ return [
     'Create Settings' => 'Создать настроку',
     'Can has child`s' => 'Можно вкладывать страницы',
     'Create' => 'Создать',
-
+    'Subscribes' => 'Подписчики',
+    'Create Subscribe' => 'Добавить подписчика',
 ];

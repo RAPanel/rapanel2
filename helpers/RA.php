@@ -158,7 +158,7 @@ class RA
      */
     public static function pageItems($query)
     {
-        $query->orderBy(ArrayHelper::merge(['level'=>SORT_DESC], $query->orderBy));
+        $query->orderBy(ArrayHelper::merge(['is_category'=>SORT_ASC, 'level'=>SORT_DESC], $query->orderBy));
         $query->addOrderBy(['lft'=>SORT_ASC, 'id'=>SORT_ASC]);
         $items = [];
         /** @var \app\admin\models\Page $row */
@@ -170,6 +170,6 @@ class RA
             ];
         }
 
-        return isset($row) ? $items[$row->parent_id] : [];
+        return isset($row) ? end($items): [];
     }
 }

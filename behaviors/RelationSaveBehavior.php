@@ -15,7 +15,6 @@ use yii\base\ErrorException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
-use yii\db\Query;
 
 class RelationSaveBehavior extends Behavior
 {
