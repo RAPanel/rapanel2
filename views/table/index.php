@@ -125,7 +125,14 @@ $moduleColumns = empty($module->settings['columns']) ? [] : $module->settings['c
                                     'title' => ($model->status ? 'Скрыть' : 'Отобразить'),
                                     'class' => 'changeStatus pull-right',
                                 ]);
-                            }
+                            }/*,
+                            'view' => function ($url, $model, $key) {
+                                return Html::a('<i class="fa fa-eye></i>', ['save', 'id' => $model->id, 'status' => !$model->status], [
+                                    'data-toggle' => 'tooltip',
+                                    'title' => ($model->status ? 'Скрыть' : 'Отобразить'),
+                                    'class' => 'changeStatus pull-right',
+                                ]);
+                            }*/
                         ],
                     ],
                     [
