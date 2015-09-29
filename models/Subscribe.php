@@ -5,21 +5,23 @@ namespace app\admin\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%replaces}}".
+ * This is the model class for table "{{%subscribe}}".
  *
+ * @property string $id
  * @property string $name
- * @property string $value
+ * @property string $email
+ * @property resource $data
  * @property string $updated_at
  * @property string $created_at
  */
-class Replaces extends \yii\db\ActiveRecord
+class Subscribe extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%replaces}}';
+        return '{{%subscribe}}';
     }
 
     /**
@@ -28,10 +30,10 @@ class Replaces extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'value'], 'required'],
-            [['value'], 'string'],
+            [['email'], 'required'],
+            [['data'], 'string'],
             [['updated_at', 'created_at'], 'safe'],
-            [['name'], 'string', 'max' => 32]
+            [['name', 'email'], 'string', 'max' => 255]
         ];
     }
 
@@ -41,8 +43,10 @@ class Replaces extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
+            'id' => Yii::t('ra/model', 'ID'),
             'name' => Yii::t('ra/model', 'Name'),
-            'value' => Yii::t('ra/model', 'Value'),
+            'email' => Yii::t('ra/model', 'Email'),
+            'data' => Yii::t('ra/model', 'Data'),
             'updated_at' => Yii::t('ra/model', 'Updated At'),
             'created_at' => Yii::t('ra/model', 'Created At'),
         ];

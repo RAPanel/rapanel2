@@ -151,4 +151,25 @@ class RA
             ]);
         }];
     }
+
+    /**
+     * @param $query \yii\db\ActiveQuery
+     * @return array
+     */
+    public static function pageItems($query)
+    {
+        $query->orderBy(ArrayHelper::merge(['is_category'=>SORT_ASC, 'level'=>SORT_DESC], $query->orderBy));
+        $query->addOrderBy(['lft'=>SORT_ASC, 'id'=>SORT_ASC]);
+        $items = [];
+        /** @var \app\admin\models\Page $row */
+        foreach ($query->all() as $row) {
+            $items[$row->parent_id][] = [
+                'label' => $row->name,
+                'url' => $row->getHref(0),
+                'items' => isset($items[$row->id]) ? $items[$row->id] : null,
+            ];
+        }
+
+        return isset($row) ? end($items): [];
+    }
 }

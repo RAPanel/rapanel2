@@ -2,6 +2,7 @@
 
 namespace app\admin\models;
 
+use app\admin\behaviors\RelationSaveBehavior;
 use Yii;
 use yii\helpers\Inflector;
 
@@ -19,7 +20,6 @@ use yii\helpers\Inflector;
  */
 class Character extends \yii\db\ActiveRecord
 {
-    use \app\admin\traits\AutoSet;
     private $_name;
 
     /**
@@ -75,9 +75,16 @@ class Character extends \yii\db\ActiveRecord
         return $this->hasMany(PageCharacters::className(), ['character_id' => 'id']);
     }
 
-    public function setCharacterShows($list)
+    public function behaviors()
     {
-        $this->setRelations('characterShows', $list);
+        return [
+            [
+                'class' => RelationSaveBehavior::className(),
+                'relations'=>[
+                    'characterShows',
+                ]
+            ],
+        ];
     }
 
     public function getName()

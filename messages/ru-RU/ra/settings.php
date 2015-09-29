@@ -21,5 +21,5 @@ return [
     'Photo Count' => 'Количество изображений',
     'Photo Types' => 'Типы изображений',
     'Is Controller' => 'Это контроллер',
-
+    'Available characters' => 'Доступные характеристики',
 ];

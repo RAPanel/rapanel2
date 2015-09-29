@@ -4,6 +4,10 @@
 $(function () {
     $('[data-toggle="tooltip"]').tooltip();
 
+    $('[href^="/rapanel/table/view?id="]').click('click', function(){
+        $(this).attr('target', '_blank').blur();
+    });
+
     $('body')
         .on('click', 'td.editable', function () {
             if ($(':input', this).length) return;

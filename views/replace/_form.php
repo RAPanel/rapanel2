@@ -16,10 +16,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'value')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'update_at')->textInput() ?>
-
-    <?= $form->field($model, 'create_at')->textInput() ?>
-
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('ra/view', 'Create') : Yii::t('ra/view', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>

@@ -12,8 +12,8 @@ use Yii;
  * @property string $inputType
  * @property string $name
  * @property string $value
- * @property string $update_at
- * @property string $create_at
+ * @property string $updated_at
+ * @property string $created_at
  */
 class Settings extends \yii\db\ActiveRecord
 {
@@ -33,7 +33,7 @@ class Settings extends \yii\db\ActiveRecord
         return [
             [['path', 'name'], 'required'],
             [['value'], 'string'],
-            [['update_at', 'create_at'], 'safe'],
+            [['updated_at', 'created_at'], 'safe'],
             [['path', 'name'], 'string', 'max' => 64],
             [['inputType'], 'string', 'max' => 8]
         ];
@@ -50,8 +50,8 @@ class Settings extends \yii\db\ActiveRecord
             'inputType' => Yii::t('ra/model', 'Input Type'),
             'name' => Yii::t('ra/model', 'Name'),
             'value' => Yii::t('ra/model', 'Value'),
-            'update_at' => Yii::t('ra/model', 'Update At'),
-            'create_at' => Yii::t('ra/model', 'Create At'),
+            'updated_at' => Yii::t('ra/model', 'Updated At'),
+            'created_at' => Yii::t('ra/model', 'Created At'),
         ];
     }
 }
