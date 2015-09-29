@@ -60,7 +60,7 @@ class PageController extends Controller
                         $parent = $model::findOne($model->parent_id);
                     }
                     $get = isset($parent) ? $parent : $model;
-                    $query = $get->parents();
+                    $query = $get::findActive($get->module_id,['between', 'lft', $get->lft, $get->rgt])->andWhere(['!=', 'id', $get->id]);
                     if(!RA::moduleSetting($model->module_id, 'controller'))
                         $query->andWhere(['<>', 'parent_id', null]);
                     $rows = $query->all();

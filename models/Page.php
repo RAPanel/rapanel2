@@ -40,6 +40,8 @@ use yii\helpers\Url;
  */
 class Page extends \yii\db\ActiveRecord
 {
+    use \app\admin\traits\PageEdit;
+
     /**
      * @inheritdoc
      */
@@ -151,40 +153,6 @@ class Page extends \yii\db\ActiveRecord
         return $this->hasOne(PageData::className(), ['page_id' => 'id']);
     }
 
-
-    private $_save;
-
-    public function behaviors()
-    {
-        return [
-            'hasMany' => PageHasManyBehavior::className(),
-            'tree' => [
-                'class' => NestedSetsBehavior::className(),
-                'treeAttribute' => 'module_id',
-                'depthAttribute' => 'level',
-            ],
-            'sluggable' => [
-                'class' => SluggableBehavior::className(),
-                'attribute' => 'name',
-                'slugAttribute' => 'url',
-                'immutable' => true,
-                'ensureUnique' => true,
-            ],
-            'statusChange' => [
-                'class' => AttributeBehavior::className(),
-                'attributes' => [
-                    self::EVENT_BEFORE_VALIDATE => 'status',
-//                    self::EVENT_BEFORE_UPDATE => 'status',
-                ],
-                'value' => function ($event) {
-                    if ($event->sender->isNewRecord && !$event->sender->status)
-                        return RA::moduleSetting($event->sender->module_id, 'status');
-                    return $event->sender->status;
-                }
-            ]
-        ];
-    }
-
     public static function instantiate($row)
     {
         if (!empty($row['module_id'])) {
@@ -230,39 +198,6 @@ class Page extends \yii\db\ActiveRecord
             $event->data->save(false);
         }, $model);
         else $model->save(false);
-    }
-
-    public function setPageCharacters($value)
-    {
-        $this->set($value, 'pageCharacters');
-    }
-
-    public function setPhotos($value)
-    {
-        $this->set($value, 'photos');
-
-    }
-
-    public function save($runValidation = true, $attributeNames = null)
-    {
-        if ($this->_save !== true) {
-            if ($this->is_category) {
-                $this->_save = true;
-                /** @var $this NestedSetsBehavior|self */
-                if ($this->isNewRecord || $this->isAttributeChanged('parent_id')) {
-                    $parent = $this->parent_id ? self::findOne($this->parent_id) : $this->root;
-                    if ($this->id != $this->root->id) {
-                        if (!$this->parent_id)
-                            $this->parent_id = $this->root->id;
-                        return $this->appendTo($parent, $runValidation, $attributeNames);
-                    }
-                }
-            }
-
-            $this->detachBehavior('tree');
-        }
-
-        return parent::save($runValidation, $attributeNames);
     }
 
     public function getHref($normalizeUrl = true, $scheme = false)
