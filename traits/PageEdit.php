@@ -8,6 +8,14 @@
 
 namespace app\admin\traits;
 
+use app\admin\behaviors\PageHasManyBehavior;
+use app\admin\helpers\RA;
+use app\models\Page;
+use creocoder\nestedsets\NestedSetsBehavior;
+use yii\behaviors\AttributeBehavior;
+use yii\behaviors\SluggableBehavior;
+use yii\db\ActiveRecord;
+
 trait PageEdit
 {
     private $_save;
@@ -32,7 +40,7 @@ trait PageEdit
                 $this->_save = true;
                 /** @var $this NestedSetsBehavior|self */
                 if ($this->isNewRecord || $this->isAttributeChanged('parent_id')) {
-                    $parent = $this->parent_id ? self::findOne($this->parent_id) : $this->root;
+                    $parent = $this->parent_id ? Page::findOne($this->parent_id) : $this->root;
                     if ($this->id != $this->root->id) {
                         if (!$this->parent_id)
                             $this->parent_id = $this->root->id;
@@ -66,7 +74,7 @@ trait PageEdit
             'statusChange' => [
                 'class' => AttributeBehavior::className(),
                 'attributes' => [
-                    self::EVENT_BEFORE_VALIDATE => 'status',
+                    ActiveRecord::EVENT_BEFORE_VALIDATE => 'status',
 //                    self::EVENT_BEFORE_UPDATE => 'status',
                 ],
                 'value' => function ($event) {
