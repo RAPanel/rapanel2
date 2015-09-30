@@ -65,4 +65,11 @@ class Cart extends \yii\db\ActiveRecord
         $this->data = unserialize($this->data);
         parent::afterFind();
     }
+
+    public function beforeSave($insert)
+    {
+        if ($this->data && is_object($this->data))
+            $this->data = serialize($this->data);
+        return parent::beforeSave($insert);
+    }
 }

@@ -59,12 +59,13 @@ class PageController extends Controller
                     if (!$model->level) {
                         $parent = $model::findOne($model->parent_id);
                     }
+                    /** @var Page $get */
                     $get = isset($parent) ? $parent : $model;
-                    $query = $get::findActive($get->module_id,['between', 'lft', $get->lft, $get->rgt])->andWhere(['!=', 'id', $get->id]);
-                    if(!RA::moduleSetting($model->module_id, 'controller'))
+                    $query = $get::findActive($get->module_id, ['and', ['<', 'lft', $get->lft], ['>', 'rgt', $get->rgt]], true, true);
+                    if (!RA::moduleSetting($model->module_id, 'controller'))
                         $query->andWhere(['<>', 'parent_id', null]);
                     $rows = $query->all();
-                    if(isset($parent)) $rows[] = $parent;
+                    if (isset($parent)) $rows[] = $parent;
                     foreach ($rows as $row)
                         $result[] = ['label' => $row->name, 'url' => $row->href];
                 }

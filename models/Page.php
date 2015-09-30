@@ -42,6 +42,8 @@ class Page extends \yii\db\ActiveRecord
 {
     use \app\admin\traits\PageEdit;
 
+    private $_characters = [];
+
     /**
      * @inheritdoc
      */
@@ -244,12 +246,19 @@ class Page extends \yii\db\ActiveRecord
         return $this->getHref() == \Yii::$app->request->pathInfo ?: null;
     }
 
-    public function getCharacters($url = null)
+    public function getCharacter($url = null)
     {
-        $result = [];
-        foreach ($this->pageCharacters as $row)
-            $result[RA::character($row->character_id)] = $row->value;
-        return is_null($url) ? $result : (isset($result[$url]) ? $result[$url] : false);
+        $characters = $this->getCharacters();
+        return isset($characters[$url]) ? $characters[$url] : null;
+    }
+
+    public function getCharacters($url = null, $refresh = false)
+    {
+        if(empty($this->_characters) || $refresh){
+            foreach ($this->pageCharacters as $row)
+                $this->_characters[RA::character($row->character_id)] = $row->value;
+        }
+        return is_null($url) ? $this->_characters : (isset($this->_characters[$url]) ? $this->_characters[$url] : null);
     }
 
     public function getPhotoHref($size, $scheme = false)
@@ -278,16 +287,25 @@ class Page extends \yii\db\ActiveRecord
     /**
      * @param $module string|int
      * @param array $condition
+     * @param bool $withRoot
+     * @param bool $allStatuses
      * @return \yii\db\ActiveQuery the newly created [[ActiveQuery]] instance.
+     * @internal param bool $allStauses
+     * @internal param bool $allStaus
      */
-    public static function findActive($module = null, $condition = [])
+    public static function findActive($module = null, $condition = [], $withRoot = false, $allStatuses = false)
     {
-        $query = self::find()->where(['status' => 1])->orderBy(['lft' => SORT_ASC, 'id' => SORT_ASC]);
+        $query = self::find()->orderBy(['lft' => SORT_ASC, 'id' => SORT_ASC]);
+        if (!$allStatuses) $query->where(['status' => 1]);
         if (!empty($module))
             if (is_array($module)) {
                 $subQuery = Module::find()->select('id')->where(['or', ['id' => $module], ['url' => $module]]);
-                $query->andWhere(['not', ['id' => $subQuery]])->andWhere(['module_id' => $subQuery]);
-            } else $query->andWhere(['!=', 'id', RA::moduleId($module)])->andWhere(['module_id' => RA::moduleId($module)]);
+                if (!$withRoot) $query->andWhere(['not', ['id' => $subQuery]]);
+                $query->andWhere(['module_id' => $subQuery]);
+            } else {
+                if (!$withRoot) $query->andWhere(['!=', 'id', RA::moduleId($module)]);
+                $query->andWhere(['module_id' => RA::moduleId($module)]);
+            }
         if (!empty($condition)) $query->andWhere($condition);
         return $query;
     }

@@ -23,6 +23,7 @@ class TinyMce extends \dosamigos\tinymce\TinyMce
             "insertdatetime media nonbreaking save table contextmenu directionality",
             "emoticons template paste textcolor colorpicker textpattern autoresize",
         ],
+        'extended_valid_elements'=>'script[type|src],iframe[src|style|width|height|scrolling|marginwidth|marginheight|frameborder]',
 
         'toolbar1' => "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | forecolor backcolor | fullscreen",
 

@@ -3,6 +3,7 @@
 namespace app\admin\models;
 
 use Yii;
+use yii\swiftmailer\Message;
 
 /**
  * This is the model class for table "{{%order}}".
@@ -21,6 +22,25 @@ class Order extends \yii\db\ActiveRecord
 {
     public $serializeAttributes = ['name', 'phone', 'email', 'address', 'comment'];
     private $_data = [];
+
+    public function init()
+    {
+        $this->on(self::EVENT_AFTER_INSERT, function($event){
+            Yii::$app->mailer->compose()
+                ->setTo('semyonchick@gmail.com')
+//                ->setFrom([$this->email => $this->name])
+                ->setSubject('Заказ на АвтоКом')
+                ->setTextBody($event->sender->id)
+                ->send();
+        });
+        parent::init();
+    }
+
+    public function beforeSave($insert)
+    {
+        $this->data = serialize($this->_data);
+        return parent::beforeSave($insert);
+    }
 
     public function __set($name, $value)
     {

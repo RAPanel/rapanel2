@@ -158,8 +158,8 @@ class RA
      */
     public static function pageItems($query)
     {
-        $query->orderBy(ArrayHelper::merge(['is_category'=>SORT_ASC, 'level'=>SORT_DESC], $query->orderBy));
-        $query->addOrderBy(['lft'=>SORT_ASC, 'id'=>SORT_ASC]);
+        $query->orderBy(ArrayHelper::merge(['is_category' => SORT_ASC, 'level' => SORT_DESC], $query->orderBy));
+        $query->addOrderBy(['lft' => SORT_ASC, 'id' => SORT_ASC]);
         $items = [];
         /** @var \app\admin\models\Page $row */
         foreach ($query->all() as $row) {
@@ -170,6 +170,11 @@ class RA
             ];
         }
 
-        return isset($row) ? end($items): [];
+        return isset($row) ? end($items) : [];
+    }
+
+    public static function info($name = false, $default = null)
+    {
+        return isset(Yii::$app->params[$name]) ? Yii::$app->params[$name] : $default;
     }
 }

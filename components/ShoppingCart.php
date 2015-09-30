@@ -37,7 +37,7 @@ class ShoppingCart extends Component
         }
         if (empty($item)) {
             $item = new Cart;
-            $item->data = serialize($model);
+            $item->data = $model;
             $item->setAttributes(['session_id' => $this->getSessionId(), 'item_id' => $model->getId(), 'status' => 0, 'order_id' => 0], false);
         }
         $item->price = $model->getPrice();
