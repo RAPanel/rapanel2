@@ -10,6 +10,8 @@ return [
     'ID' => '#',
     'Is Category' => 'Это категрия',
     'Status' => 'Статус',
+    'Status ID' => 'Статус',
+    'Is Paied' => 'Оплачен',
     'Lft' => 'lft',
     'Rgt' => 'rgt',
     'Level' => 'level',
@@ -44,5 +46,6 @@ return [
     'Input Type' => 'Тип поля ввода',
     'Email' => 'E-mail',
     'SubscribeName' => 'Имя',
-
+    'Pay ID' => 'Способ оплаты',
+    'Delivery ID' => 'Способ доставки',
 ];

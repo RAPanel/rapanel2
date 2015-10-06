@@ -189,6 +189,7 @@ class Page extends \yii\db\ActiveRecord
 
     public function setPageData($data)
     {
+        $this->doEditable();
         $model = $this->pageData;
         if (!$model && ($class = $this->getPageData()->modelClass)) {
             $model = new $class;
@@ -295,16 +296,16 @@ class Page extends \yii\db\ActiveRecord
      */
     public static function findActive($module = null, $condition = [], $withRoot = false, $allStatuses = false)
     {
-        $query = self::find()->orderBy(['lft' => SORT_ASC, 'id' => SORT_ASC]);
-        if (!$allStatuses) $query->where(['status' => 1]);
+        $query = self::find()->from(['t'=>self::tableName()])->orderBy(['t.lft' => SORT_ASC, 't.id' => SORT_ASC]);
+        if (!$allStatuses) $query->where(['t.status' => 1]);
         if (!empty($module))
             if (is_array($module)) {
                 $subQuery = Module::find()->select('id')->where(['or', ['id' => $module], ['url' => $module]]);
-                if (!$withRoot) $query->andWhere(['not', ['id' => $subQuery]]);
-                $query->andWhere(['module_id' => $subQuery]);
+                if (!$withRoot) $query->andWhere(['not', ['t.id' => $subQuery]]);
+                $query->andWhere(['t.module_id' => $subQuery]);
             } else {
-                if (!$withRoot) $query->andWhere(['!=', 'id', RA::moduleId($module)]);
-                $query->andWhere(['module_id' => RA::moduleId($module)]);
+                if (!$withRoot) $query->andWhere(['!=', 't.id', RA::moduleId($module)]);
+                $query->andWhere(['t.module_id' => RA::moduleId($module)]);
             }
         if (!empty($condition)) $query->andWhere($condition);
         return $query;

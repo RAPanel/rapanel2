@@ -32,4 +32,6 @@ return [
     'Create' => 'Создать',
     'Subscribes' => 'Подписчики',
     'Create Subscribe' => 'Добавить подписчика',
+    'Orders' => 'Заказы',
+    'Create Order' => 'Добавить заказ',
 ];

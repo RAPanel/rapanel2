@@ -61,7 +61,7 @@ class Order extends \yii\db\ActiveRecord
     public function __get($name)
     {
         if (in_array($name, $this->serializeAttributes)) {
-            if ($this->_data === false) $this->_data = unserialize($this->_data);
+            if (empty($this->_data)) $this->_data = unserialize($this->data);
             return isset($this->_data[$name]) ? $this->_data[$name] : null;
         }
         return parent::__get($name);
@@ -103,8 +103,10 @@ class Order extends \yii\db\ActiveRecord
             'status_id' => Yii::t('ra/model', 'Status ID'),
             'is_paied' => Yii::t('ra/model', 'Is Paied'),
             'session_id' => Yii::t('ra/model', 'Session ID'),
-            'delivery_id' => 'Адрес доставки',
+            'delivery_id' => Yii::t('ra/model', 'Delivery ID'),
+            'delivery' => Yii::t('ra/model', 'Delivery ID'),
             'pay_id' => Yii::t('ra/model', 'Pay ID'),
+            'pay' => Yii::t('ra/model', 'Pay ID'),
             'data' => Yii::t('ra/model', 'Data'),
             'updated_at' => Yii::t('ra/model', 'Updated At'),
             'created_at' => Yii::t('ra/model', 'Created At'),
@@ -123,5 +125,22 @@ class Order extends \yii\db\ActiveRecord
             1 => 'Самовывоз',
             5 => 'Доставка по Перми',
         ];
+    }
+
+    public function getDelivery()
+    {
+        return isset($this->deliveries[$this->delivery_id])?$this->deliveries[$this->delivery_id]:null;
+    }
+
+    public function getPais()
+    {
+        return [
+            0 => 'Наличные',
+        ];
+    }
+
+    public function getPay()
+    {
+        return isset($this->pais[$this->pay_id])?$this->pais[$this->pay_id]:null;
     }
 }

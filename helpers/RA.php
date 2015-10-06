@@ -138,17 +138,20 @@ class RA
         return false;
     }
 
-    public static function characterCondition($name, $value)
+    public static function characterCondition($name, $value = false)
     {
         return ['pageCharacters' => function ($query) use ($name, $value) {
             /** @var $query \yii\db\ActiveQuery */
             /** @var \yii\db\ActiveRecord $class */
             $class = $query->modelClass;
-            $tableName = 'pc_' . $name;
-            $query->from([$tableName => $class::tableName()])->where([
+            if (is_array($name)) {
+                $tableName = key($name);
+                $name = reset($name);
+            } else
+                $tableName = $name;
+            $query->from([$tableName => $class::tableName()])->where(ArrayHelper::merge([
                 $tableName . '.character_id' => RA::character($name),
-                $tableName . '.value' => $value,
-            ]);
+            ], $value ? [$tableName . '.value' => $value] : []));
         }];
     }
 

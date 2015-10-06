@@ -49,7 +49,7 @@ class YmlCatalog extends YmlGenerator
 
     protected function offers()
     {
-        $offers = Shop::findActive(['tyres', 'disks'], ['is_category' => 0]);
+        $offers = Shop::findActive(['tyres', 'disks'], ['is_category' => 0])->joinWith(RA::characterCondition('quantity'), false)->andWhere(['>', 'quantity.value', 3]);
         /** @var Shop $row */
         foreach ($offers->each() as $row)
             $this->addOffer($row->id, array(
@@ -62,7 +62,7 @@ class YmlCatalog extends YmlGenerator
                 'pickup' => false,
                 'delivery' => true,
                 'local_delivery_cost' => 0,
-                'typePrefix'=>RA::module($row->module_id, 'name'),
+                'typePrefix' => RA::module($row->module_id, 'name'),
                 'vendor' => $row->getCharacters('brand'),
 //                'vendorCode',
                 'model' => $row->name,
