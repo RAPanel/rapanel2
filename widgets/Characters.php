@@ -30,12 +30,10 @@ class Characters extends InputWidget
         $result .= Html::beginTag('div', ['class' => 'characterList']);
 
         foreach ($this->model->existCharacters as $data) {
-            $value = null;
-            if (isset($characters[$data->id])) {
-                echo Html::activeHiddenInput($this->model, "pageCharacters[{$data->id}][id]", ['value' => key($characters[$data->id])]);
-                $value = reset($characters[$data->id]);
-            }
-            $result .= $this->render('/table/_character', ['data' => $data, 'model' => $this->model, 'value' => $value]);
+            foreach ($this->value as $i => $row)
+                if ($row->character_id == $data->id) $key = $i;
+            if (!isset($key)) $key = count($this->value) + $data->id;
+            $result .= $this->render('/table/_character', ['key' => $key, 'data' => $data, 'model' => $this->model, 'attribute' => $this->attribute]);
         }
 
         $result .= Html::endTag('div');
