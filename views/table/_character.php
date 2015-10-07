@@ -28,6 +28,8 @@ if ($data['type'] == 'boolean') {
     if($data['type'] == 'price'){
         $params['pattern'] = '\d+(,\d{2})?';
         $data['type'] = 'number';
+    }elseif($data['type'] == 'checkbox'){
+        $data['value'] = '1';
     }
     echo Html::label($label, 'character' . $data->id);
     echo Html::activeInput($data['type'], $model, "pageCharacters[{$data->id}][value]", ['id' => 'character' . $data->id, 'value' => isset($value) ? $value : null, 'class' => 'form-control'] + $params);

@@ -6,7 +6,7 @@
  * Time: 16:43
  */
 
-$debug = true;
+$debug = false;
 
 if (in_array(php_uname('n'), ['localhost', 'localhost.localdomain', 'devhost', '192.168.91.128', '10.0.2.15'])) {
     $debug = true;
