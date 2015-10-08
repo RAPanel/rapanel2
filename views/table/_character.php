@@ -32,8 +32,9 @@ if ($data['type'] == 'boolean') {
     if ($data['type'] == 'price') {
         $params['pattern'] = '\d+(,\d{2})?';
         $data['type'] = 'number';
+        $params['step'] = '0.01';
     } elseif ($data['type'] == 'checkbox') {
-        $data['value'] = '1';
+        $params['value'] = '1';
     }
     echo Html::label($label, $id);
     echo Html::activeInput($data['type'], $model, $name, ['id' => $id, 'class' => 'form-control'] + $params);

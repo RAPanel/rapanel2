@@ -34,4 +34,5 @@ return [
     'Create Subscribe' => 'Добавить подписчика',
     'Orders' => 'Заказы',
     'Create Order' => 'Добавить заказ',
+    'Forms' => 'Данные форм',
 ];

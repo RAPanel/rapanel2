@@ -2,6 +2,7 @@
 
 namespace app\admin\models;
 
+use app\admin\traits\SerializeAttribute;
 use Yii;
 use yii\swiftmailer\Message;
 
@@ -20,12 +21,12 @@ use yii\swiftmailer\Message;
  */
 class Order extends \yii\db\ActiveRecord
 {
+    use SerializeAttribute;
     public $serializeAttributes = ['name', 'phone', 'email', 'address', 'comment'];
-    private $_data = [];
 
     public function init()
     {
-        $this->on(self::EVENT_AFTER_INSERT, function($event){
+        $this->on(self::EVENT_AFTER_INSERT, function ($event) {
             Yii::$app->mailer->compose()
                 ->setTo('semyonchick@gmail.com')
 //                ->setFrom([$this->email => $this->name])
@@ -34,37 +35,6 @@ class Order extends \yii\db\ActiveRecord
                 ->send();
         });
         parent::init();
-    }
-
-    public function beforeSave($insert)
-    {
-        $this->data = serialize($this->_data);
-        return parent::beforeSave($insert);
-    }
-
-    public function __set($name, $value)
-    {
-        if (in_array($name, $this->serializeAttributes)) {
-            if ($this->_data === false) $this->_data = unserialize($this->_data);
-            $this->_data[$name] = $value;
-            $this->on($this->isNewRecord ? self::EVENT_AFTER_INSERT : self::EVENT_AFTER_UPDATE, function ($event) {
-                if ($event->sender->_data) {
-                    $event->sender->data = serialize($event->sender->_data);
-                    $event->sender->_data = false;
-                }
-            });
-            return;
-        }
-        parent::__set($name, $value);
-    }
-
-    public function __get($name)
-    {
-        if (in_array($name, $this->serializeAttributes)) {
-            if (empty($this->_data)) $this->_data = unserialize($this->data);
-            return isset($this->_data[$name]) ? $this->_data[$name] : null;
-        }
-        return parent::__get($name);
     }
 
     /**
@@ -129,7 +99,7 @@ class Order extends \yii\db\ActiveRecord
 
     public function getDelivery()
     {
-        return isset($this->deliveries[$this->delivery_id])?$this->deliveries[$this->delivery_id]:null;
+        return isset($this->deliveries[$this->delivery_id]) ? $this->deliveries[$this->delivery_id] : null;
     }
 
     public function getPais()
@@ -141,6 +111,6 @@ class Order extends \yii\db\ActiveRecord
 
     public function getPay()
     {
-        return isset($this->pais[$this->pay_id])?$this->pais[$this->pay_id]:null;
+        return isset($this->pais[$this->pay_id]) ? $this->pais[$this->pay_id] : null;
     }
 }
