@@ -18,7 +18,7 @@ trait SerializeAttribute
         if (in_array($name, $this->serializeAttributes)) {
             if ($this->_data === false) $this->_data = unserialize($this->_data);
             $this->_data[$name] = $value;
-            $this->on($this->isNewRecord ? parent::EVENT_AFTER_INSERT : parent::EVENT_AFTER_UPDATE, function ($event) {
+            $this->on($this->isNewRecord ? parent::EVENT_BEFORE_INSERT : parent::EVENT_BEFORE_UPDATE, function ($event) {
                 if ($event->sender->_data) {
                     $event->sender->data = serialize($event->sender->_data);
                     $event->sender->_data = false;

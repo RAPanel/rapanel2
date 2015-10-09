@@ -6,6 +6,8 @@
  * Time: 16:22
  */
 
+$email = 'no-reply@' . str_replace('www.', $_SERVER['HTTP_HOST'], $_SERVER['HTTP_HOST']);
+
 $config = [
     'bootstrap' => ['raInit'],
     'language' => 'en-US',
@@ -43,6 +45,14 @@ $config = [
                 'baseUrl' => '@web/themes',
             ],
         ],
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            'useFileTransport' => false,
+            'messageConfig' => [
+                'from' => ['no-reply@' . $email],
+                'charset' => 'UTF-8',
+            ],
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'lVZD-kar4vfyeUGHVnVZbijmWiwgteuU',
@@ -66,7 +76,11 @@ $config = [
         'raInit' => [
             'class' => 'app\admin\components\RAInit',
         ],
-    ]
+    ],
+    'params' => [
+        'adminEmail' => 'webmaster@rere-design.ru',
+        'fromEmail' => $email,
+    ],
 ];
 
 if (YII_ENV_DEV) {

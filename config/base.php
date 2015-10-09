@@ -7,4 +7,10 @@
  */
 
 return [
+    'components' => [
+        'errorHandler' => [
+            'class' => 'yii\web\ErrorHandler',
+            'errorAction' => 'admin/default/error',
+        ],
+    ],
 ];

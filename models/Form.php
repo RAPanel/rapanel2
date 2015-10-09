@@ -36,7 +36,7 @@ class Form extends \yii\db\ActiveRecord
             [['type'], 'required'],
             [['data'], 'string'],
             [['updated_at', 'created_at'], 'safe'],
-            [['type'], 'string', 'max' => 3]
+            [['type'], 'string', 'max' => 32]
         ];
     }
 
@@ -56,7 +56,11 @@ class Form extends \yii\db\ActiveRecord
 
     public function getBody()
     {
-
+        $result = ['Тип: ' . $this->type];
+        foreach (unserialize($this->data) as $key => $row) {
+            $result[] = $this->getAttributeLabel($key) . ": " . $row;
+        }
+        return implode(PHP_EOL, $result);
     }
 
     /**
@@ -66,14 +70,18 @@ class Form extends \yii\db\ActiveRecord
      */
     public function contact($email = null)
     {
+        preg_match('#(\w+?)(?:Form)?$#iu', $this::className(), $matches);
+        $this->type = lcfirst($matches[1]);
         if ($this->save()) {
-            Yii::$app->mailer->compose()
-                ->setTo($email ?: Yii::$app->params['adminEmail'])
-                ->setFrom([Yii::$app->params['fromEmail']=> Yii::$app->name])
-                ->setReplyTo([$this->email])
-                ->setSubject('Сообщение с сайта ' . Yii::$app->name)
-                ->setTextBody($this->body)
-                ->send();
+            $mail = Yii::$app->mailer->compose();
+            $mail->setTo($email ?: Yii::$app->params['adminEmail']);
+            $mail->setFrom([Yii::$app->params['fromEmail'] => Yii::$app->name]);
+            $mail->setSubject('Сообщение с сайта ' . Yii::$app->name);
+            $mail->setTextBody($this->body);
+
+            if (!empty($this->email)) $mail->setReplyTo([$this->email]);
+
+            $mail->send();
 
             return true;
         }

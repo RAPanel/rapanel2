@@ -31,10 +31,22 @@ class Order extends \yii\db\ActiveRecord
                 ->setTo('semyonchick@gmail.com')
 //                ->setFrom([$this->email => $this->name])
                 ->setSubject('Заказ на АвтоКом')
-                ->setTextBody($event->sender->id)
+                ->setTextBody($event->sender->getBody())
                 ->send();
         });
         parent::init();
+    }
+
+    public function getBody()
+    {
+        $result = ['Номер заказа: ' . $this->id];
+        $result[] = 'Способ оплаты: ' . $this->getPais();
+        $result[] = 'Способ доставки: ' . $this->getDelivery();
+        $result[] = '';
+        foreach (unserialize($this->data) as $key => $row) {
+            $result[] = $this->getAttributeLabel($key) . ": " . $row;
+        }
+        return implode(PHP_EOL, $result);
     }
 
     /**
@@ -51,7 +63,7 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['delivery_id'], 'required'],
+            [['name', 'phone', 'delivery_id'], 'required'],
             [['status_id', 'is_paied', 'delivery_id', 'pay_id'], 'integer'],
             [['data'], 'string'],
             [['updated_at', 'created_at'], 'safe'],
