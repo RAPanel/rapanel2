@@ -89,7 +89,7 @@ class Character extends \yii\db\ActiveRecord
 
     public function getName()
     {
-        if ($this->_name === false)
+        if (!$this->_name)
             $this->_name = $this->url ? Yii::t('app/character', Inflector::camel2words($this->url)) : $this->url;
         return $this->_name;
     }

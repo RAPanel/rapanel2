@@ -76,7 +76,7 @@ class RA
      * @param string $alias
      * @return array
      */
-    public static function dropDownList(array $data, $alias = 'ra/app/dropdown')
+    public static function dropDownList(array $data, $alias = 'ra/dropDown')
     {
         $list = [];
         foreach ($data as $key => $value)
