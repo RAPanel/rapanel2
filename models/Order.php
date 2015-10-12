@@ -28,8 +28,8 @@ class Order extends \yii\db\ActiveRecord
     {
         $this->on(self::EVENT_AFTER_INSERT, function ($event) {
             Yii::$app->mailer->compose()
-                ->setTo('semyonchick@gmail.com')
-//                ->setFrom([$this->email => $this->name])
+                ->setTo(Yii::$app->params['adminEmail'])
+                ->setFrom([Yii::$app->params['fromEmail'] => Yii::$app->name])
                 ->setSubject('Заказ на АвтоКом')
                 ->setTextBody($event->sender->getBody())
                 ->send();
@@ -40,7 +40,7 @@ class Order extends \yii\db\ActiveRecord
     public function getBody()
     {
         $result = ['Номер заказа: ' . $this->id];
-        $result[] = 'Способ оплаты: ' . $this->getPais();
+        $result[] = 'Способ оплаты: ' . $this->getPay();
         $result[] = 'Способ доставки: ' . $this->getDelivery();
         $result[] = '';
         foreach (unserialize($this->data) as $key => $row) {
@@ -123,6 +123,6 @@ class Order extends \yii\db\ActiveRecord
 
     public function getPay()
     {
-        return isset($this->pais[$this->pay_id]) ? $this->pais[$this->pay_id] : null;
+        return isset($this->pais[$this->pay_id?:0]) ? $this->pais[$this->pay_id?:0] : null;
     }
 }

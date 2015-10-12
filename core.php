@@ -49,7 +49,7 @@ $config = [
             'class' => 'yii\swiftmailer\Mailer',
             'useFileTransport' => false,
             'messageConfig' => [
-                'from' => ['no-reply@' . $email],
+                'from' => [$email],
                 'charset' => 'UTF-8',
             ],
         ],
