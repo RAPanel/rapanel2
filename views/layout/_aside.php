@@ -43,6 +43,7 @@ use yii\helpers\Html;
                     ['label' => Yii::t('ra/view', 'Orders'), 'url' => ['order/index']],
                     ['label' => Yii::t('ra/view', 'Forms'), 'url' => ['form/index']],
                     ['label' => Yii::t('ra/view', 'Subscribes'), 'url' => ['subscribe/index']],
+                    ['label' => Yii::t('ra/view', 'Orders'), 'url' => ['order/index']],
                 ]],
                 ['label' => '<i class="fa fa-cogs"></i> <span>Система</span>', 'options' => [
                     'class' => 'sub-menu',

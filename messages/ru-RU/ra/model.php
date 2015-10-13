@@ -48,4 +48,7 @@ return [
     'SubscribeName' => 'Имя',
     'Pay ID' => 'Способ оплаты',
     'Delivery ID' => 'Способ доставки',
+    'Item ID' => '# Товара',
+    'Quantity' => 'Количество',
+    'Price' => 'Цена',
 ];

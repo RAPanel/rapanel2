@@ -47,6 +47,18 @@ class OrderController extends Controller
      * @param string $id
      * @return mixed
      */
+    public function actionInfo($id)
+    {
+        return $this->renderAjax('info', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
+    /**
+     * Displays a single Order model.
+     * @param string $id
+     * @return mixed
+     */
     public function actionView($id)
     {
         return $this->render('view', [

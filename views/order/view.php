@@ -1,5 +1,7 @@
 <?php
 
+use app\admin\models\Cart;
+use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -29,15 +31,16 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'status_id',
+            'status',
             'is_paied',
-            'session_id',
-            'delivery_id',
-            'pay_id',
-            'data',
+            'session_id:text:Session',
+            'delivery',
+            'pay',
             'updated_at',
             'created_at',
         ],
     ]) ?>
+
+    <?= $this->render('info', ['model'=>$model]) ?>
 
 </div>

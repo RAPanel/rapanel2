@@ -101,6 +101,18 @@ class Order extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getStatuses()
+    {
+        return [
+            0 => 'Новый заказ',
+        ];
+    }
+
+    public function getStatus()
+    {
+        return isset($this->statuses[$this->status_id]) ? $this->statuses[$this->status_id] : null;
+    }
+
     public function getDeliveries()
     {
         return [
