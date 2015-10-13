@@ -58,7 +58,7 @@ class TableController extends Controller
         $model = new $module->class;
         if ($id) $model = $model::findOne($id);
 
-        $query = $model::find()->from(['t' => $model::tableName()]);
+        $query = $model::find()->from(['t' => $model::tableName()])->orderBy(['t.lft' => SORT_ASC, 't.id' => SORT_ASC]);
 
         if ($model->hasAttribute('module_id')) {
             $query->andWhere(['t.module_id' => $module->id]);
