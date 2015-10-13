@@ -2,6 +2,7 @@
 
 namespace app\admin\models;
 
+use app\admin\traits\SerializeAttribute;
 use app\admin\behaviors\RelationSaveBehavior;
 use Yii;
 use yii\helpers\Inflector;
@@ -20,6 +21,8 @@ use yii\helpers\Inflector;
  */
 class Character extends \yii\db\ActiveRecord
 {
+    use SerializeAttribute;
+    public $serializeAttributes = ['module', 'filter', 'list'];
     private $_name;
 
     /**
@@ -37,10 +40,11 @@ class Character extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'type', 'multi'], 'required'],
-            [['type', 'data', 'url'], 'string'],
+            [['type', 'url'], 'string'],
             [['multi'], 'integer'],
             [['name'], 'string', 'max' => 25],
             [['characterShows'], 'safe'],
+            [$this->serializeAttributes, 'safe'],
         ];
     }
 

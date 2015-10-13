@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
 <script>
     function characterGetter(e) {
         $('.dataField').hide().filter('.' + $(e).val()).show();
-        if($(e).val() == 'extend'){
+        if ($(e).val() == 'extend') {
         }
         console.log($(e).val());
     }
@@ -23,6 +23,8 @@ use yii\widgets\ActiveForm;
 <div class="character-form">
 
     <?php $form = ActiveForm::begin(['id' => 'addCharacterForm']); ?>
+
+    <?= $form->errorSummary($model) ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'value' => $model->getName()]) ?>
 
@@ -38,23 +40,22 @@ use yii\widgets\ActiveForm;
     </div>
 
     <div class="dataField" style="display: none">
-        <?= $form->field($model, 'data')->textarea() ?>
+        <? //= $form->field($model, 'data')->textarea() ?>
     </div>
 
-    <div class="dataField extend row" style="display: none">
+    <div class="dataField extend row" <? if ($model->type != 'extend') echo 'style="display: none"' ?>>
         <div class="col-md-4">
-        <?= $form->field($model, 'data[module]')->dropDownList(RA::module(null, 'name'), ['prompt'=>'Выберите модуль'])->label('Модуль') ?>
+            <?= $form->field($model, 'module')->dropDownList(RA::module(null, 'name'), ['prompt' => 'Выберите модуль'])->label('Модуль') ?>
         </div>
         <div class="col-md-4">
-            <?= $form->field($model, 'data[module][filter][is_category]')->dropDownList(['все', 'товар', 'категория'])->label('Тип') ?>
+            <?= $form->field($model, 'filter[is_category]')->dropDownList(['все', 'товар', 'категория'])->label('Тип') ?>
         </div>
         <div class="col-md-4">
-            <?= $form->field($model, 'data[module][filter][status]')->dropDownList(['все', 'скрыт', 'видим'])->label('Статус') ?>
+            <?= $form->field($model, 'filter[status]')->dropDownList(['все', 'скрыт', 'видим'])->label('Статус') ?>
         </div>
     </div>
 
     <div class="dataField dropdown" style="display: none">
-        <?= $form->field($model, 'data[module]')->dropDownList(RA::module(null, 'name'), ['prompt'=>'Выберите модуль'])->label('Модуль') ?>
     </div>
 
     <? if ($model->isNewRecord): ?>
