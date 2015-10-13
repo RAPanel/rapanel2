@@ -19,6 +19,7 @@ use yii\db\ActiveRecord;
 trait PageEdit
 {
     private $_save;
+    private $_attached;
 
     public function setPageCharacters($value)
     {
@@ -57,6 +58,7 @@ trait PageEdit
 
     public function doEditable()
     {
+        if($this->_attached) return;
         $this->attachBehaviors([
             'hasMany' => PageHasManyBehavior::className(),
             'tree' => [
@@ -84,5 +86,6 @@ trait PageEdit
                 }
             ]
         ]);
+        $this->_attached = true;
     }
 }

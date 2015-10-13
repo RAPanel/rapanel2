@@ -20,7 +20,7 @@ use yii\widgets\DetailView;
 ]) ?>
 
 <?= GridView::widget([
-    'dataProvider' => new \yii\data\ActiveDataProvider(['query' => Cart::find()->where(['order_id' => $model->id])]),
+    'dataProvider' => new \yii\data\ActiveDataProvider(['query' => $model->getItems(), 'sort'=>false, 'pagination'=>false]),
     'layout'=>'{items}',
     'columns' => [
         'item_id',
@@ -28,7 +28,7 @@ use yii\widgets\DetailView;
             'label'=>'Наименование',
             'format'=>'raw',
             'value' => function ($model) {
-                return Html::a($model->data->name, $model->data->href, ['target'=>'_blank']);
+                return Html::a($model->data->name, $model->data->getHref(1,1), ['target'=>'_blank']);
             }
         ],
         'quantity',
@@ -40,4 +40,4 @@ use yii\widgets\DetailView;
             }
         ],
     ],
-]) ?>
+]); ?>

@@ -41,6 +41,6 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
-    <?= $this->render('info', ['model'=>$model]) ?>
+    <?= $this->render('info', ['model' => $model]) ?>
 
 </div>

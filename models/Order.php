@@ -31,7 +31,7 @@ class Order extends \yii\db\ActiveRecord
                 ->setTo(Yii::$app->params['adminEmail'])
                 ->setFrom([Yii::$app->params['fromEmail'] => Yii::$app->name])
                 ->setSubject('Заказ на АвтоКом')
-                ->setTextBody($event->sender->getBody())
+                ->setHtmlBody($event->sender->getBody())
                 ->send();
         });
         parent::init();
@@ -46,7 +46,10 @@ class Order extends \yii\db\ActiveRecord
         foreach (unserialize($this->data) as $key => $row) {
             $result[] = $this->getAttributeLabel($key) . ": " . $row;
         }
-        return implode(PHP_EOL, $result);
+        $result[] = '';
+        $result[] = Yii::$app->view->render('//cart/_table', ['query' => $this->getItems()]);
+
+        return implode('<br>', $result);
     }
 
     /**
@@ -135,6 +138,14 @@ class Order extends \yii\db\ActiveRecord
 
     public function getPay()
     {
-        return isset($this->pais[$this->pay_id?:0]) ? $this->pais[$this->pay_id?:0] : null;
+        return isset($this->pais[$this->pay_id ?: 0]) ? $this->pais[$this->pay_id ?: 0] : null;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getItems()
+    {
+        return $this->hasMany(Cart::className(), ['order_id' => 'id']);
     }
 }
