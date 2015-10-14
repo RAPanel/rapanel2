@@ -291,8 +291,6 @@ class Page extends \yii\db\ActiveRecord
      * @param bool $withRoot
      * @param bool $allStatuses
      * @return \yii\db\ActiveQuery the newly created [[ActiveQuery]] instance.
-     * @internal param bool $allStauses
-     * @internal param bool $allStaus
      */
     public static function findActive($module = null, $condition = [], $withRoot = false, $allStatuses = false)
     {

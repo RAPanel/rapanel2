@@ -13,10 +13,9 @@ use yii\widgets\ActiveForm;
 
 <script>
     function characterGetter(e) {
-        $('.dataField').hide().filter('.' + $(e).val()).show();
-        if ($(e).val() == 'extend') {
-        }
-        console.log($(e).val());
+        $('.dataField').hide().find(':input').prop('disabled', 1);
+        if($(e).val())
+            $('.dataField.' + $(e).val()).show().find(':input').prop('disabled', 0);
     }
 </script>
 
@@ -43,15 +42,16 @@ use yii\widgets\ActiveForm;
         <? //= $form->field($model, 'data')->textarea() ?>
     </div>
 
+    <? $disable = $model->type || $model->type != 'extend' ?>
     <div class="dataField extend row" <? if ($model->type != 'extend') echo 'style="display: none"' ?>>
         <div class="col-md-4">
-            <?= $form->field($model, 'module')->dropDownList(RA::module(null, 'name'), ['prompt' => 'Выберите модуль'])->label('Модуль') ?>
+            <?= $form->field($model, 'module')->dropDownList(RA::module(null, 'name'), ['prompt' => 'Выберите модуль', 'disabled' => $disable])->label('Модуль') ?>
         </div>
         <div class="col-md-4">
-            <?= $form->field($model, 'filter[is_category]')->dropDownList(['все', 'товар', 'категория'])->label('Тип') ?>
+            <?= $form->field($model, 'filter[is_category]')->dropDownList(['все', 'товар', 'категория'], ['disabled' => $disable])->label('Тип') ?>
         </div>
         <div class="col-md-4">
-            <?= $form->field($model, 'filter[status]')->dropDownList(['все', 'скрыт', 'видим'])->label('Статус') ?>
+            <?= $form->field($model, 'filter[status]')->dropDownList(['все', 'скрыт', 'видим'], ['disabled' => $disable])->label('Статус') ?>
         </div>
     </div>
 
