@@ -34,6 +34,7 @@ class FormController extends Controller
     {
         $dataProvider = new ActiveDataProvider([
             'query' => Form::find(),
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
         ]);
 
         return $this->render('index', [

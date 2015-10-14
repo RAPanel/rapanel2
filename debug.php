@@ -6,9 +6,9 @@
  * Time: 16:43
  */
 
-$debug = true;
+$debug = false;
 
-if (in_array(php_uname('n'), ['localhost', 'localhost.localdomain', 'devhost', '192.168.91.128', '10.0.2.15'])) {
+if (in_array(php_uname('n'), ['localhost', 'devhost'])) {
     $debug = true;
     defined('YII_ENV') or define('YII_ENV', 'dev');
     defined('YII_ENV_DEV') or define('YII_ENV_DEV', true);
