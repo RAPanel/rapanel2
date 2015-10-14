@@ -2,13 +2,43 @@
 
 namespace app\admin\controllers;
 
-use app\admin\models\Character;
+use app\admin\models\Auth;
 use Yii;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 
 class DefaultController extends Controller
 {
     public $layout = '@admin/views/layout/main.php';
+
+
+    public function actions()
+    {
+        return [
+            'auth' => [
+                'class' => 'yii\authclient\AuthAction',
+                'successCallback' => [$this, 'onAuthSuccess'],
+            ],
+        ];
+    }
+
+    public function onAuthSuccess($client)
+    {
+        $attributes = $client->getUserAttributes();
+
+        $data = [
+            'source' => $client->getId(),
+            'source_id' => $attributes['id'],
+        ];
+        /* @var $auth Auth */
+        $auth = Auth::findOne($data);
+
+        if (!$auth)
+            (new Auth(['user_id' => Yii::$app->user->id?:1] + $data))->save();
+
+        VarDumper::dump($client, 10, 1);
+        die;
+    }
 
     public function actionIndex()
     {
@@ -44,7 +74,7 @@ class DefaultController extends Controller
     {
         $dir = Yii::getAlias('@app');
 
-        if(Yii::$app->request->isPost){
+        if (Yii::$app->request->isPost) {
             echo `php-cli {$dir}/composer.phar self-update --working-dir={$dir}/ --no-progress`;
             echo `php-cli {$dir}/composer.phar update -o --working-dir={$dir}/ --no-progress`;
             return $this->refresh();
@@ -56,7 +86,7 @@ class DefaultController extends Controller
     public function actionFileManager()
     {
         $dir = Yii::getAlias('@webroot/source');
-        if(!file_exists($dir)) mkdir($dir);
+        if (!file_exists($dir)) mkdir($dir);
         return $this->render('fileManager');
     }
 }
