@@ -2,13 +2,54 @@
 
 namespace app\admin\controllers;
 
-use app\admin\models\Character;
+use app\admin\models\UserAuth;
+use app\admin\models\UserKey;
+use app\components\YMPA;
 use Yii;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 
 class DefaultController extends Controller
 {
     public $layout = '@admin/views/layout/main.php';
+
+
+    public function actions()
+    {
+        return [
+            'auth' => [
+                'class' => 'yii\authclient\AuthAction',
+                'successCallback' => [$this, 'onAuthSuccess'],
+            ],
+        ];
+    }
+
+    /**
+     * @param $client \yii\authclient\clients\YandexOAuth
+     */
+    public function onAuthSuccess($client)
+    {
+        $data = [
+            'source' => $client->getId(),
+            'source_id' => $client->userAttributes['id'],
+        ];
+        $auth = UserAuth::findOne($data);
+        if (!$auth) {
+            $auth = new UserAuth(['user_id' => Yii::$app->user->id ?:1] + $data);
+            $auth->save();
+        }
+
+        return $this->redirect(['success']);
+    }
+
+    public function actionSuccess()
+    {
+        $y = new YMPA();
+        $result = $y->campaigns(21286164)->offers()->get(['pageSize'=>1000]);
+//        $result = $y->campaigns(21286164)->offers()->post(['models'=>[4980633, 1001896, 7768458, 10433914]])
+        VarDumper::dump($result, 10, 1);
+
+    }
 
     public function actionIndex()
     {
@@ -44,7 +85,7 @@ class DefaultController extends Controller
     {
         $dir = Yii::getAlias('@app');
 
-        if(Yii::$app->request->isPost){
+        if (Yii::$app->request->isPost) {
             echo `php-cli {$dir}/composer.phar self-update --working-dir={$dir}/ --no-progress`;
             echo `php-cli {$dir}/composer.phar update -o --working-dir={$dir}/ --no-progress`;
             return $this->refresh();
@@ -56,7 +97,7 @@ class DefaultController extends Controller
     public function actionFileManager()
     {
         $dir = Yii::getAlias('@webroot/source');
-        if(!file_exists($dir)) mkdir($dir);
+        if (!file_exists($dir)) mkdir($dir);
         return $this->render('fileManager');
     }
 }
