@@ -27,8 +27,10 @@ class Order extends \yii\db\ActiveRecord
     public function init()
     {
         $this->on(self::EVENT_AFTER_INSERT, function ($event) {
+            Yii::$app->cart->toOrder($event->sender->id);
+
             Yii::$app->mailer->compose()
-                ->setTo(Yii::$app->params['adminEmail'])
+                ->setTo(explode(',', Yii::$app->params['adminEmail']))
                 ->setFrom([Yii::$app->params['fromEmail'] => Yii::$app->name])
                 ->setSubject('Заказ на АвтоКом')
                 ->setHtmlBody($event->sender->getBody())
