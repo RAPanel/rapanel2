@@ -6,7 +6,7 @@
  * Time: 16:43
  */
 
-$debug = true;
+$debug = false;
 
 if (in_array(php_uname('n'), ['localhost', 'devhost'])) {
     $debug = true;

@@ -2,7 +2,9 @@
 
 namespace app\admin\controllers;
 
-use app\admin\models\Auth;
+use app\admin\models\UserAuth;
+use app\admin\models\UserKey;
+use app\components\YMPA;
 use Yii;
 use yii\helpers\VarDumper;
 use yii\web\Controller;
@@ -22,22 +24,33 @@ class DefaultController extends Controller
         ];
     }
 
+    /**
+     * @param $client \yii\authclient\clients\YandexOAuth
+     */
     public function onAuthSuccess($client)
     {
-        $attributes = $client->getUserAttributes();
-
         $data = [
             'source' => $client->getId(),
-            'source_id' => $attributes['id'],
+            'source_id' => $client->userAttributes['id'],
         ];
-        /* @var $auth Auth */
-        $auth = Auth::findOne($data);
+        $auth = UserAuth::findOne($data);
+        if (!$auth) $auth = new UserAuth($data);
+        $auth->setAttributes([
+            'user_id' => Yii::$app->user->id ?: ($auth ? $auth->user_id : 1),
+            'source_attributes' => serialize($client->accessToken->params),
+        ]);
+        $auth->save(false);
 
-        if (!$auth)
-            (new Auth(['user_id' => Yii::$app->user->id?:1] + $data))->save();
+        return $this->redirect(['success']);
+    }
 
-        VarDumper::dump($client, 10, 1);
-        die;
+    public function actionSuccess()
+    {
+        $y = new YMPA();
+        $result = $y->campaigns(21286164)->offers()->get(['pageSize' => 1000]);
+//        $result = $y->campaigns(21286164)->offers()->post(['models'=>[4980633, 1001896, 7768458, 10433914]])
+        VarDumper::dump($result, 10, 1);
+
     }
 
     public function actionIndex()
