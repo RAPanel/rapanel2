@@ -8,9 +8,6 @@ use yii\web\Controller;
 
 class DefaultController extends Controller
 {
-    public $layout = '@admin/views/layout/main.php';
-
-
     public function actions()
     {
         return [
@@ -39,6 +36,12 @@ class DefaultController extends Controller
         $auth->save(false);
 
         return $this->redirect(['success']);
+    }
+
+    public function actionLogin()
+    {
+        $this->layout = 'lock';
+        return $this->render('login');
     }
 
     public function actionSuccess()

@@ -9,6 +9,7 @@
 $email = 'no-reply@' . str_replace('www.', $_SERVER['HTTP_HOST'], $_SERVER['HTTP_HOST']);
 
 $config = [
+    'id' => 'rere',
     'bootstrap' => ['raInit'],
     'language' => 'en-US',
     'aliases' => [
@@ -76,6 +77,9 @@ $config = [
         ],*/
         'raInit' => [
             'class' => 'app\admin\components\RAInit',
+        ],
+        'errorHandler' => [
+            'errorAction' => 'site/error',
         ],
     ],
     'params' => [

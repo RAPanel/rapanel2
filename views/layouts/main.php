@@ -2,6 +2,7 @@
 
 /* @var $this \yii\web\View */
 /* @var $content string */
+/* template @url(http://www.blacktie.co/demo/dashgum/) */
 
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
@@ -10,6 +11,9 @@ use yii\widgets\Breadcrumbs;
 use app\admin\assets\AppAsset;
 
 AppAsset::register($this);
+
+if (!in_array($this->context->module->id, ['rapanel']))
+    die($content);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -23,7 +27,7 @@ AppAsset::register($this);
 </head>
 <body>
 <style>
-    .header{
+    .header {
         z-index: 100;
     }
 </style>
