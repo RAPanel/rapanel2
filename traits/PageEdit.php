@@ -42,6 +42,7 @@ trait PageEdit
                 /** @var $this NestedSetsBehavior|self */
                 if ($this->isNewRecord || $this->isAttributeChanged('parent_id')) {
                     $parent = $this->parent_id ? Page::findOne($this->parent_id) : $this->root;
+                    $parent->doEditable();
                     if ($this->id != $this->root->id) {
                         if (!$this->parent_id)
                             $this->parent_id = $this->root->id;
@@ -49,7 +50,6 @@ trait PageEdit
                     }
                 }
             }
-
             $this->detachBehavior('tree');
         }
 
@@ -58,7 +58,7 @@ trait PageEdit
 
     public function doEditable()
     {
-        if($this->_attached) return;
+        if ($this->_attached) return;
         $this->attachBehaviors([
             'hasMany' => PageHasManyBehavior::className(),
             'tree' => [
