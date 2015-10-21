@@ -2,6 +2,8 @@
 
 namespace app\admin\controllers;
 
+use app\admin\helpers\RA;
+use app\admin\models\forms\LoginForm;
 use app\admin\models\UserAuth;
 use Yii;
 use yii\web\Controller;
@@ -16,6 +18,26 @@ class DefaultController extends Controller
                 'successCallback' => [$this, 'onAuthSuccess'],
             ],
         ];
+    }
+
+
+
+    /**
+     * Display login page
+     */
+    public function actionLogin()
+    {
+        $this->layout = 'lock';
+
+        $model = new LoginForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->login(RA::config('user')['loginDuration'])) {
+            return $this->goBack(RA::config('user')['loginRedirect']);
+        }
+
+        return $this->render('login', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -36,12 +58,6 @@ class DefaultController extends Controller
         $auth->save(false);
 
         return $this->redirect(['success']);
-    }
-
-    public function actionLogin()
-    {
-        $this->layout = 'lock';
-        return $this->render('login');
     }
 
     public function actionSuccess()

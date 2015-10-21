@@ -89,7 +89,7 @@ $config = [
 ];
 
 if (YII_ENV_DEV) {
-    $allowedIPs = ['192.168.1.*', '78.159.225.99'];
+    $allowedIPs = ['192.168.1.*', '78.159.225.99', '10.*.*.*'];
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
     $config['bootstrap'][] = 'gii';

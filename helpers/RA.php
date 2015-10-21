@@ -12,6 +12,8 @@ namespace app\admin\helpers;
 use app\admin\models\Character;
 use app\admin\models\Module;
 use app\admin\models\ModuleSettings;
+use app\admin\models\User;
+use ArrayObject;
 use Yii;
 use yii\base\Exception;
 use yii\helpers\ArrayHelper;
@@ -179,5 +181,21 @@ class RA
     public static function info($name = false, $default = null)
     {
         return isset(Yii::$app->params[$name]) ? Yii::$app->params[$name] : $default;
+    }
+
+    public static function config($type = null)
+    {
+        $data = [
+            'user' => [
+                'models' => [
+                    'user' => User::className(),
+                ],
+                'loginEmail' => true,
+                'loginUsername' => false,
+                'loginDuration' => 60 * 60 * 30,
+                'loginRedirect' => '/',
+            ],
+        ];
+        return is_null($type) ? $data : $data[$type];
     }
 }

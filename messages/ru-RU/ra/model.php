@@ -51,4 +51,9 @@ return [
     'Item ID' => '# Товара',
     'Quantity' => 'Количество',
     'Price' => 'Цена',
+    'Role ID' => 'Роль',
+    'New Email' => 'Новый E-mail',
+    'Username' => 'Имя пользователя',
+    'Login Ip' => 'IP входа',
+    'Login Time' => 'Дата входа',
 ];
