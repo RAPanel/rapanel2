@@ -42,7 +42,7 @@ use yii\widgets\ActiveForm;
         <? //= $form->field($model, 'data')->textarea() ?>
     </div>
 
-    <? $disable = $model->type || $model->type != 'extend' ?>
+    <? $disable = !$model->type || $model->type != 'extend' ?>
     <div class="dataField extend row" <? if ($model->type != 'extend') echo 'style="display: none"' ?>>
         <div class="col-md-4">
             <?= $form->field($model, 'module')->dropDownList(RA::module(null, 'name'), ['prompt' => 'Выберите модуль', 'disabled' => $disable])->label('Модуль') ?>
