@@ -194,6 +194,7 @@ class RA
                 'loginUsername' => false,
                 'loginDuration' => 60 * 60 * 30,
                 'loginRedirect' => '/',
+                'logoutRedirect' => null,
             ],
         ];
         return is_null($type) ? $data : $data[$type];

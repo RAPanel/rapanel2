@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 /**
  * SubscribeController implements the CRUD actions for Subscribe model.
  */
-class SubscribeController extends Controller
+class SubscribeController extends AdminController
 {
     public function behaviors()
     {

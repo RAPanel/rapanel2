@@ -6,26 +6,14 @@ use app\admin\behaviors\SettingsBehavior;
 use Yii;
 use app\admin\models\Module;
 use yii\data\ActiveDataProvider;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * ModuleController implements the CRUD actions for Module model.
  */
-class ModuleController extends Controller
+class ModuleController extends AdminController
 {
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                ],
-            ],
-        ];
-    }
 
     public function getModel($id = false)
     {

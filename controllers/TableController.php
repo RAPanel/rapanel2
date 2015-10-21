@@ -10,7 +10,6 @@ use Yii;
 use app\admin\models\Page;
 use yii\data\ActiveDataProvider;
 use yii\helpers\FileHelper;
-use yii\web\Controller;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -19,19 +18,8 @@ use yii\web\UploadedFile;
 /**
  * TableController implements the CRUD actions for Page model.
  */
-class TableController extends Controller
+class TableController extends AdminController
 {
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                ],
-            ],
-        ];
-    }
 
     /**
      * @param $url

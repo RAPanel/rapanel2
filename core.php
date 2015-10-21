@@ -34,7 +34,6 @@ $config = [
             'rules' => [
                 '/' => 'site/index',
                 '<c_:image>/_<type>/<name>' => '<c_>/index',
-                '<m_:rapanel>/<a_:auth>/<authclient>' => '<m_>/default/<a_>',
                 '<m_:rapanel>' => '<m_>/default/index',
             ],
         ],

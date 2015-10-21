@@ -6,10 +6,26 @@ use app\admin\helpers\RA;
 use app\admin\models\forms\LoginForm;
 use app\admin\models\UserAuth;
 use Yii;
-use yii\web\Controller;
+use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 
-class DefaultController extends Controller
+class DefaultController extends AdminController
 {
+    public function behaviors()
+    {
+        return ArrayHelper::merge(parent::behaviors(), [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['login'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                ],
+            ],]);
+    }
+
     public function actions()
     {
         return [
@@ -19,7 +35,6 @@ class DefaultController extends Controller
             ],
         ];
     }
-
 
 
     /**
@@ -38,6 +53,20 @@ class DefaultController extends Controller
         return $this->render('login', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Log user out and redirect
+     */
+    public function actionLogout()
+    {
+        Yii::$app->user->logout();
+
+        $logoutRedirect = RA::config('user')['logoutRedirect'];
+        if ($logoutRedirect === null)
+            return $this->goHome();
+        else
+            return $this->redirect($logoutRedirect);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace app\admin\models\forms;
 use app\admin\helpers\RA;
 use Yii;
 use yii\base\Model;
+use yii\web\User;
 
 /**
  * LoginForm is the model behind the login form.
@@ -164,6 +165,11 @@ class LoginForm extends Model
     public function login($loginDuration)
     {
         if ($this->validate()) {
+            Yii::$app->user->on(User::EVENT_AFTER_LOGIN, function($event){
+                $event->identity->login_ip   = Yii::$app->getRequest()->getUserIP();
+                $event->identity->login_time = date("Y-m-d H:i:s");
+                $event->identity->update(false, ["login_ip", "login_time"]);
+            });
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? $loginDuration : 0);
         }
 

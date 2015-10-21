@@ -5,27 +5,14 @@ namespace app\admin\controllers;
 use Yii;
 use app\admin\models\Form;
 use yii\data\ActiveDataProvider;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * FromController implements the CRUD actions for Form model.
  */
-class FormController extends Controller
+class FormController extends AdminController
 {
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Lists all Form models.
      * @return mixed

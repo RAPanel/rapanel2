@@ -12,7 +12,6 @@ use Imagine\Image\Point;
 use app\admin\helpers\Image;
 use Yii;
 use yii\helpers\FileHelper;
-use yii\web\Controller;
 use yii\web\Response;
 
 class ImageController extends Controller

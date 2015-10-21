@@ -2,9 +2,9 @@
 
 namespace app\admin\controllers;
 
+use app\admin\models\Character;
 use app\admin\models\Page;
 use Yii;
-use app\admin\models\Character;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -12,7 +12,7 @@ use yii\web\NotFoundHttpException;
 /**
  * CharacterController implements the CRUD actions for Character model.
  */
-class CharacterController extends Controller
+class CharacterController extends AdminController
 {
     public function behaviors()
     {

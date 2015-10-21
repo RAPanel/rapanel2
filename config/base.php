@@ -16,6 +16,14 @@ return [
         ],
     ],*/
     'components' => [
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'rules' => [
+                '<m_:rapanel>/<a_:auth>/<authclient>' => '<m_>/default/<a_>',
+                '<m_:rapanel>' => '<m_>/default/index',
+            ],
+        ],
         'i18n' => [
             'class' => 'yii\i18n\I18N',
             'translations' => [
@@ -29,6 +37,7 @@ return [
         ],
         'user' => [
             'identityClass' => 'app\admin\models\User',
+            'loginUrl' => ['rapanel/default/login'],
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
