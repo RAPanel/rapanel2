@@ -76,6 +76,9 @@ trait PageEdit
             ],
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
+                'value' => function () {
+                    return date("Y-m-d H:i:s");
+                },
             ],
             'statusChange' => [
                 'class' => AttributeBehavior::className(),
