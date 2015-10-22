@@ -43,12 +43,12 @@ class AdminController extends Controller
         ];
     }
 
-    public function actionSave($id)
+    public function actionSave()
     {
         if (!method_exists($this, 'findModel'))
             throw new NotSupportedException('Method does not exist');
         /** @var ActiveRecord $model */
-        $model = $this->findModel($id);
+        $model = $this->findModel(Yii::$app->request->get('id'));
         $model->setAttributes(Yii::$app->request->get(), false);
         return $model->save(false, array_keys(Yii::$app->request->get()));
     }
