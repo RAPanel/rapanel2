@@ -13,18 +13,6 @@ use yii\filters\VerbFilter;
  */
 class UserController extends AdminController
 {
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Lists all User models.
      * @return mixed
@@ -60,6 +48,7 @@ class UserController extends AdminController
     public function actionCreate()
     {
         $model = new User();
+        $model->scenario = 'admin';
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -79,6 +68,7 @@ class UserController extends AdminController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $model->scenario = 'admin';
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);

@@ -37,6 +37,9 @@ $config = [
                 '<m_:rapanel>' => '<m_>/default/index',
             ],
         ],
+        'authManager' => [
+            'class' => 'app\admin\components\AuthManager',
+        ],
         'view' => [
             'theme' => [
                 'pathMap' => [

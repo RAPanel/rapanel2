@@ -10,8 +10,11 @@ namespace app\admin\controllers;
 
 
 use Yii;
+use yii\base\NotSupportedException;
+use yii\db\ActiveRecord;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\web\HttpException;
 
 class AdminController extends Controller
 {
@@ -27,7 +30,7 @@ class AdminController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['admin'],
                     ],
                 ],
             ],
@@ -38,6 +41,16 @@ class AdminController extends Controller
                 ],
             ],
         ];
+    }
+
+    public function actionSave($id)
+    {
+        if (!method_exists($this, 'findModel'))
+            throw new NotSupportedException('Method does not exist');
+        /** @var ActiveRecord $model */
+        $model = $this->findModel($id);
+        $model->setAttributes(Yii::$app->request->get(), false);
+        return $model->save(false, array_keys(Yii::$app->request->get()));
     }
 
 }

@@ -12,31 +12,15 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'role_id')->textInput() ?>
+    <?= $form->field($model, 'status')->checkbox(['label'=>'Активен', 'checked' => $model->status == 1 || $model->isNewRecord]) ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
+    <?= $form->field($model, 'role_id')->dropDownList(\yii\helpers\ArrayHelper::map(\app\admin\models\UserRole::find()->orderBy(['id'=>SORT_DESC])->select(['id', 'name'])->asArray()->all(), 'id', 'name')) ?>
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'new_email')->textInput(['maxlength' => true]) ?>
-
     <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'auth_key')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'api_key')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'login_ip')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'login_time')->textInput() ?>
-
-    <?= $form->field($model, 'create_ip')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
+    <?= $form->field($model, 'newPassword')->passwordInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'ban_time')->textInput() ?>
 

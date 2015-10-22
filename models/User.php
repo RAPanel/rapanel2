@@ -2,6 +2,7 @@
 
 namespace app\admin\models;
 
+use app\admin\helpers\RA;
 use Yii;
 use yii\web\IdentityInterface;
 
@@ -67,19 +68,48 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         return '{{%user}}';
     }
 
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
-        return [
-            [['role_id', 'status', 'api_key'], 'required'],
-            [['role_id', 'status'], 'integer'],
-            [['login_time', 'created_at', 'updated_at', 'ban_time'], 'safe'],
-            [['email', 'new_email', 'username', 'password', 'auth_key', 'api_key', 'login_ip', 'create_ip', 'ban_reason'], 'string', 'max' => 255],
-            [['email'], 'unique'],
-            [['username'], 'unique']
+        // set initial rules
+        $rules = [
+            // general email and username rules
+            [['email', 'username'], 'string', 'max' => 255],
+            [['email', 'username'], 'unique'],
+            [['email', 'username'], 'filter', 'filter' => 'trim'],
+            [['email'], 'email'],
+            [['username'], 'match', 'pattern' => RA::config('user')['loginUsername'] ? '/^[A-Za-z0-9_]+$/u' : '/^[\w\d\s]+$/ui', 'message' => Yii::t('user', '{attribute} can contain only letters, numbers, and "_"')],
+
+            // password rules
+            [['newPassword'], 'string', 'min' => 3],
+            [['newPassword'], 'filter', 'filter' => 'trim'],
+            [['newPassword'], 'required', 'on' => ['register', 'reset']],
+            [['newPasswordConfirm'], 'required', 'on' => ['reset']],
+            [['newPasswordConfirm'], 'compare', 'compareAttribute' => 'newPassword', 'message' => Yii::t('user','Passwords do not match')],
+
+            // account page
+            [['currentPassword'], 'required', 'on' => ['account']],
+            [['currentPassword'], 'validatePassword', 'on' => ['account']],
+
+            // admin crud rules
+            [['role_id', 'status'], 'required', 'on' => ['admin']],
+            [['role_id', 'status'], 'integer', 'on' => ['admin']],
+            [['ban_time'], 'integer', 'on' => ['admin']],
+            [['ban_reason'], 'string', 'max' => 255, 'on' => 'admin'],
         ];
+
+        // add required rules for email/username depending on module properties
+        foreach (["requireEmail", "requireUsername"] as $requireField) {
+            if (RA::config('user')[$requireField]) {
+                $attribute = strtolower(substr($requireField, 7)); // "email" or "username"
+                $rules[]   = [$attribute, "required"];
+            }
+        }
+
+        return $rules;
     }
 
     /**
