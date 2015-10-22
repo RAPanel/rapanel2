@@ -2,12 +2,11 @@
 
 namespace app\admin\controllers;
 
-use Yii;
 use app\admin\models\Subscribe;
+use Yii;
 use yii\data\ActiveDataProvider;
-use app\admin\controllers\Controller;
-use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
 
 /**
  * SubscribeController implements the CRUD actions for Subscribe model.

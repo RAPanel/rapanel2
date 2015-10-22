@@ -2,8 +2,8 @@
 
 namespace app\admin\models;
 
-use app\admin\traits\SerializeAttribute;
 use app\admin\behaviors\RelationSaveBehavior;
+use app\admin\traits\SerializeAttribute;
 use Yii;
 use yii\helpers\Inflector;
 

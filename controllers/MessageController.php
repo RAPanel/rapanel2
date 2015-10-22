@@ -2,11 +2,10 @@
 
 namespace app\admin\controllers;
 
+use app\admin\models\Message;
 use app\admin\models\MessageTranslate;
 use Yii;
-use app\admin\models\Message;
 use yii\data\ActiveDataProvider;
-use yii\filters\VerbFilter;
 
 /**
  * MessageController implements the CRUD actions for Message model.

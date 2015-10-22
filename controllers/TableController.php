@@ -5,14 +5,13 @@ namespace app\admin\controllers;
 use app\admin\helpers\RA;
 use app\admin\helpers\Text;
 use app\admin\models\Module;
+use app\admin\models\Page;
 use app\admin\models\Photo;
 use Yii;
-use app\admin\models\Page;
 use yii\data\ActiveDataProvider;
 use yii\helpers\FileHelper;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 
 /**

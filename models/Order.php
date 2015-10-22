@@ -4,7 +4,6 @@ namespace app\admin\models;
 
 use app\admin\traits\SerializeAttribute;
 use Yii;
-use yii\swiftmailer\Message;
 
 /**
  * This is the model class for table "{{%order}}".

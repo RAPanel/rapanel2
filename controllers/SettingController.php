@@ -2,11 +2,9 @@
 
 namespace app\admin\controllers;
 
-use Yii;
 use app\admin\models\Settings;
+use Yii;
 use yii\data\ActiveDataProvider;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * SettingController implements the CRUD actions for Settings model.

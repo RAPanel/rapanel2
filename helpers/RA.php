@@ -13,12 +13,9 @@ use app\admin\models\Character;
 use app\admin\models\Module;
 use app\admin\models\ModuleSettings;
 use app\admin\models\User;
-use ArrayObject;
 use Yii;
-use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
-use yii\web\HttpException;
 
 class RA
 {
@@ -163,7 +160,10 @@ class RA
      */
     public static function pageItems($query)
     {
-        $query->orderBy(ArrayHelper::merge(['is_category' => SORT_ASC, 'level' => SORT_DESC], $query->orderBy));
+        $queryOrder = $query->orderBy;
+        $query->orderBy(['is_category' => SORT_ASC, 'level' => SORT_DESC]);
+        $query->andWhere(['status'=>1]);
+        if($queryOrder) $query->addOrderBy($queryOrder);
         $query->addOrderBy(['lft' => SORT_ASC, 'id' => SORT_ASC]);
         $items = [];
         /** @var \app\admin\models\Page $row */

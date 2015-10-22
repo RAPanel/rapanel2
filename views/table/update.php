@@ -1,8 +1,5 @@
 <?php
 
-use app\admin\helpers\RA;
-use yii\helpers\Html;
-
 /* @var $this yii\web\View */
 /* @var $model app\admin\models\Page */
 

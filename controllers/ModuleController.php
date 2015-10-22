@@ -3,11 +3,10 @@
 namespace app\admin\controllers;
 
 use app\admin\behaviors\SettingsBehavior;
-use Yii;
 use app\admin\models\Module;
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * ModuleController implements the CRUD actions for Module model.

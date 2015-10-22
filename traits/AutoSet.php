@@ -5,7 +5,6 @@ namespace app\admin\traits;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\db\Query;
-use yii\db\QueryInterface;
 
 /**
  * Created by PhpStorm.

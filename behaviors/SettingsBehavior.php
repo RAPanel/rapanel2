@@ -12,7 +12,6 @@ namespace app\admin\behaviors;
 
 
 use yii\base\Behavior;
-use yii\base\Object;
 use yii\helpers\ArrayHelper;
 
 class SettingsBehavior extends Behavior

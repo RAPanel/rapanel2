@@ -4,12 +4,9 @@
 /* @var $content string */
 /* template @url(http://www.blacktie.co/demo/dashgum/) */
 
+use app\admin\assets\AppAsset;
 use app\admin\widgets\adminTheme\AdminThemeAsset;
 use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
-use yii\widgets\Breadcrumbs;
-use app\admin\assets\AppAsset;
 
 AppAsset::register($this);
 

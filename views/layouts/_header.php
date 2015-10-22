@@ -5,9 +5,7 @@
  * Date: 10.09.2015
  * Time: 17:21
  */
-use yii\bootstrap\Dropdown;
 use yii\helpers\Html;
-use yii\helpers\Url;
 
 ?>
 

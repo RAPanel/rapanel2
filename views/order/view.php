@@ -1,7 +1,5 @@
 <?php
 
-use app\admin\models\Cart;
-use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 

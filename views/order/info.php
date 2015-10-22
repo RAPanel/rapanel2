@@ -5,7 +5,6 @@
  * Date: 12.10.2015
  * Time: 23:09
  */
-use app\admin\models\Cart;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\widgets\DetailView;

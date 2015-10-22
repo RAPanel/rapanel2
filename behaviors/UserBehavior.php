@@ -9,7 +9,6 @@ use yii\db\ActiveRecord;
 use yii\helpers\Inflector;
 use yii\swiftmailer\Mailer;
 use yii\swiftmailer\Message;
-use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "tbl_user".

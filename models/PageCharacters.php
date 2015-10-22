@@ -2,8 +2,8 @@
 
 namespace app\admin\models;
 
-use Yii;
 use app\admin\helpers\RA;
+use Yii;
 
 /**
  * This is the model class for table "{{%page_characters}}".

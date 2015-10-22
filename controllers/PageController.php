@@ -9,7 +9,6 @@
 namespace app\admin\controllers;
 
 use app\admin\helpers\RA;
-use app\admin\models\Module;
 use app\admin\models\Page;
 use Yii;
 use yii\web\HttpException;

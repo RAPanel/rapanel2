@@ -10,7 +10,6 @@ namespace app\admin\helpers;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\ImagineInterface;
-use Imagine\Image\Palette\Color\RGB;
 use Imagine\Image\Point;
 use Yii;
 use yii\base\InvalidConfigException;

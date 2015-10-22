@@ -2,11 +2,10 @@
 
 namespace app\admin\controllers;
 
-use Yii;
 use app\admin\models\Form;
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * FromController implements the CRUD actions for Form model.

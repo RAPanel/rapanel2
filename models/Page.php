@@ -2,13 +2,8 @@
 
 namespace app\admin\models;
 
-use app\admin\behaviors\PageHasManyBehavior;
 use app\admin\helpers\RA;
-use creocoder\nestedsets\NestedSetsBehavior;
 use Yii;
-use yii\behaviors\AttributeBehavior;
-use yii\behaviors\SluggableBehavior;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
 use yii\helpers\Url;
@@ -291,7 +286,7 @@ class Page extends \yii\db\ActiveRecord
         return $this->hasMany(self::className(), ['parent_id' => 'id'])->viaTable(self::tableName(), ['module_id' => 'module_id'],
             function ($query) {
                 $query->select('id')->onCondition(['between', 'lft', $this->lft, $this->rgt]);
-            })->where(['is_category' => 0, 'module_id' => $this->module_id]);
+            })->where(['is_category' => 0, 'status'=>'1', 'module_id' => $this->module_id]);
     }
 
     public function getModuleUrl()

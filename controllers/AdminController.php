@@ -14,7 +14,6 @@ use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\web\HttpException;
 
 class AdminController extends Controller
 {
