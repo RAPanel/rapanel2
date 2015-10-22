@@ -74,7 +74,7 @@ class Form extends \yii\db\ActiveRecord
         $this->type = lcfirst($matches[1]);
         if ($this->save()) {
             $mail = Yii::$app->mailer->compose();
-            $mail->setTo($email ?: Yii::$app->params['adminEmail']);
+            $mail->setTo(explode(',', $email ?: Yii::$app->params['adminEmail']));
             $mail->setFrom([Yii::$app->params['fromEmail'] => Yii::$app->name]);
             $mail->setSubject('Сообщение с сайта ' . Yii::$app->name);
             $mail->setTextBody($this->body);

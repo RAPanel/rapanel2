@@ -32,7 +32,7 @@ class AuthManager implements ManagerInterface
      */
     public function checkAccess($userId, $permissionName, $params = [])
     {
-        return (bool)User::find()->select('can_admin')->where([User::tableName() . '.id' => $userId])->joinWith('role', false)->scalar();
+        return (bool)User::find()->select('can_' . $permissionName)->where([User::tableName() . '.id' => $userId])->joinWith('role', false)->scalar();
     }
 
     /**

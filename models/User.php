@@ -4,6 +4,7 @@ namespace app\admin\models;
 
 use app\admin\helpers\RA;
 use Yii;
+use yii\behaviors\TimestampBehavior;
 use yii\web\IdentityInterface;
 
 /**
@@ -88,7 +89,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             [['newPassword'], 'filter', 'filter' => 'trim'],
             [['newPassword'], 'required', 'on' => ['register', 'reset']],
             [['newPasswordConfirm'], 'required', 'on' => ['reset']],
-            [['newPasswordConfirm'], 'compare', 'compareAttribute' => 'newPassword', 'message' => Yii::t('user','Passwords do not match')],
+            [['newPasswordConfirm'], 'compare', 'compareAttribute' => 'newPassword', 'message' => Yii::t('user', 'Passwords do not match')],
 
             // account page
             [['currentPassword'], 'required', 'on' => ['account']],
@@ -105,7 +106,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         foreach (["requireEmail", "requireUsername"] as $requireField) {
             if (RA::config('user')[$requireField]) {
                 $attribute = strtolower(substr($requireField, 7)); // "email" or "username"
-                $rules[]   = [$attribute, "required"];
+                $rules[] = [$attribute, "required"];
             }
         }
 
@@ -184,8 +185,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return $this->hasMany(UserProfile::className(), ['user_id' => 'id']);
     }
-
-
 
 
     /**
@@ -293,5 +292,17 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function validatePassword($password)
     {
         return Yii::$app->security->validatePassword($password, $this->password);
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'value' => function () {
+                    return date("Y-m-d H:i:s");
+                },
+            ],
+        ];
     }
 }

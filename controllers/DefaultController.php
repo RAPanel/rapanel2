@@ -36,7 +36,6 @@ class DefaultController extends AdminController
         ];
     }
 
-
     /**
      * Display login page
      */
@@ -97,7 +96,6 @@ class DefaultController extends AdminController
     public function actionIndex()
     {
         return $this->redirect(['module/index']);
-        return $this->render('index');
     }
 
     public function actionUpdate()

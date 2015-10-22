@@ -14,6 +14,7 @@ use app\models\Page;
 use creocoder\nestedsets\NestedSetsBehavior;
 use yii\behaviors\AttributeBehavior;
 use yii\behaviors\SluggableBehavior;
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
 trait PageEdit
@@ -72,6 +73,9 @@ trait PageEdit
                 'slugAttribute' => 'url',
                 'immutable' => true,
                 'ensureUnique' => true,
+            ],
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
             ],
             'statusChange' => [
                 'class' => AttributeBehavior::className(),
