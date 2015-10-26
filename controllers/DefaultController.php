@@ -80,7 +80,7 @@ class DefaultController extends AdminController
         $auth = UserAuth::findOne($data);
         if (!$auth) $auth = new UserAuth($data);
         $auth->setAttributes([
-            'user_id' => Yii::$app->user->id ?: ($auth ? $auth->user_id : 1),
+            'user_id' => Yii::$app->user->id ?: ($auth->user_id ? $auth->user_id : 1),
             'source_attributes' => serialize($client->accessToken->params),
         ]);
         $auth->save(false);
