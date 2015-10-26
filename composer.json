@@ -22,8 +22,8 @@
         "2amigos/yii2-tinymce-widget": "*",
         "imagine/imagine": "*",
         "creocoder/yii2-nested-sets": "^0.9.0",
-        "nex/yii2-chosen": "dev-master",
-        "wfstudioru/yii2-yandex-translate-api": "dev-master"
+        "nex/yii2-chosen": "*",
+        "wfstudioru/yii2-yandex-translate-api": "*"
     },
     "autoload": {
         "psr-4": {
