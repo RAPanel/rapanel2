@@ -4,8 +4,8 @@
 /* @var $content string */
 /* template @url(http://www.blacktie.co/demo/dashgum/) */
 
-use app\admin\assets\AppAsset;
-use app\admin\widgets\adminTheme\AdminThemeAsset;
+use ra\admin\assets\AppAsset;
+use ra\admin\widgets\adminTheme\AdminThemeAsset;
 use yii\helpers\Html;
 
 AppAsset::register($this);

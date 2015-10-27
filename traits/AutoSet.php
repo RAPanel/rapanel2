@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\traits;
+namespace ra\admin\traits;
 
 use Yii;
 use yii\db\ActiveRecord;
@@ -14,34 +14,41 @@ use yii\db\Query;
  */
 trait AutoSet
 {
+
+
     public function setRelations($name, $value)
     {
-        /** @var string $relationName */
-        $relationName = 'get' . ucfirst($name);
+        if (!$this instanceof ActiveRecord) return;
+
+//        $relationName = 'get' . ucfirst($name);
         /** @var Query $relationMethod */
-        $relationMethod = $this->$relationName();
+        $relationMethod = $this->{'get' . ucfirst($name)}();
 
-        $insert = function ($event) use ($relationMethod) {
+        $relationData = $this->isNewRecord ? [] : $this->{$name};
+
+        $function = function ($event) use ($relationMethod, $relationData) {
             $transaction = Yii::$app->db->beginTransaction();
-            foreach ($event->data as $row) {
-                $modelClass = $relationMethod->modelClass;
-                $attribute = reset($relationMethod->link);
-                $row[key($relationMethod->link)] = $event->sender->{$attribute};
-                Yii::$app->db->createCommand()->insert($modelClass::tableName(), $row)->execute();
+
+            $pkAttribute = key($relationMethod->link);
+            $extendAttribute = reset($relationMethod->link);
+            $keyValue = $event->sender->{$extendAttribute};
+
+            $relationMap = [];
+            foreach ($relationData as $row)
+                $relationMap[$row[$pkAttribute]] = $row;
+
+            foreach ($event->data as $key => $row) {
+                /** @var ActiveRecord $model */
+                $model = isset($relationMap[$keyValue]) ? $relationMap[$keyValue] : new $relationMethod->modelClass;
+                if (!$model->isNewRecord) unset($relationMap[$keyValue]);
+                $model->setAttributes($row);
+                $model->save();
             }
+
             $transaction->commit();
         };
 
-        $delete = function ($event) use ($relationMethod) {
-            $transaction = Yii::$app->db->beginTransaction();
-            /** @var ActiveRecord $row */
-            foreach ($relationMethod->all() as $row)
-                $row->delete();
-            $transaction->commit();
-        };
-
-        $this->on(ActiveRecord::EVENT_AFTER_UPDATE, $delete, $value);
-        $this->on(ActiveRecord::EVENT_AFTER_UPDATE, $insert, $value);
-        $this->on(ActiveRecord::EVENT_AFTER_INSERT, $insert, $value);
+        $this->on(ActiveRecord::EVENT_AFTER_UPDATE, $function, $value);
+        $this->on(ActiveRecord::EVENT_AFTER_INSERT, $function, $value);
     }
 }

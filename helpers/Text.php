@@ -6,7 +6,7 @@
  * Time: 20:54
  */
 
-namespace app\admin\helpers;
+namespace ra\admin\helpers;
 
 class Text
 {

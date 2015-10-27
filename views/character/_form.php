@@ -1,11 +1,11 @@
 <?php
 
-use app\admin\helpers\RA;
+use ra\admin\helpers\RA;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\admin\models\Character */
+/* @var $model ra\admin\models\Character */
 /* @var $form yii\widgets\ActiveForm */
 
 
@@ -31,7 +31,7 @@ use yii\widgets\ActiveForm;
 
     <div class="row">
         <div class="col-md-8">
-            <?= $form->field($model, 'type')->dropDownList(RA::dropDownList($model->getTableSchema()->columns['type']->enumValues), ['prompt' => Yii::t('ra/placeholder', 'Select Type'), 'onchange' => 'characterGetter(this)'])->label(false) ?>
+            <?= $form->field($model, 'type')->dropDownList(RA::dropDownList($model->getTableSchema()->columns['type']->enumValues), ['prompt' => Yii::t('ra', 'Select Type'), 'onchange' => 'characterGetter(this)'])->label(false) ?>
         </div>
         <div class="col-md-4">
             <?= $form->field($model, 'multi')->checkbox() ?>
@@ -68,7 +68,7 @@ use yii\widgets\ActiveForm;
     <? endif ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('ra/view', 'Create') : Yii::t('ra/view', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? Yii::t('ra', 'Create') : Yii::t('ra', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

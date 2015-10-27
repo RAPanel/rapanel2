@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 
@@ -42,9 +42,9 @@ class MessageTranslate extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'language' => Yii::t('ra/model', 'Language'),
-            'translation' => Yii::t('ra/model', 'Translation'),
+            'id' => Yii::t('ra', 'ID'),
+            'language' => Yii::t('ra', 'Language'),
+            'translation' => Yii::t('ra', 'Translation'),
         ];
     }
 

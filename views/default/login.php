@@ -7,10 +7,10 @@
  *
  * @var $model LoginForm
  */
-use app\admin\models\forms\LoginForm;
+use ra\admin\models\forms\LoginForm;
 use yii\widgets\ActiveForm;
 
-$this->title = Yii::t('ra/view', 'Sign in now');
+$this->title = Yii::t('ra', 'Sign in now');
 ?>
 
 
@@ -34,7 +34,7 @@ $this->title = Yii::t('ra/view', 'Sign in now');
                 </span>
         </label>
         <button class="btn btn-theme btn-block" href="index.html" type="submit">
-            <i class="fa fa-lock"></i> <?= Yii::t('ra/view', 'SIGN IN') ?>
+            <i class="fa fa-lock"></i> <?= Yii::t('ra', 'SIGN IN') ?>
         </button>
 
     </div>

@@ -6,7 +6,7 @@
  * Time: 11:50
  */
 
-namespace app\admin\traits;
+namespace ra\admin\traits;
 
 
 trait CartItem

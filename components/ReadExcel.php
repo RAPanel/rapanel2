@@ -6,7 +6,7 @@
  * Time: 11:01
  */
 
-namespace app\admin\components;
+namespace ra\admin\components;
 
 
 use Exception;
@@ -15,13 +15,13 @@ use yii\base\Component;
 
 class ReadExcel extends Component
 {
+    public $maxRow;
+    public $maxColumn;
+    public $currentRow = 1;
     /** @var \PHPExcel */
     private $_excel;
     /** @var \PHPExcel_Worksheet */
     private $_sheet;
-    public $maxRow;
-    public $maxColumn;
-    public $currentRow = 1;
 
     public static function load($file, $sheet = 0)
     {

@@ -1,12 +1,12 @@
 <?php
 
-namespace app\admin\controllers;
+namespace ra\admin\controllers;
 
-use app\admin\helpers\RA;
-use app\admin\helpers\Text;
-use app\admin\models\Module;
-use app\admin\models\Page;
-use app\admin\models\Photo;
+use ra\admin\helpers\RA;
+use ra\admin\helpers\Text;
+use ra\admin\models\Module;
+use ra\admin\models\Page;
+use ra\admin\models\Photo;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\helpers\FileHelper;
@@ -19,19 +19,6 @@ use yii\web\UploadedFile;
  */
 class TableController extends AdminController
 {
-
-    /**
-     * @param $url
-     * @return \app\admin\models\Module
-     * @throws HttpException
-     */
-    public function getModule($url)
-    {
-        $module = Module::findOne(compact('url'));
-        if (is_null($module) || !($table = $module->class))
-            throw new HttpException(404);
-        return $module;
-    }
 
     /**
      * Lists all Page models.
@@ -68,6 +55,19 @@ class TableController extends AdminController
             'module' => $module,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    /**
+     * @param $url
+     * @return \ra\admin\models\Module
+     * @throws HttpException
+     */
+    public function getModule($url)
+    {
+        $module = Module::findOne(compact('url'));
+        if (is_null($module) || !($table = $module->class))
+            throw new HttpException(404);
+        return $module;
     }
 
     /**
@@ -127,6 +127,22 @@ class TableController extends AdminController
     }
 
     /**
+     * Finds the Page model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param string $id
+     * @return Page the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Page::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    /**
      * Creates a new Page model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -147,7 +163,7 @@ class TableController extends AdminController
 
         if ($model->save(false))
             return $this->redirect(['update', 'id' => $model->id]);
-        throw new HttpException(402, Yii::t('ra/error', 'Can`t create Post'));
+        throw new HttpException(402, Yii::t('ra', 'Can`t create Post'));
     }
 
     /**
@@ -185,21 +201,5 @@ class TableController extends AdminController
 
         if (Yii::$app->request->isAjax) return '1';
         return $this->redirect(['index']);
-    }
-
-    /**
-     * Finds the Page model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $id
-     * @return Page the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = Page::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
     }
 }

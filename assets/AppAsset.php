@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace app\admin\assets;
+namespace ra\admin\assets;
 
 use yii\web\AssetBundle;
 
@@ -29,6 +29,6 @@ class AppAsset extends AssetBundle
     public $depends = [
         'yii\web\YiiAsset',
         'yii\jui\JuiAsset',
-        'app\admin\widgets\adminTheme\AdminThemeAsset',
+        'ra\admin\widgets\adminTheme\AdminThemeAsset',
     ];
 }

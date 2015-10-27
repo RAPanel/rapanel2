@@ -1,8 +1,8 @@
 <?php
 
-namespace app\admin\models\forms;
+namespace ra\admin\models\forms;
 
-use app\admin\helpers\RA;
+use ra\admin\helpers\RA;
 use Yii;
 use yii\base\Model;
 use yii\web\User;
@@ -28,7 +28,7 @@ class LoginForm extends Model
     public $rememberMe = true;
 
     /**
-     * @var \app\admin\models\User
+     * @var \ra\admin\models\User
      */
     protected $_user = false;
 
@@ -54,14 +54,46 @@ class LoginForm extends Model
         // check for valid user or if user registered using social auth
         $user = $this->getUser();
         if (!$user || !$user->password) {
-            if (Yii::$app->getModule("user")->loginEmail && Yii::$app->getModule("user")->loginUsername) {
-                $attribute = "Email / Username";
-            } else {
-                $attribute = Yii::$app->getModule("user")->loginEmail ? "Email" : "Username";
-            }
-            $this->addError("username", Yii::t("user", "$attribute not found"));
+            $this->addError("username", Yii::t("user", $this->getLoginLabel() . " not found"));
+            Yii::$app->session->set('authorizeErrors', Yii::$app->session->get('authorizeErrors', 0) + 1);
+        }
+    }
 
-            // do we need to check $user->userAuths ???
+    /**
+     * Get user based on email and/or username
+     *
+     * @return \ra\admin\models\User|null
+     */
+    public function getUser()
+    {
+        // check if we need to get user
+        if ($this->_user === false) {
+
+            /** @var \ra\admin\models\User $userModel */
+            // build query based on email and/or username login properties
+            $userModel = RA::config('user')['models']['user'];
+            $user = $userModel::find();
+            if (RA::config('user')['loginEmail']) {
+                $user->orWhere(["email" => $this->username]);
+            }
+            if (RA::config('user')['loginUsername']) {
+                $user->orWhere(["username" => $this->username]);
+            }
+
+            // get and store user
+            $this->_user = $user->one();
+        }
+
+        // return stored user
+        return $this->_user;
+    }
+
+    public function getLoginLabel()
+    {
+        if (RA::config('user')['loginEmail'] && RA::config('user')['loginUsername']) {
+            return "Email / Username";
+        } else {
+            return RA::config('user')['loginEmail'] ? "Email" : "Username";
         }
     }
 
@@ -81,7 +113,8 @@ class LoginForm extends Model
         // check status and resend email if inactive
         if ($user->status == $user::STATUS_INACTIVE) {
 
-            /** @var \app\admin\models\UserKey $userKey */
+            //@todo Доделать генератор токена для входа
+            /** @var \ra\admin\models\UserKey $userKey */
             $userKey = Yii::$app->getModule("user")->model("UserKey");
             $userKey = $userKey::generate($user->id, $userKey::TYPE_EMAIL_ACTIVATE);
             $user->sendEmailConfirmation($userKey);
@@ -99,7 +132,7 @@ class LoginForm extends Model
             return;
         }
 
-        /** @var \app\admin\models\User $user */
+        /** @var \ra\admin\models\User $user */
 
         // check if password is correct
         $user = $this->getUser();
@@ -108,49 +141,15 @@ class LoginForm extends Model
         }
     }
 
-    /**
-     * Get user based on email and/or username
-     *
-     * @return \app\admin\models\User|null
-     */
-    public function getUser()
-    {
-        // check if we need to get user
-        if ($this->_user === false) {
-
-            /** @var \app\admin\models\User $userModel */
-            // build query based on email and/or username login properties
-            $userModel = RA::config('user')['models']['user'];
-            $user = $userModel::find();
-            if (RA::config('user')['loginEmail']) {
-                $user->orWhere(["email" => $this->username]);
-            }
-            if (RA::config('user')['loginUsername']) {
-                $user->orWhere(["username" => $this->username]);
-            }
-
-            // get and store user
-            $this->_user = $user->one();
-        }
-
-        // return stored user
-        return $this->_user;
-    }
+    // calculate attribute label for "username"
 
     /**
      * @inheritdoc
      */
     public function attributeLabels()
     {
-        // calculate attribute label for "username"
-        if (RA::config('user')['loginEmail'] && RA::config('user')['loginUsername']) {
-            $attribute = "Email / Username";
-        } else {
-            $attribute = RA::config('user')['loginEmail'] ? "Email" : "Username";
-        }
-
         return [
-            "username" => Yii::t("user", $attribute),
+            "username" => Yii::t("user", $this->getLoginLabel()),
             "password" => Yii::t("user", "Password"),
             "rememberMe" => Yii::t("user", "Remember Me"),
         ];
@@ -165,8 +164,8 @@ class LoginForm extends Model
     public function login($loginDuration)
     {
         if ($this->validate()) {
-            Yii::$app->user->on(User::EVENT_AFTER_LOGIN, function($event){
-                $event->identity->login_ip   = Yii::$app->getRequest()->getUserIP();
+            Yii::$app->user->on(User::EVENT_AFTER_LOGIN, function ($event) {
+                $event->identity->login_ip = Yii::$app->getRequest()->getUserIP();
                 $event->identity->login_time = date("Y-m-d H:i:s");
                 $event->identity->update(false, ["login_ip", "login_time"]);
             });

@@ -6,28 +6,28 @@
  * Time: 21:44
  */
 
-namespace app\admin\components;
+namespace ra\admin\components;
 
 
-use app\admin\models\Message;
+use ra\admin\models\Message;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\i18n\MissingTranslationEvent;
 
 class Translation
 {
+    public static function handleMissingAdminTranslation(MissingTranslationEvent $event)
+    {
+        self::log($event->category, $event->message, $event->language);
+        $event->translatedMessage = YII_ENV_DEV ? "@MISSING: {$event->category}.{$event->message} FOR LANGUAGE {$event->language} @" : $event->message;
+    }
+
     static function log($category, $message, $language)
     {
         $filename = Yii::getAlias('@runtime/forTranslate/' . $language . '/' . $category . '.php');
         FileHelper::createDirectory(dirname($filename));
         if (file_exists($filename) && strpos(file_get_contents($filename), "'{$message}'")) return;
         file_put_contents($filename, "    '{$message}' => '',\n", FILE_APPEND);
-    }
-
-    public static function handleMissingAdminTranslation(MissingTranslationEvent $event)
-    {
-        self::log($event->category, $event->message, $event->language);
-        $event->translatedMessage = YII_ENV_DEV ? "@MISSING: {$event->category}.{$event->message} FOR LANGUAGE {$event->language} @" : $event->message;
     }
 
     public static function handleMissingTranslation(MissingTranslationEvent $event)

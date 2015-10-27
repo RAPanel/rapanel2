@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 
@@ -45,13 +45,13 @@ class Settings extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'path' => Yii::t('ra/model', 'Path'),
-            'inputType' => Yii::t('ra/model', 'Input Type'),
-            'name' => Yii::t('ra/model', 'Name'),
-            'value' => Yii::t('ra/model', 'Value'),
-            'updated_at' => Yii::t('ra/model', 'Updated At'),
-            'created_at' => Yii::t('ra/model', 'Created At'),
+            'id' => Yii::t('ra', 'ID'),
+            'path' => Yii::t('ra', 'Path'),
+            'inputType' => Yii::t('ra', 'Input Type'),
+            'name' => Yii::t('ra', 'Name'),
+            'value' => Yii::t('ra', 'Value'),
+            'updated_at' => Yii::t('ra', 'Updated At'),
+            'created_at' => Yii::t('ra', 'Created At'),
         ];
     }
 }

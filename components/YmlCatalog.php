@@ -6,10 +6,10 @@
  * Time: 14:30
  */
 
-namespace app\admin\components;
+namespace ra\admin\components;
 
-use app\admin\helpers\RA;
-use app\models\Shop;
+use ra\admin\helpers\RA;
+use ra\admin\models\Shop;
 use Yii;
 use yii\helpers\Url;
 

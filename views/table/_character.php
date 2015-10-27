@@ -5,7 +5,7 @@
  * Date: 04.09.2015
  * Time: 10:45
  *
- * @var $data \app\admin\models\Character
+ * @var $data \ra\admin\models\Character
  */
 
 

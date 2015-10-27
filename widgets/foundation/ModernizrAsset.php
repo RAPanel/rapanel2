@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\widgets\foundation;
+namespace ra\admin\widgets\foundation;
 
 use Yii;
 use yii\web\AssetBundle;

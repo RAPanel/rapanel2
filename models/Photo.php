@@ -1,9 +1,9 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
-use app\admin\helpers\Image;
 use Exception;
+use ra\admin\helpers\Image;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\helpers\Url;
@@ -28,66 +28,15 @@ use yii\web\HttpException;
  */
 class Photo extends \yii\db\ActiveRecord
 {
+    public static $tmpPath = 'image/tmp';
+    public static $path = 'image';
+
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
         return '{{%photo}}';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['sort_id', 'owner_id', 'model', 'type', 'name', 'width', 'height', 'about', 'cropParams', 'hash'], 'required'],
-            [['sort_id', 'owner_id', 'width', 'height'], 'integer'],
-            [['updated_at', 'created_at'], 'safe'],
-            [['model', 'hash'], 'string', 'max' => 32],
-            [['type'], 'string', 'max' => 8],
-            [['name', 'about', 'cropParams'], 'string', 'max' => 255]
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'sort_id' => Yii::t('ra/model', 'Sort ID'),
-            'owner_id' => Yii::t('ra/model', 'Owner ID'),
-            'model' => Yii::t('ra/model', 'Model'),
-            'type' => Yii::t('ra/model', 'Type'),
-            'name' => Yii::t('ra/model', 'Name'),
-            'width' => Yii::t('ra/model', 'Width'),
-            'height' => Yii::t('ra/model', 'Height'),
-            'about' => Yii::t('ra/model', 'About'),
-            'cropParams' => Yii::t('ra/model', 'Crop Params'),
-            'hash' => Yii::t('ra/model', 'Hash'),
-            'updated_at' => Yii::t('ra/model', 'Updated At'),
-            'created_at' => Yii::t('ra/model', 'Created At'),
-        ];
-    }
-
-
-    public static $tmpPath = 'image/tmp';
-    public static $path = 'image';
-
-    public function init()
-    {
-        $this->on(self::EVENT_BEFORE_VALIDATE, function ($event) {
-            if (is_null($event->sender->type))
-                $event->sender->type = 'main';
-            if (is_null($event->sender->sort_id))
-                $event->sender->sort_id = 0;
-            if (is_null($event->sender->cropParams))
-                $event->sender->cropParams = serialize([]);
-        });
-        parent::init();
     }
 
     public static function add($file, $about, $owner_id, $model)
@@ -113,9 +62,54 @@ class Photo extends \yii\db\ActiveRecord
         throw new HttpException(400, implode("\n", $class->errors));
     }
 
-    public function getFile($global = false)
+    /**
+     * @inheritdoc
+     */
+    public function rules()
     {
-        return Yii::getAlias(($global ? '@app/..' : '@web') . '/' . self::$tmpPath . '/' . $this->name);
+        return [
+            [['sort_id', 'owner_id', 'model', 'type', 'name', 'width', 'height', 'about', 'cropParams', 'hash'], 'required'],
+            [['sort_id', 'owner_id', 'width', 'height'], 'integer'],
+            [['updated_at', 'created_at'], 'safe'],
+            [['model', 'hash'], 'string', 'max' => 32],
+            [['type'], 'string', 'max' => 8],
+            [['name', 'about', 'cropParams'], 'string', 'max' => 255]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('ra', 'ID'),
+            'sort_id' => Yii::t('ra', 'Sort ID'),
+            'owner_id' => Yii::t('ra', 'Owner ID'),
+            'model' => Yii::t('ra', 'Model'),
+            'type' => Yii::t('ra', 'Type'),
+            'name' => Yii::t('ra', 'Name'),
+            'width' => Yii::t('ra', 'Width'),
+            'height' => Yii::t('ra', 'Height'),
+            'about' => Yii::t('ra', 'About'),
+            'cropParams' => Yii::t('ra', 'Crop Params'),
+            'hash' => Yii::t('ra', 'Hash'),
+            'updated_at' => Yii::t('ra', 'Updated At'),
+            'created_at' => Yii::t('ra', 'Created At'),
+        ];
+    }
+
+    public function init()
+    {
+        $this->on(self::EVENT_BEFORE_VALIDATE, function ($event) {
+            if (is_null($event->sender->type))
+                $event->sender->type = 'main';
+            if (is_null($event->sender->sort_id))
+                $event->sender->sort_id = 0;
+            if (is_null($event->sender->cropParams))
+                $event->sender->cropParams = serialize([]);
+        });
+        parent::init();
     }
 
     /**
@@ -136,6 +130,11 @@ class Photo extends \yii\db\ActiveRecord
         }
 
         return parent::beforeSave($insert);
+    }
+
+    public function getFile($global = false)
+    {
+        return Yii::getAlias(($global ? '@app/..' : '@web') . '/' . self::$tmpPath . '/' . $this->name);
     }
 
     public function getHref($type, $scheme = false)

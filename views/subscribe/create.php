@@ -4,10 +4,10 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model app\admin\models\Subscribe */
+/* @var $model ra\admin\models\Subscribe */
 
-$this->title = Yii::t('ra/view', 'Create Subscribe');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('ra/view', 'Subscribes'), 'url' => ['index']];
+$this->title = Yii::t('ra', 'Create Subscribe');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('ra', 'Subscribes'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="subscribe-create">

@@ -6,10 +6,10 @@
  * Time: 23:48
  */
 
-namespace app\admin\controllers;
+namespace ra\admin\controllers;
 
-use app\admin\helpers\Image;
 use Imagine\Image\Point;
+use ra\admin\helpers\Image;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\web\Response;

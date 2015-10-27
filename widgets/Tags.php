@@ -6,10 +6,10 @@
  * Time: 15:44
  */
 
-namespace app\admin\widgets;
+namespace ra\admin\widgets;
 
 
-use app\admin\assets\TagsInputAsset;
+use ra\admin\assets\TagsInputAsset;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\widgets\InputWidget;

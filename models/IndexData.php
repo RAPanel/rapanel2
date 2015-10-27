@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 
@@ -40,8 +40,8 @@ class IndexData extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'value' => Yii::t('ra/model', 'Value'),
+            'id' => Yii::t('ra', 'ID'),
+            'value' => Yii::t('ra', 'Value'),
         ];
     }
 

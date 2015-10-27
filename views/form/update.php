@@ -3,14 +3,14 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\admin\models\Form */
+/* @var $model ra\admin\models\Form */
 
-$this->title = Yii::t('ra/view', 'Update {modelClass}: ', [
+$this->title = Yii::t('ra', 'Update {modelClass}: ', [
     'modelClass' => 'Form',
 ]) . ' ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('ra/view', 'Forms'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('ra', 'Forms'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = Yii::t('ra/view', 'Update');
+$this->params['breadcrumbs'][] = Yii::t('ra', 'Update');
 ?>
 <div class="form-update">
 

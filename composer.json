@@ -2,7 +2,12 @@
     "name": "rere/yii2-admin",
     "description": "Powerfull admin system in yii2",
     "type": "yii2-extension",
-    "keywords": ["yii2","extension"," admin"," rapanel"],
+    "keywords": [
+        "yii2",
+        "extension",
+        "admin",
+        "rapanel"
+    ],
     "license": "GPL-2.0",
     "authors": [
         {
@@ -10,6 +15,7 @@
             "email": "semyonchick@gmail.com"
         }
     ],
+    "stability": "dev",
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.0",
@@ -29,7 +35,7 @@
     },
     "autoload": {
         "psr-4": {
-            "rere\\": ""
+            "ra\\admin\\": ""
         }
     }
 }

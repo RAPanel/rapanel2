@@ -3,14 +3,14 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\admin\models\User */
+/* @var $model ra\admin\models\User */
 
-$this->title = Yii::t('ra/view', 'Update {modelClass}: ', [
+$this->title = Yii::t('ra', 'Update {modelClass}: ', [
     'modelClass' => 'User',
 ]) . ' ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('ra/view', 'Users'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('ra', 'Users'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = Yii::t('ra/view', 'Update');
+$this->params['breadcrumbs'][] = Yii::t('ra', 'Update');
 ?>
 <div class="user-update">
 

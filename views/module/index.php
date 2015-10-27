@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('ra/view', 'Modules');
+$this->title = Yii::t('ra', 'Modules');
 $this->params['breadcrumbs'][] = $this->title;
 $this->registerJs('$("[data-toggle=\"tooltip\"]").tooltip()');
 ?>

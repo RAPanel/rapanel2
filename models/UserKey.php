@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 
@@ -47,13 +47,13 @@ class UserKey extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'user_id' => Yii::t('ra/model', 'User ID'),
-            'type' => Yii::t('ra/model', 'Type'),
-            'key_value' => Yii::t('ra/model', 'Key Value'),
-            'create_time' => Yii::t('ra/model', 'Create Time'),
-            'consume_time' => Yii::t('ra/model', 'Consume Time'),
-            'expire_time' => Yii::t('ra/model', 'Expire Time'),
+            'id' => Yii::t('ra', 'ID'),
+            'user_id' => Yii::t('ra', 'User ID'),
+            'type' => Yii::t('ra', 'Type'),
+            'key_value' => Yii::t('ra', 'Key Value'),
+            'create_time' => Yii::t('ra', 'Create Time'),
+            'consume_time' => Yii::t('ra', 'Consume Time'),
+            'expire_time' => Yii::t('ra', 'Expire Time'),
         ];
     }
 

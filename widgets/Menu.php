@@ -6,7 +6,7 @@
  * Time: 10:14
  */
 
-namespace app\admin\widgets;
+namespace ra\admin\widgets;
 
 
 class Menu extends \yii\widgets\Menu
@@ -16,7 +16,7 @@ class Menu extends \yii\widgets\Menu
 
     public function run()
     {
-        /** @var \app\admin\models\Page $row */
+        /** @var \ra\admin\models\Page $row */
         if (count($this->data)) {
             foreach (array_reverse($this->data) as $row)
                 $this->items[$row->hasAttribute('parent_id') ? $row->parent_id : 0][] = [

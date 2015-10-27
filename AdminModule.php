@@ -1,5 +1,5 @@
 <?php
-namespace app\admin;
+namespace ra\admin;
 
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -15,7 +15,7 @@ class AdminModule extends \yii\base\Module
 {
     public $settings;
 
-    public $controllerNamespace = 'app\admin\controllers';
+    public $controllerNamespace = 'ra\admin\controllers';
 
     public function init()
     {

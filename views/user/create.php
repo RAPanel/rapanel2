@@ -4,10 +4,10 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model app\admin\models\User */
+/* @var $model ra\admin\models\User */
 
-$this->title = Yii::t('ra/view', 'Create User');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('ra/view', 'Users'), 'url' => ['index']];
+$this->title = Yii::t('ra', 'Create User');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('ra', 'Users'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-create">

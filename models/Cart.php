@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 
@@ -48,15 +48,15 @@ class Cart extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'session_id' => Yii::t('ra/model', 'Session ID'),
-            'status' => Yii::t('ra/model', 'Status'),
-            'item_id' => Yii::t('ra/model', 'Item ID'),
-            'order_id' => Yii::t('ra/model', 'Order ID'),
-            'price' => Yii::t('ra/model', 'Price'),
-            'quantity' => Yii::t('ra/model', 'Quantity'),
-            'data' => Yii::t('ra/model', 'Data'),
-            'updated_at' => Yii::t('ra/model', 'Updated At'),
-            'created_at' => Yii::t('ra/model', 'Created At'),
+            'session_id' => Yii::t('ra', 'Session ID'),
+            'status' => Yii::t('ra', 'Status'),
+            'item_id' => Yii::t('ra', 'Item ID'),
+            'order_id' => Yii::t('ra', 'Order ID'),
+            'price' => Yii::t('ra', 'Price'),
+            'quantity' => Yii::t('ra', 'Quantity'),
+            'data' => Yii::t('ra', 'Data'),
+            'updated_at' => Yii::t('ra', 'Updated At'),
+            'created_at' => Yii::t('ra', 'Created At'),
         ];
     }
 

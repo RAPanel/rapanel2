@@ -6,26 +6,20 @@
  * Time: 17:33
  */
 
-namespace app\admin\helpers;
+namespace ra\admin\helpers;
 
 
-use app\admin\models\Character;
-use app\admin\models\Module;
-use app\admin\models\ModuleSettings;
-use app\admin\models\User;
+use ra\admin\models\Character;
+use ra\admin\models\Module;
+use ra\admin\models\ModuleSettings;
+use ra\admin\models\User;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 
 class RA
 {
-    static $tabs = ['main', 'data', 'seo', 'position', 'characters', 'photos'];
     static $_cache = [];
-
-    public static function tabs()
-    {
-        return self::dropDownList(self::$tabs, 'ra/tabs');
-    }
 
     /**
      * @param \yii\db\ActiveRecord $model
@@ -35,7 +29,7 @@ class RA
     public static function tableColumns($model, $values = [])
     {
         if (!class_exists($model)) return [];
-        $model = new $model;
+        if (!is_object($model)) $model = new $model;
         $columns = [];
         foreach ($model->getTableSchema()->columns as $key => $value) {
             if ($key == 'module_id') continue;
@@ -67,7 +61,7 @@ class RA
             $columns = ArrayHelper::merge($columns, $columnsResort);
         }
 
-        return self::dropDownList($columns, 'ra/model');
+        return self::dropDownList($columns, 'ra');
     }
 
     /**
@@ -75,7 +69,7 @@ class RA
      * @param string $alias
      * @return array
      */
-    public static function dropDownList(array $data, $alias = 'ra/dropDown')
+    public static function dropDownList(array $data, $alias = 'app')
     {
         $list = [];
         foreach ($data as $key => $value)
@@ -83,12 +77,14 @@ class RA
         return $list;
     }
 
-    public static function cache($method, $function)
+    public static function moduleSetting($module, $name = null)
     {
-        if (!isset(self::$_cache[$method])) {
-            self::$_cache[$method] = call_user_func($function);
-        }
-        return self::$_cache[$method];
+        $module_id = self::moduleId($module);
+        $data = self::cache(serialize([__METHOD__, $module_id]), function () use ($module_id) {
+            return ArrayHelper::map(ModuleSettings::find()->where(compact('module_id'))->select(['url', 'value'])->asArray()->all(), 'url', 'value');
+        });
+        if (is_null($name)) return $data;
+        return isset($data[$name]) ? $data[$name] : false;
     }
 
     public static function moduleId($module)
@@ -108,14 +104,29 @@ class RA
         return false;
     }
 
-    public static function moduleSetting($module, $name = null)
+    public static function cache($method, $function)
     {
-        $module_id = self::moduleId($module);
-        $data = self::cache(serialize([__METHOD__, $module_id]), function () use ($module_id) {
-            return ArrayHelper::map(ModuleSettings::find()->where(compact('module_id'))->select(['url', 'value'])->asArray()->all(), 'url', 'value');
-        });
-        if (is_null($name)) return $data;
-        return isset($data[$name]) ? $data[$name] : false;
+        if (!isset(self::$_cache[$method])) {
+            self::$_cache[$method] = call_user_func($function);
+        }
+        return self::$_cache[$method];
+    }
+
+    public static function characterCondition($name, $value = false)
+    {
+        return ['pageCharacters' => function ($query) use ($name, $value) {
+            /** @var $query \yii\db\ActiveQuery */
+            /** @var \yii\db\ActiveRecord $class */
+            $class = $query->modelClass;
+            if (is_array($name)) {
+                $tableName = key($name);
+                $name = reset($name);
+            } else
+                $tableName = $name;
+            $query->from([$tableName => $class::tableName()])->where(ArrayHelper::merge([
+                $tableName . '.character_id' => RA::character($name),
+            ], $value ? [$tableName . '.value' => $value] : []));
+        }];
     }
 
     public static function character($value = null, $return = 'url')
@@ -137,23 +148,6 @@ class RA
         return false;
     }
 
-    public static function characterCondition($name, $value = false)
-    {
-        return ['pageCharacters' => function ($query) use ($name, $value) {
-            /** @var $query \yii\db\ActiveQuery */
-            /** @var \yii\db\ActiveRecord $class */
-            $class = $query->modelClass;
-            if (is_array($name)) {
-                $tableName = key($name);
-                $name = reset($name);
-            } else
-                $tableName = $name;
-            $query->from([$tableName => $class::tableName()])->where(ArrayHelper::merge([
-                $tableName . '.character_id' => RA::character($name),
-            ], $value ? [$tableName . '.value' => $value] : []));
-        }];
-    }
-
     /**
      * @param $query \yii\db\ActiveQuery
      * @return array
@@ -166,7 +160,7 @@ class RA
         if($queryOrder) $query->addOrderBy($queryOrder);
         $query->addOrderBy(['lft' => SORT_ASC, 'id' => SORT_ASC]);
         $items = [];
-        /** @var \app\admin\models\Page $row */
+        /** @var \ra\admin\models\Page $row */
         foreach ($query->all() as $row) {
             $items[$row->parent_id][] = [
                 'label' => $row->name,

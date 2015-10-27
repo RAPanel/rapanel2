@@ -4,10 +4,10 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\admin\models\Replaces */
+/* @var $model ra\admin\models\Replaces */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('ra/view', 'Replaces'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('ra', 'Replaces'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="replaces-view">
@@ -15,11 +15,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('ra/view', 'Update'), ['update', 'id' => $model->name], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('ra/view', 'Delete'), ['delete', 'id' => $model->name], [
+        <?= Html::a(Yii::t('ra', 'Update'), ['update', 'id' => $model->name], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a(Yii::t('ra', 'Delete'), ['delete', 'id' => $model->name], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => Yii::t('ra/view', 'Are you sure you want to delete this item?'),
+                'confirm' => Yii::t('ra', 'Are you sure you want to delete this item?'),
                 'method' => 'post',
             ],
         ]) ?>

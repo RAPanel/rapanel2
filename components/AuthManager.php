@@ -6,10 +6,10 @@
  * Time: 10:24
  */
 
-namespace app\admin\components;
+namespace ra\admin\components;
 
 
-use app\admin\models\User;
+use ra\admin\models\User;
 use yii\rbac\Assignment;
 use yii\rbac\Item;
 use yii\rbac\ManagerInterface;
