@@ -6,12 +6,21 @@
  * Time: 16:52
  */
 
-namespace app\admin\traits;
+namespace ra\admin\traits;
 
 
 trait SerializeAttribute
 {
     private $_data = [];
+
+    public function __get($name)
+    {
+        if (in_array($name, $this->serializeAttributes)) {
+            if (empty($this->_data)) $this->_data = unserialize($this->data);
+            return isset($this->_data[$name]) ? $this->_data[$name] : null;
+        }
+        return parent::__get($name);
+    }
 
     public function __set($name, $value)
     {
@@ -27,15 +36,6 @@ trait SerializeAttribute
             return;
         }
         parent::__set($name, $value);
-    }
-
-    public function __get($name)
-    {
-        if (in_array($name, $this->serializeAttributes)) {
-            if (empty($this->_data)) $this->_data = unserialize($this->data);
-            return isset($this->_data[$name]) ? $this->_data[$name] : null;
-        }
-        return parent::__get($name);
     }
 
 }

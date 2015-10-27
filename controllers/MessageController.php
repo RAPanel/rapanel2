@@ -1,9 +1,9 @@
 <?php
 
-namespace app\admin\controllers;
+namespace ra\admin\controllers;
 
-use app\admin\models\Message;
-use app\admin\models\MessageTranslate;
+use ra\admin\models\Message;
+use ra\admin\models\MessageTranslate;
 use Yii;
 use yii\data\ActiveDataProvider;
 

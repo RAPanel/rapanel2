@@ -27,16 +27,16 @@ return [
         'i18n' => [
             'class' => 'yii\i18n\I18N',
             'translations' => [
-                'ra/*' => [
+                'ra' => [
                     'class' => 'yii\i18n\PhpMessageSource',
                     'sourceLanguage' => 'en-US',
-                    'basePath' => '@app/admin/messages',
-                    'on missingTranslation' => ['app\admin\components\Translation', 'handleMissingAdminTranslation']
+                    'basePath' => '@ra/admin/messages',
+                    'on missingTranslation' => ['ra\admin\components\Translation', 'handleMissingAdminTranslation']
                 ],
             ]
         ],
         'user' => [
-            'identityClass' => 'app\admin\models\User',
+            'identityClass' => 'ra\admin\models\User',
             'loginUrl' => ['rapanel/default/login'],
             'enableAutoLogin' => true,
         ],

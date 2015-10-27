@@ -22,7 +22,7 @@ use yii\helpers\Html;
 
         <?
         $list = [];
-        foreach (\app\admin\models\Module::find()->all() as $row)
+        foreach (\ra\admin\models\Module::find()->all() as $row)
             $list[] = ['label' => $row->name, 'url' => ['table/index', 'url' => $row->url]];
 
         echo \yii\widgets\Menu::widget([
@@ -40,23 +40,23 @@ use yii\helpers\Html;
                     'class' => 'sub-menu',
                     'data-pjax' => 0,
                 ], 'url' => 'javascript:;', 'items' => [
-                    ['label' => Yii::t('ra/view', 'Orders'), 'url' => ['order/index']],
-                    ['label' => Yii::t('ra/view', 'Users'), 'url' => ['user/index']],
-                    ['label' => Yii::t('ra/view', 'Forms'), 'url' => ['form/index']],
-                    ['label' => Yii::t('ra/view', 'Subscribes'), 'url' => ['subscribe/index']],
-                    ['label' => Yii::t('ra/view', 'Orders'), 'url' => ['order/index']],
+                    ['label' => Yii::t('ra', 'Orders'), 'url' => ['order/index']],
+                    ['label' => Yii::t('ra', 'Users'), 'url' => ['user/index']],
+                    ['label' => Yii::t('ra', 'Forms'), 'url' => ['form/index']],
+                    ['label' => Yii::t('ra', 'Subscribes'), 'url' => ['subscribe/index']],
+                    ['label' => Yii::t('ra', 'Orders'), 'url' => ['order/index']],
                 ]],
                 ['label' => '<i class="fa fa-cogs"></i> <span>Система</span>', 'options' => [
                     'class' => 'sub-menu',
                     'data-pjax' => 0,
                 ], 'url' => 'javascript:;', 'items' => [
-                    ['label' => Yii::t('ra/view', 'Modules'), 'url' => ['module/index']],
-                    ['label' => Yii::t('ra/view', 'Characters'), 'url' => ['character/index']],
-                    ['label' => Yii::t('ra/view', 'Settings'), 'url' => ['setting/index']],
-                    ['label' => Yii::t('ra/view', 'Messages'), 'url' => ['message/index']],
-                    ['label' => Yii::t('ra/view', 'Replaces'), 'url' => ['replace/index']],
-                    ['label' => Yii::t('ra/view', 'File Manager'), 'url' => ['default/file-manager']],
-                    ['label' => Yii::t('ra/view', 'Update'), 'url' => ['default/update']],
+                    ['label' => Yii::t('ra', 'Modules'), 'url' => ['module/index']],
+                    ['label' => Yii::t('ra', 'Characters'), 'url' => ['character/index']],
+                    ['label' => Yii::t('ra', 'Settings'), 'url' => ['setting/index']],
+                    ['label' => Yii::t('ra', 'Messages'), 'url' => ['message/index']],
+                    ['label' => Yii::t('ra', 'Replaces'), 'url' => ['replace/index']],
+                    ['label' => Yii::t('ra', 'File Manager'), 'url' => ['default/file-manager']],
+                    ['label' => Yii::t('ra', 'Update'), 'url' => ['default/update']],
                 ]],
             ],
         ]);

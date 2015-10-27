@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 
@@ -42,10 +42,10 @@ class Index extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'owner_id' => Yii::t('ra/model', 'Owner ID'),
-            'model' => Yii::t('ra/model', 'Model'),
-            'type' => Yii::t('ra/model', 'Type'),
-            'data_id' => Yii::t('ra/model', 'Data ID'),
+            'owner_id' => Yii::t('ra', 'Owner ID'),
+            'model' => Yii::t('ra', 'Model'),
+            'type' => Yii::t('ra', 'Type'),
+            'data_id' => Yii::t('ra', 'Data ID'),
         ];
     }
 

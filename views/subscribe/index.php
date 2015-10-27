@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('ra/view', 'Subscribes');
+$this->title = Yii::t('ra', 'Subscribes');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="subscribe-index">
@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('ra/view', 'Create Subscribe'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('ra', 'Create Subscribe'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([

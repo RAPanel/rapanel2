@@ -6,10 +6,10 @@
  * Time: 8:41
  */
 
-namespace app\admin\controllers;
+namespace ra\admin\controllers;
 
 
-use app\admin\models\Photo;
+use ra\admin\models\Photo;
 use Yii;
 use yii\helpers\FileHelper;
 
@@ -33,6 +33,12 @@ class ClearController extends AdminController
         return $result;
     }
 
+    public function back($back)
+    {
+        $parse = explode('_pjax', Yii::$app->request->referrer);
+        return $this->redirect(is_string($back) ? $back : trim(reset($parse), '&?'));
+    }
+
     public function actionAssets($back = true)
     {
         $dir = Yii::getAlias(Yii::$app->assetManager->basePath);
@@ -53,11 +59,5 @@ class ClearController extends AdminController
         if ($back && !Yii::$app->request->isAjax)
             return $this->back($back);
         return true;
-    }
-
-    public function back($back)
-    {
-        $parse = explode('_pjax', Yii::$app->request->referrer);
-        return $this->redirect(is_string($back) ? $back : trim(reset($parse), '&?'));
     }
 }

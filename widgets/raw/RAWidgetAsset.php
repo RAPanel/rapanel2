@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\widgets\raw;
+namespace ra\admin\widgets\raw;
 use yii\web\AssetBundle;
 
 
@@ -12,7 +12,7 @@ use yii\web\AssetBundle;
  */
 class RAWidgetAsset extends AssetBundle
 {
-    public $sourcePath = '@app/admin/widgets/raw/assets';
+    public $sourcePath = '@ra/admin/widgets/raw/assets';
 
     public $css = [
         'rapanel.css',

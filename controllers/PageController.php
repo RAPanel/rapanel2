@@ -6,10 +6,10 @@
  * Time: 16:31
  */
 
-namespace app\admin\controllers;
+namespace ra\admin\controllers;
 
-use app\admin\helpers\RA;
-use app\admin\models\Page;
+use ra\admin\helpers\RA;
+use ra\admin\models\Page;
 use Yii;
 use yii\web\HttpException;
 
@@ -21,24 +21,11 @@ class PageController extends Controller
         return $this->actionShow($url);
     }
 
-    public function actionCategory($url = null)
-    {
-        return $this->actionShow($url);
-    }
-
     public function actionShow($url)
     {
         return $this->render($this->action->id, [
             'model' => $this->page(compact('url'))
         ]);
-    }
-
-    public function page($condition)
-    {
-        /** @var Page $class */
-        $page = Page::find()->where($condition)->with('pageData')->one();
-        if (!$condition || !$page) throw new HttpException(404, Yii::t('ra/error', 'Can`t find page'));
-        return $page;
     }
 
     public function render($view, $params = [])
@@ -74,6 +61,19 @@ class PageController extends Controller
             };
         }
         return parent::render($view, $params);
+    }
+
+    public function page($condition)
+    {
+        /** @var Page $class */
+        $page = Page::find()->where($condition)->with('pageData')->one();
+        if (!$condition || !$page) throw new HttpException(404, Yii::t('ra', 'Can`t find page'));
+        return $page;
+    }
+
+    public function actionCategory($url = null)
+    {
+        return $this->actionShow($url);
     }
 
 }

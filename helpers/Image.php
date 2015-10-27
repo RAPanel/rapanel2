@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace app\admin\helpers;
+namespace ra\admin\helpers;
 
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
@@ -58,54 +58,6 @@ class Image
      * @var ImagineInterface instance.
      */
     private static $_imagine;
-
-    public static function getImagine()
-    {
-        if (self::$_imagine === null) {
-            self::$_imagine = static::createImagine();
-        }
-
-        return self::$_imagine;
-    }
-
-    /**
-     * Creates an `Imagine` object based on the specified [[driver]].
-     * @return ImagineInterface the new `Imagine` object
-     * @throws InvalidConfigException if [[driver]] is unknown or the system doesn't support any [[driver]].
-     */
-    protected static function createImagine()
-    {
-        foreach ((array)static::$driver as $driver) {
-            switch ($driver) {
-                case self::DRIVER_GMAGICK:
-                    if (class_exists('Gmagick', false)) {
-                        return new \Imagine\Gmagick\Imagine();
-                    }
-                    break;
-                case self::DRIVER_IMAGICK:
-                    if (class_exists('Imagick', false)) {
-                        return new \Imagine\Imagick\Imagine();
-                    }
-                    break;
-                case self::DRIVER_GD2:
-                    if (function_exists('gd_info')) {
-                        return new \Imagine\Gd\Imagine();
-                    }
-                    break;
-                default:
-                    throw new InvalidConfigException("Unknown driver: $driver");
-            }
-        }
-        throw new InvalidConfigException("Your system does not support any of these drivers: " . implode(',', (array)static::$driver));
-    }
-
-    /**
-     * @param ImagineInterface $imagine the `Imagine` object.
-     */
-    public static function setImagine($imagine)
-    {
-        self::$_imagine = $imagine;
-    }
 
     public static function thumbnail($filename, $width = 0, $height = 0, $crop = self::IMAGE_RESIZE)
     {
@@ -188,5 +140,53 @@ class Image
         $thumb->interlace(ImageInterface::INTERLACE_PARTITION);
 
         return $thumb;
+    }
+
+    public static function getImagine()
+    {
+        if (self::$_imagine === null) {
+            self::$_imagine = static::createImagine();
+        }
+
+        return self::$_imagine;
+    }
+
+    /**
+     * @param ImagineInterface $imagine the `Imagine` object.
+     */
+    public static function setImagine($imagine)
+    {
+        self::$_imagine = $imagine;
+    }
+
+    /**
+     * Creates an `Imagine` object based on the specified [[driver]].
+     * @return ImagineInterface the new `Imagine` object
+     * @throws InvalidConfigException if [[driver]] is unknown or the system doesn't support any [[driver]].
+     */
+    protected static function createImagine()
+    {
+        foreach ((array)static::$driver as $driver) {
+            switch ($driver) {
+                case self::DRIVER_GMAGICK:
+                    if (class_exists('Gmagick', false)) {
+                        return new \Imagine\Gmagick\Imagine();
+                    }
+                    break;
+                case self::DRIVER_IMAGICK:
+                    if (class_exists('Imagick', false)) {
+                        return new \Imagine\Imagick\Imagine();
+                    }
+                    break;
+                case self::DRIVER_GD2:
+                    if (function_exists('gd_info')) {
+                        return new \Imagine\Gd\Imagine();
+                    }
+                    break;
+                default:
+                    throw new InvalidConfigException("Unknown driver: $driver");
+            }
+        }
+        throw new InvalidConfigException("Your system does not support any of these drivers: " . implode(',', (array)static::$driver));
     }
 }

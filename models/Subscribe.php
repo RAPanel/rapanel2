@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 
@@ -43,12 +43,12 @@ class Subscribe extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'name' => Yii::t('ra/model', 'Name'),
-            'email' => Yii::t('ra/model', 'Email'),
-            'data' => Yii::t('ra/model', 'Data'),
-            'updated_at' => Yii::t('ra/model', 'Updated At'),
-            'created_at' => Yii::t('ra/model', 'Created At'),
+            'id' => Yii::t('ra', 'ID'),
+            'name' => Yii::t('ra', 'Name'),
+            'email' => Yii::t('ra', 'Email'),
+            'data' => Yii::t('ra', 'Data'),
+            'updated_at' => Yii::t('ra', 'Updated At'),
+            'created_at' => Yii::t('ra', 'Created At'),
         ];
     }
 }

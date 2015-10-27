@@ -6,7 +6,7 @@
  * Time: 0:06
  */
 
-namespace app\admin\controllers;
+namespace ra\admin\controllers;
 
 
 use Yii;

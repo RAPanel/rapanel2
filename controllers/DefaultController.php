@@ -1,10 +1,10 @@
 <?php
 
-namespace app\admin\controllers;
+namespace ra\admin\controllers;
 
-use app\admin\helpers\RA;
-use app\admin\models\forms\LoginForm;
-use app\admin\models\UserAuth;
+use ra\admin\helpers\RA;
+use ra\admin\models\forms\LoginForm;
+use ra\admin\models\UserAuth;
 use Yii;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;

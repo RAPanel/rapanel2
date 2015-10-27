@@ -6,7 +6,7 @@
  * Time: 22:11
  */
 
-namespace app\admin\behaviors;
+namespace ra\admin\behaviors;
 
 
 use Yii;

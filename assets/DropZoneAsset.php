@@ -6,7 +6,7 @@
  * Time: 11:19
  */
 
-namespace app\admin\assets;
+namespace ra\admin\assets;
 
 
 use yii\web\AssetBundle;

@@ -1,8 +1,8 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
-use app\admin\traits\SerializeAttribute;
+use ra\admin\traits\SerializeAttribute;
 use Yii;
 
 /**
@@ -46,11 +46,11 @@ class Form extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'type' => Yii::t('ra/model', 'Type'),
-            'data' => Yii::t('ra/model', 'Data'),
-            'updated_at' => Yii::t('ra/model', 'Updated At'),
-            'created_at' => Yii::t('ra/model', 'Created At'),
+            'id' => Yii::t('ra', 'ID'),
+            'type' => Yii::t('ra', 'Type'),
+            'data' => Yii::t('ra', 'Data'),
+            'updated_at' => Yii::t('ra', 'Updated At'),
+            'created_at' => Yii::t('ra', 'Created At'),
         ];
     }
 

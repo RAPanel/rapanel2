@@ -1,8 +1,8 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
-use app\admin\helpers\RA;
+use ra\admin\helpers\RA;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
@@ -37,9 +37,42 @@ use yii\helpers\Url;
  */
 class Page extends \yii\db\ActiveRecord
 {
-    use \app\admin\traits\PageEdit;
+    use \ra\admin\traits\PageEdit;
 
     private $_characters = [];
+
+    public static function instantiate($row)
+    {
+        if (!empty($row['module_id'])) {
+            $class = RA::module($row['module_id'], 'class');
+            return new $class;
+        }
+        return new static;
+    }
+
+    /**
+     * @param $module string|int
+     * @param array $condition
+     * @param bool $withRoot
+     * @param bool $allStatuses
+     * @return \yii\db\ActiveQuery the newly created [[ActiveQuery]] instance.
+     */
+    public static function findActive($module = null, $condition = [], $withRoot = false, $allStatuses = false)
+    {
+        $query = self::find()->from(['t' => self::tableName()])->orderBy(['t.lft' => SORT_ASC, 't.id' => SORT_ASC]);
+        if (!$allStatuses) $query->where(['t.status' => 1]);
+        if (!empty($module))
+            if (is_array($module)) {
+                $subQuery = Module::find()->select('id')->where(['or', ['id' => $module], ['url' => $module]]);
+                if (!$withRoot) $query->andWhere(['not', ['t.id' => $subQuery]]);
+                $query->andWhere(['t.module_id' => $subQuery]);
+            } else {
+                if (!$withRoot) $query->andWhere(['!=', 't.id', RA::moduleId($module)]);
+                $query->andWhere(['t.module_id' => RA::moduleId($module)]);
+            }
+        if (!empty($condition)) $query->andWhere($condition);
+        return $query;
+    }
 
     /**
      * @inheritdoc
@@ -71,20 +104,20 @@ class Page extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'is_category' => Yii::t('ra/model', 'Is Category'),
-            'status' => Yii::t('ra/model', 'Status'),
-            'lft' => Yii::t('ra/model', 'Lft'),
-            'rgt' => Yii::t('ra/model', 'Rgt'),
-            'level' => Yii::t('ra/model', 'Level'),
-            'parent_id' => Yii::t('ra/model', 'Parent ID'),
-            'module_id' => Yii::t('ra/model', 'Module ID'),
-            'user_id' => Yii::t('ra/model', 'User ID'),
-            'url' => Yii::t('ra/model', 'Url'),
-            'name' => Yii::t('ra/model', 'Name'),
-            'about' => Yii::t('ra/model', 'About'),
-            'updated_at' => Yii::t('ra/model', 'Updated At'),
-            'created_at' => Yii::t('ra/model', 'Created At'),
+            'id' => Yii::t('ra', 'ID'),
+            'is_category' => Yii::t('ra', 'Is Category'),
+            'status' => Yii::t('ra', 'Status'),
+            'lft' => Yii::t('ra', 'Lft'),
+            'rgt' => Yii::t('ra', 'Rgt'),
+            'level' => Yii::t('ra', 'Level'),
+            'parent_id' => Yii::t('ra', 'Parent ID'),
+            'module_id' => Yii::t('ra', 'Module ID'),
+            'user_id' => Yii::t('ra', 'User ID'),
+            'url' => Yii::t('ra', 'Url'),
+            'name' => Yii::t('ra', 'Name'),
+            'about' => Yii::t('ra', 'About'),
+            'updated_at' => Yii::t('ra', 'Updated At'),
+            'created_at' => Yii::t('ra', 'Created At'),
         ];
     }
 
@@ -147,23 +180,6 @@ class Page extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPageData()
-    {
-        return $this->hasOne(PageData::className(), ['page_id' => 'id']);
-    }
-
-    public static function instantiate($row)
-    {
-        if (!empty($row['module_id'])) {
-            $class = RA::module($row['module_id'], 'class');
-            return new $class;
-        }
-        return new static;
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getPhotos()
     {
         return $this->hasMany(Photo::className(), ['owner_id' => 'id'])
@@ -200,23 +216,12 @@ class Page extends \yii\db\ActiveRecord
         else $model->save(false);
     }
 
-    public function getHref($normalizeUrl = true, $scheme = false)
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPageData()
     {
-        if (strpos($this->url, '/') !== false) return $this->url;
-        $module = RA::module($this->module_id);
-        $moduleSettings = RA::moduleSetting($this->module_id);
-        $action = 'show';
-        $additional = [];
-        if (!empty($moduleSettings['hasCategory'])) {
-            if ($this->is_category) {
-                $action = 'category';
-            } elseif ($this->parent && $this->parent->is_category) {
-                $additional['parent'] = $this->parent->url;
-            }
-        }
-        if (RA::module($this->url)) $url = ["/{$this->url}/index"];
-        else $url = ["/{$module}/{$action}", 'url' => $this->url] + $additional;
-        return $normalizeUrl ? Url::to($url, $scheme) : $url;
+        return $this->hasOne(PageData::className(), ['page_id' => 'id']);
     }
 
     public function getRoot()
@@ -244,6 +249,25 @@ class Page extends \yii\db\ActiveRecord
         return $this->getHref() == \Yii::$app->request->pathInfo ?: null;
     }
 
+    public function getHref($normalizeUrl = true, $scheme = false)
+    {
+        if (strpos($this->url, '/') !== false) return $this->url;
+        $module = RA::module($this->module_id);
+        $moduleSettings = RA::moduleSetting($this->module_id);
+        $action = 'show';
+        $additional = [];
+        if (!empty($moduleSettings['hasCategory'])) {
+            if ($this->is_category) {
+                $action = 'category';
+            } elseif ($this->parent && $this->parent->is_category) {
+                $additional['parent'] = $this->parent->url;
+            }
+        }
+        if (RA::module($this->url)) $url = ["/{$this->url}/index"];
+        else $url = ["/{$module}/{$action}", 'url' => $this->url] + $additional;
+        return $normalizeUrl ? Url::to($url, $scheme) : $url;
+    }
+
     public function getCharacterName($url){
         return Yii::t('app/character', Inflector::camel2words($url));
     }
@@ -263,19 +287,19 @@ class Page extends \yii\db\ActiveRecord
         return is_null($url) ? $this->_characters : (isset($this->_characters[$url]) ? $this->_characters[$url] : null);
     }
 
+    public function getPhotoImg($size, $options = [])
+    {
+        /** @var Photo $photo */
+        $photo = $this->photo;
+        if (empty($options['alt'])) $options['alt'] = $photo ? $photo->about : $this->name;
+        return Html::img($this->getPhotoHref($size), $options);
+    }
+
     public function getPhotoHref($size, $scheme = false)
     {
         /** @var Photo $photo */
         $photo = $this->photo;
         return $photo ? $photo->getHref($size, $scheme) : '/image/_' . $size . '/default.jpg';
-    }
-
-    public function getPhotoImg($size, $options = [])
-    {
-        /** @var Photo $photo */
-        $photo = $this->photo;
-        if(empty($options['alt'])) $options['alt'] = $photo ? $photo->about : $this->name;
-        return Html::img($this->getPhotoHref($size), $options);
     }
 
     /**
@@ -292,29 +316,5 @@ class Page extends \yii\db\ActiveRecord
     public function getModuleUrl()
     {
         return RA::module($this->module_id);
-    }
-
-    /**
-     * @param $module string|int
-     * @param array $condition
-     * @param bool $withRoot
-     * @param bool $allStatuses
-     * @return \yii\db\ActiveQuery the newly created [[ActiveQuery]] instance.
-     */
-    public static function findActive($module = null, $condition = [], $withRoot = false, $allStatuses = false)
-    {
-        $query = self::find()->from(['t' => self::tableName()])->orderBy(['t.lft' => SORT_ASC, 't.id' => SORT_ASC]);
-        if (!$allStatuses) $query->where(['t.status' => 1]);
-        if (!empty($module))
-            if (is_array($module)) {
-                $subQuery = Module::find()->select('id')->where(['or', ['id' => $module], ['url' => $module]]);
-                if (!$withRoot) $query->andWhere(['not', ['t.id' => $subQuery]]);
-                $query->andWhere(['t.module_id' => $subQuery]);
-            } else {
-                if (!$withRoot) $query->andWhere(['!=', 't.id', RA::moduleId($module)]);
-                $query->andWhere(['t.module_id' => RA::moduleId($module)]);
-            }
-        if (!empty($condition)) $query->andWhere($condition);
-        return $query;
     }
 }

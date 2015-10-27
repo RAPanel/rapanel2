@@ -1,9 +1,9 @@
 <?php
 
-namespace app\admin\controllers;
+namespace ra\admin\controllers;
 
-use app\admin\behaviors\SettingsBehavior;
-use app\admin\models\Module;
+use ra\admin\behaviors\SettingsBehavior;
+use ra\admin\models\Module;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
@@ -13,20 +13,6 @@ use yii\web\NotFoundHttpException;
  */
 class ModuleController extends AdminController
 {
-
-    public function getModel($id = false)
-    {
-        if(!$id)
-            $model = new Module();
-        else
-            $model = $this->findModel($id);
-
-        $model->attachBehavior('settings', [
-            'class' => SettingsBehavior::className(),
-            'relationName' => 'moduleSettings',
-        ]);
-        return $model;
-    }
 
     /**
      * Lists all Module models.
@@ -53,6 +39,37 @@ class ModuleController extends AdminController
         return $this->render('view', [
             'model' => $this->getModel($id),
         ]);
+    }
+
+    public function getModel($id = false)
+    {
+        if (!$id)
+            $model = new Module();
+        else
+            $model = $this->findModel($id);
+
+        $model->attachBehavior('settings', [
+            'class' => SettingsBehavior::className(),
+            'relationName' => 'moduleSettings',
+        ]);
+        return $model;
+    }
+
+    /**
+     * Finds the Module model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param string $id
+     * @return Module the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        $model = new Module;
+        if (($model = $model::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
     }
 
     /**
@@ -103,22 +120,5 @@ class ModuleController extends AdminController
         $this->getModel($id)->delete();
 
         return $this->redirect(['index']);
-    }
-
-    /**
-     * Finds the Module model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $id
-     * @return Module the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        $model = new Module;
-        if (($model = $model::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
     }
 }

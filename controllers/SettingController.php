@@ -1,8 +1,8 @@
 <?php
 
-namespace app\admin\controllers;
+namespace ra\admin\controllers;
 
-use app\admin\models\Settings;
+use ra\admin\models\Settings;
 use Yii;
 use yii\data\ActiveDataProvider;
 

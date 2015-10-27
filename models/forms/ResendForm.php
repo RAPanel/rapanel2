@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models\forms;
+namespace ra\admin\models\forms;
 
 use Yii;
 use yii\base\Model;
@@ -16,7 +16,7 @@ class ResendForm extends Model
     public $email;
 
     /**
-     * @var \app\admin\models\User
+     * @var \ra\admin\models\User
      */
     protected $_user = false;
 
@@ -52,7 +52,7 @@ class ResendForm extends Model
     /**
      * Get user based on email
      *
-     * @return \app\admin\models\User|null
+     * @return \ra\admin\models\User|null
      */
     public function getUser()
     {
@@ -90,7 +90,7 @@ class ResendForm extends Model
         if ($this->validate()) {
 
             // get user
-            /** @var \app\admin\models\UserKey $userKey */
+            /** @var \ra\admin\models\UserKey $userKey */
             $user    = $this->getUser();
             $userKey = Yii::$app->getModule("user")->model("UserKey");
 

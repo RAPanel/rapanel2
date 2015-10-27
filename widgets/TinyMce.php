@@ -6,10 +6,10 @@
  * Time: 9:06
  */
 
-namespace app\admin\widgets;
+namespace ra\admin\widgets;
 
 
-use app\admin\widgets\responsiveFilemanager\ResponsiveFilemanagerAsset;
+use ra\admin\widgets\responsiveFilemanager\ResponsiveFilemanagerAsset;
 
 class TinyMce extends \dosamigos\tinymce\TinyMce
 {

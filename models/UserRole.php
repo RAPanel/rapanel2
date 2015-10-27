@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 
@@ -44,11 +44,11 @@ class UserRole extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'name' => Yii::t('ra/model', 'Name'),
-            'updated_at' => Yii::t('ra/model', 'Updated At'),
-            'created_at' => Yii::t('ra/model', 'Created At'),
-            'can_admin' => Yii::t('ra/model', 'Can Admin'),
+            'id' => Yii::t('ra', 'ID'),
+            'name' => Yii::t('ra', 'Name'),
+            'updated_at' => Yii::t('ra', 'Updated At'),
+            'created_at' => Yii::t('ra', 'Created At'),
+            'can_admin' => Yii::t('ra', 'Can Admin'),
         ];
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 
@@ -44,10 +44,10 @@ class CharacterShow extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'character_id' => Yii::t('ra/model', 'Character ID'),
-            'module_id' => Yii::t('ra/model', 'Module ID'),
-            'page_id' => Yii::t('ra/model', 'Page ID'),
-            'filter' => Yii::t('ra/model', 'Filter'),
+            'character_id' => Yii::t('ra', 'Character ID'),
+            'module_id' => Yii::t('ra', 'Module ID'),
+            'page_id' => Yii::t('ra', 'Page ID'),
+            'filter' => Yii::t('ra', 'Filter'),
         ];
     }
 

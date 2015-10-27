@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('ra/view', 'Forms');
+$this->title = Yii::t('ra', 'Forms');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="form-index">

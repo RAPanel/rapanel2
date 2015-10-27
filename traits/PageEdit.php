@@ -6,12 +6,12 @@
  * Time: 13:36
  */
 
-namespace app\admin\traits;
+namespace ra\admin\traits;
 
-use app\admin\behaviors\PageHasManyBehavior;
-use app\admin\helpers\RA;
-use app\models\Page;
 use creocoder\nestedsets\NestedSetsBehavior;
+use ra\admin\behaviors\PageHasManyBehavior;
+use ra\admin\helpers\RA;
+use ra\admin\models\Page;
 use yii\behaviors\AttributeBehavior;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -28,44 +28,16 @@ trait PageEdit
         $this->set($value, 'pageCharacters');
     }
 
-    public function setPhotos($value)
-    {
-        $this->doEditable();
-        $this->set($value, 'photos');
-    }
-
-    public function save($runValidation = true, $attributeNames = null)
-    {
-        /** @var $this NestedSetsBehavior|self|Page */
-        $this->doEditable();
-        if ($this->_save !== true && $this->is_category && ($this->isNewRecord || $this->isAttributeChanged('parent_id'))) {
-            $this->_save = true;
-            $parent = $this->parent_id ? Page::findOne($this->parent_id) : $this->root;
-            $parent->doEditable();
-            if ($this->id != $this->root->id) {
-                if (!$this->parent_id)
-                    $this->parent_id = $this->root->id;
-                return $this->appendTo($parent, $runValidation, $attributeNames);
-            }
-        }
-        if(!RA::moduleSetting($this->module_id, 'hasChild') && !$this->is_category)
-            $this->detachBehavior('tree');
-
-        return parent::save($runValidation, $attributeNames);
-    }
-
     public function doEditable()
     {
         if ($this->_attached) return;
         $this->attachBehaviors([
+            'hasMany' => PageHasManyBehavior::className(),
             'tree' => [
                 'class' => NestedSetsBehavior::className(),
                 'treeAttribute' => 'module_id',
                 'depthAttribute' => 'level',
             ],
-        ]);
-        $this->attachBehaviors([
-            'hasMany' => PageHasManyBehavior::className(),
             'sluggable' => [
                 'class' => SluggableBehavior::className(),
                 'attribute' => 'name',
@@ -90,8 +62,37 @@ trait PageEdit
                         return RA::moduleSetting($event->sender->module_id, 'status');
                     return $event->sender->status;
                 }
-            ],
+            ]
         ]);
         $this->_attached = true;
+    }
+
+    public function setPhotos($value)
+    {
+        $this->doEditable();
+        $this->set($value, 'photos');
+    }
+
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        $this->doEditable();
+        if ($this->_save !== true) {
+            if ($this->is_category) {
+                $this->_save = true;
+                /** @var $this NestedSetsBehavior|self */
+                if ($this->isNewRecord || $this->isAttributeChanged('parent_id')) {
+                    $parent = $this->parent_id ? Page::findOne($this->parent_id) : $this->root;
+                    $parent->doEditable();
+                    if ($this->id != $this->root->id) {
+                        if (!$this->parent_id)
+                            $this->parent_id = $this->root->id;
+                        return $this->appendTo($parent, $runValidation, $attributeNames);
+                    }
+                }
+            }
+            $this->detachBehavior('tree');
+        }
+
+        return parent::save($runValidation, $attributeNames);
     }
 }

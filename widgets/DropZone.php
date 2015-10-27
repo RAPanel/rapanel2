@@ -6,10 +6,10 @@
  * Time: 9:38
  */
 
-namespace app\admin\widgets;
+namespace ra\admin\widgets;
 
 
-use app\admin\assets\DropZoneAsset;
+use ra\admin\assets\DropZoneAsset;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;

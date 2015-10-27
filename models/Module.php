@@ -1,9 +1,9 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
-use app\admin\behaviors\SettingsBehavior;
-use app\admin\traits\AutoSet;
+use ra\admin\behaviors\SettingsBehavior;
+use ra\admin\traits\AutoSet;
 use Yii;
 use yii\helpers\ArrayHelper;
 
@@ -23,7 +23,6 @@ use yii\helpers\ArrayHelper;
 class Module extends \yii\db\ActiveRecord
 {
     use AutoSet;
-    private $_name;
 
     /**
      * @inheritdoc
@@ -54,11 +53,11 @@ class Module extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'url' => Yii::t('ra/model', 'Url'),
-            'name' => Yii::t('ra/model', 'Name'),
-            'class' => Yii::t('ra/model', 'Class'),
-            'created_at' => Yii::t('ra/model', 'Created At'),
+            'id' => Yii::t('ra', 'ID'),
+            'url' => Yii::t('ra', 'Url'),
+            'name' => Yii::t('ra', 'Name'),
+            'class' => Yii::t('ra', 'Class'),
+            'created_at' => Yii::t('ra', 'Created At'),
         ];
     }
 
@@ -102,7 +101,7 @@ class Module extends \yii\db\ActiveRecord
         /** @var \yii\db\ActiveRecord $model */
         $model = $this->class;
         if (!$rootId = $model::find()->select('id')->where(['module_id' => $this->id, 'lft' => 1, 'level' => 0])->andWhere('rgt>lft')->scalar()) {
-            /** @var $root \app\admin\models\Page */
+            /** @var $root \ra\admin\models\Page */
             \Yii::$app->db->createCommand()->insert($model::tableName(), [
                 'id' => $this->id,
                 'is_category' => 1,
@@ -118,30 +117,6 @@ class Module extends \yii\db\ActiveRecord
         return $rootId;
     }
 
-    /*public function getName()
-    {
-        if ($this->_name === false)
-            $this->_name = $this->url ? Yii::t('app/module', Inflector::camel2words($this->url)) : $this->url;
-        return $this->_name;
-    }
-
-    public function setName($value)
-    {
-        if (!$value) return;
-        if (!$this->url) {
-            $translate = Yii::$app->translation->translate(Yii::$app->language, Yii::$app->sourceLanguage, $value);
-            if (isset($translate['code']) && $translate['code'] == 200) {
-                $translation = current($translate['text']);
-                $translation = preg_replace('#[^\w\d]#', ' ', strtolower($translation));
-                $translation = preg_replace('#\s+#', '-', trim($translation));
-                $this->url = $translation;
-            }
-        }
-        if ($this->url)
-            Message::add('app/module', Inflector::camel2words($this->url), Yii::$app->language, $value);
-        $this->_name = $value;
-    }*/
-
     public function getModuleCharacters()
     {
         return ArrayHelper::map($this->characterShows, 'character_id', 'character_id');
@@ -155,31 +130,8 @@ class Module extends \yii\db\ActiveRecord
         $this->setRelations('characterShows', $data);
     }
 
-    public function fixTree()
+    public function getSettings()
     {
-        Page::deleteAll(['module_id' => $this->id, 'status' => 9]);
-        $data = Page::find()
-            ->where(['and', ['module_id' => $this->id], ['>', 'lft', 0], ['>', 'rgt', 0]])
-            ->select(['id', 'parent_id', 'lft', 'rgt', 'level'])
-            ->orderBy('lft, id DESC')
-            ->asArray()->all();
-        $items = array();
-        foreach ($data as $row) {
-            $items[(int)$row['parent_id']][] = $row;
-        }
-//        var_dump($items);
-        $lft = 1;
-        $index = function ($parent_id) use ($items, &$lft, &$index) {
-            if (!empty($items[$parent_id]))
-                foreach ($items[$parent_id] as $row) {
-                    $update['lft'] = $lft++;
-                    call_user_func($index, $row['id']);
-                    $update['rgt'] = $lft++;
-                    Page::updateAll($update, ['id' => $row['id']]);
-                }
-        };
-        $transaction = Yii::$app->db->beginTransaction();
-        call_user_func($index, 0);
-        $transaction->commit();
+        return ArrayHelper::map($this->moduleSettings, 'url', 'value');
     }
 }

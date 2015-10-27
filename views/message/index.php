@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('ra/view', 'Messages');
+$this->title = Yii::t('ra', 'Messages');
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="col-lg-12">
             <div class="pull-right">
-                <?= Html::a(Yii::t('ra/view', 'Create Message'), ['create'], ['class' => 'btn btn-success']) ?>
+                <?= Html::a(Yii::t('ra', 'Create Message'), ['create'], ['class' => 'btn btn-success']) ?>
             </div>
 
             <h4><i class="fa fa-angle-right"></i> <?= Html::encode($this->title) ?></h4>

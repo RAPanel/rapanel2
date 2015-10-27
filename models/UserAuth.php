@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 
@@ -47,13 +47,13 @@ class UserAuth extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'user_id' => Yii::t('ra/model', 'User ID'),
-            'source' => Yii::t('ra/model', 'source'),
-            'source_id' => Yii::t('ra/model', 'source ID'),
-            'source_attributes' => Yii::t('ra/model', 'source Attributes'),
-            'updated_at' => Yii::t('ra/model', 'Updated At'),
-            'created_at' => Yii::t('ra/model', 'Created At'),
+            'id' => Yii::t('ra', 'ID'),
+            'user_id' => Yii::t('ra', 'User ID'),
+            'source' => Yii::t('ra', 'source'),
+            'source_id' => Yii::t('ra', 'source ID'),
+            'source_attributes' => Yii::t('ra', 'source Attributes'),
+            'updated_at' => Yii::t('ra', 'Updated At'),
+            'created_at' => Yii::t('ra', 'Created At'),
         ];
     }
 
