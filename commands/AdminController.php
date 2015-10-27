@@ -35,8 +35,7 @@ class AdminController extends \yii\console\Controller
                     $query->andWhere([$pk => $row[$pk]]);
                 if ($query->exists()) continue;
 
-                $model->setAttributes($row, false);
-                $model->save(false);
+                \Yii::$app->db->createCommand()->insert($model::tableName(), $row)->execute();
             }
         }
     }

@@ -54,14 +54,8 @@ class LoginForm extends Model
         // check for valid user or if user registered using social auth
         $user = $this->getUser();
         if (!$user || !$user->password) {
-            if (Yii::$app->getModule("user")->loginEmail && Yii::$app->getModule("user")->loginUsername) {
-                $attribute = "Email / Username";
-            } else {
-                $attribute = Yii::$app->getModule("user")->loginEmail ? "Email" : "Username";
-            }
-            $this->addError("username", Yii::t("user", "$attribute not found"));
-
-            // do we need to check $user->userAuths ???
+            $this->addError("username", Yii::t("user", $this->getLoginLabel() . " not found"));
+            Yii::$app->session->set('authorizeErrors', Yii::$app->session->get('authorizeErrors', 0) + 1);
         }
     }
 
@@ -81,6 +75,7 @@ class LoginForm extends Model
         // check status and resend email if inactive
         if ($user->status == $user::STATUS_INACTIVE) {
 
+            //@todo Доделать генератор токена для входа
             /** @var \app\admin\models\UserKey $userKey */
             $userKey = Yii::$app->getModule("user")->model("UserKey");
             $userKey = $userKey::generate($user->id, $userKey::TYPE_EMAIL_ACTIVATE);
@@ -142,18 +137,21 @@ class LoginForm extends Model
      */
     public function attributeLabels()
     {
-        // calculate attribute label for "username"
-        if (RA::config('user')['loginEmail'] && RA::config('user')['loginUsername']) {
-            $attribute = "Email / Username";
-        } else {
-            $attribute = RA::config('user')['loginEmail'] ? "Email" : "Username";
-        }
-
         return [
-            "username" => Yii::t("user", $attribute),
+            "username" => Yii::t("user", $this->getLoginLabel()),
             "password" => Yii::t("user", "Password"),
             "rememberMe" => Yii::t("user", "Remember Me"),
         ];
+    }
+
+    // calculate attribute label for "username"
+    public function getLoginLabel()
+    {
+        if (RA::config('user')['loginEmail'] && RA::config('user')['loginUsername']) {
+            return "Email / Username";
+        } else {
+            return RA::config('user')['loginEmail'] ? "Email" : "Username";
+        }
     }
 
     /**
@@ -165,8 +163,8 @@ class LoginForm extends Model
     public function login($loginDuration)
     {
         if ($this->validate()) {
-            Yii::$app->user->on(User::EVENT_AFTER_LOGIN, function($event){
-                $event->identity->login_ip   = Yii::$app->getRequest()->getUserIP();
+            Yii::$app->user->on(User::EVENT_AFTER_LOGIN, function ($event) {
+                $event->identity->login_ip = Yii::$app->getRequest()->getUserIP();
                 $event->identity->login_time = date("Y-m-d H:i:s");
                 $event->identity->update(false, ["login_ip", "login_time"]);
             });
