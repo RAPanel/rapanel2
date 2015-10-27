@@ -3,14 +3,14 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\admin\models\Settings */
+/* @var $model ra\admin\models\Settings */
 
-$this->title = Yii::t('ra/view', 'Update {modelClass}: ', [
+$this->title = Yii::t('ra', 'Update {modelClass}: ', [
     'modelClass' => 'Settings',
 ]) . ' ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('ra/view', 'Settings'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('ra', 'Settings'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = Yii::t('ra/view', 'Update');
+$this->params['breadcrumbs'][] = Yii::t('ra', 'Update');
 ?>
 <div class="settings-update">
 

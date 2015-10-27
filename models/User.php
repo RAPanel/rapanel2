@@ -1,8 +1,8 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
-use app\admin\helpers\RA;
+use ra\admin\helpers\RA;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\web\IdentityInterface;
@@ -69,6 +69,31 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         return '{{%user}}';
     }
 
+    /**
+     * Finds an identity by the given ID.
+     * @param string|integer $id the ID to be looked for
+     * @return IdentityInterface the identity object that matches the given ID.
+     * Null should be returned if such an identity cannot be found
+     * or the identity is not in an active state (disabled, deleted, etc.)
+     */
+    public static function findIdentity($id)
+    {
+        return static::findOne($id);
+    }
+
+    /**
+     * Finds an identity by the given token.
+     * @param mixed $token the token to be looked for
+     * @param mixed $type the type of the token. The value of this parameter depends on the implementation.
+     * For example, [[\yii\filters\auth\HttpBearerAuth]] will set this parameter to be `yii\filters\auth\HttpBearerAuth`.
+     * @return IdentityInterface the identity object that matches the given token.
+     * Null should be returned if such an identity cannot be found
+     * or the identity is not in an active state (disabled, deleted, etc.)
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        return static::findOne(["api_key" => $token]);
+    }
 
     /**
      * @inheritdoc
@@ -119,22 +144,22 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'role_id' => Yii::t('ra/model', 'Role ID'),
-            'status' => Yii::t('ra/model', 'Status'),
-            'email' => Yii::t('ra/model', 'Email'),
-            'new_email' => Yii::t('ra/model', 'New Email'),
-            'username' => Yii::t('ra/model', 'Username'),
-            'password' => Yii::t('ra/model', 'Password'),
-            'auth_key' => Yii::t('ra/model', 'Auth Key'),
-            'api_key' => Yii::t('ra/model', 'Api Key'),
-            'login_ip' => Yii::t('ra/model', 'Login Ip'),
-            'login_time' => Yii::t('ra/model', 'Login Time'),
-            'create_ip' => Yii::t('ra/model', 'Create Ip'),
-            'created_at' => Yii::t('ra/model', 'Created At'),
-            'updated_at' => Yii::t('ra/model', 'Updated At'),
-            'ban_time' => Yii::t('ra/model', 'Ban Time'),
-            'ban_reason' => Yii::t('ra/model', 'Ban Reason'),
+            'id' => Yii::t('ra', 'ID'),
+            'role_id' => Yii::t('ra', 'Role ID'),
+            'status' => Yii::t('ra', 'Status'),
+            'email' => Yii::t('ra', 'Email'),
+            'new_email' => Yii::t('ra', 'New Email'),
+            'username' => Yii::t('ra', 'Username'),
+            'password' => Yii::t('ra', 'Password'),
+            'auth_key' => Yii::t('ra', 'Auth Key'),
+            'api_key' => Yii::t('ra', 'Api Key'),
+            'login_ip' => Yii::t('ra', 'Login Ip'),
+            'login_time' => Yii::t('ra', 'Login Time'),
+            'create_ip' => Yii::t('ra', 'Create Ip'),
+            'created_at' => Yii::t('ra', 'Created At'),
+            'updated_at' => Yii::t('ra', 'Updated At'),
+            'ban_time' => Yii::t('ra', 'Ban Time'),
+            'ban_reason' => Yii::t('ra', 'Ban Reason'),
         ];
     }
 
@@ -186,7 +211,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         return $this->hasMany(UserProfile::className(), ['user_id' => 'id']);
     }
 
-
     /**
      * @inheritdoc
      */
@@ -216,32 +240,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         }
 
         return parent::beforeSave($insert);
-    }
-
-    /**
-     * Finds an identity by the given ID.
-     * @param string|integer $id the ID to be looked for
-     * @return IdentityInterface the identity object that matches the given ID.
-     * Null should be returned if such an identity cannot be found
-     * or the identity is not in an active state (disabled, deleted, etc.)
-     */
-    public static function findIdentity($id)
-    {
-        return static::findOne($id);
-    }
-
-    /**
-     * Finds an identity by the given token.
-     * @param mixed $token the token to be looked for
-     * @param mixed $type the type of the token. The value of this parameter depends on the implementation.
-     * For example, [[\yii\filters\auth\HttpBearerAuth]] will set this parameter to be `yii\filters\auth\HttpBearerAuth`.
-     * @return IdentityInterface the identity object that matches the given token.
-     * Null should be returned if such an identity cannot be found
-     * or the identity is not in an active state (disabled, deleted, etc.)
-     */
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
-        return static::findOne(["api_key" => $token]);
     }
 
     /**

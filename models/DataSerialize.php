@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 
@@ -39,9 +39,9 @@ class DataSerialize extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'type' => Yii::t('ra/model', 'Type'),
-            'value' => Yii::t('ra/model', 'Value'),
+            'id' => Yii::t('ra', 'ID'),
+            'type' => Yii::t('ra', 'Type'),
+            'value' => Yii::t('ra', 'Value'),
         ];
     }
 }

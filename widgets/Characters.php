@@ -6,11 +6,10 @@
  * Time: 16:03
  */
 
-namespace app\admin\widgets;
+namespace ra\admin\widgets;
 
 use Yii;
 use yii\bootstrap\Button;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\InputWidget;
@@ -25,7 +24,6 @@ class Characters extends InputWidget
         $result = '';
 
         if (is_null($this->value)) $this->value = $this->model->{$this->attribute};
-        $characters = ArrayHelper::map($this->value, 'id', 'value', 'character_id');
 
         $result .= Html::beginTag('div', ['class' => 'characterList']);
 

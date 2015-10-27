@@ -1,9 +1,9 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
-use app\admin\behaviors\RelationSaveBehavior;
-use app\admin\traits\SerializeAttribute;
+use ra\admin\behaviors\RelationSaveBehavior;
+use ra\admin\traits\SerializeAttribute;
 use Yii;
 use yii\helpers\Inflector;
 
@@ -54,12 +54,12 @@ class Character extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'url' => Yii::t('ra/model', 'Url'),
-            'type' => Yii::t('ra/model', 'Type'),
-            'multi' => Yii::t('ra/model', 'Multi'),
-            'data' => Yii::t('ra/model', 'Data'),
-            'name' => Yii::t('ra/model', 'Name'),
+            'id' => Yii::t('ra', 'ID'),
+            'url' => Yii::t('ra', 'Url'),
+            'type' => Yii::t('ra', 'Type'),
+            'multi' => Yii::t('ra', 'Multi'),
+            'data' => Yii::t('ra', 'Data'),
+            'name' => Yii::t('ra', 'Name'),
         ];
     }
 

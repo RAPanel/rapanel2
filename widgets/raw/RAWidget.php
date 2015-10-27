@@ -6,7 +6,7 @@
  * Time: 8:43
  */
 
-namespace app\admin\widgets\raw;
+namespace ra\admin\widgets\raw;
 
 
 use yii\base\Widget;

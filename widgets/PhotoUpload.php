@@ -6,7 +6,7 @@
  * Time: 18:45
  */
 
-namespace app\admin\widgets;
+namespace ra\admin\widgets;
 
 
 use Yii;

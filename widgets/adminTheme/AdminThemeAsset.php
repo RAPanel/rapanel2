@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\widgets\adminTheme;
+namespace ra\admin\widgets\adminTheme;
 
 /**
  * Created by PhpStorm.
@@ -10,7 +10,7 @@ namespace app\admin\widgets\adminTheme;
  */
 class AdminThemeAsset extends \yii\web\AssetBundle
 {
-    public $sourcePath = '@app/admin/widgets/adminTheme/assets';
+    public $sourcePath = '@ra/admin/widgets/adminTheme/assets';
 
     public $css = [
         '//fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&subset=latin,cyrillic',
@@ -31,6 +31,6 @@ class AdminThemeAsset extends \yii\web\AssetBundle
     public $depends = [
         'yii\bootstrap\BootstrapAsset',
         'yii\bootstrap\BootstrapPluginAsset',
-        'app\admin\assets\FontAwesomeAsset',
+        'ra\admin\assets\FontAwesomeAsset',
     ];
 }

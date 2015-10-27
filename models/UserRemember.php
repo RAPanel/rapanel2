@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 
@@ -40,9 +40,9 @@ class UserRemember extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'user_id' => Yii::t('ra/model', 'User ID'),
-            'key' => Yii::t('ra/model', 'Key'),
-            'value' => Yii::t('ra/model', 'Value'),
+            'user_id' => Yii::t('ra', 'User ID'),
+            'key' => Yii::t('ra', 'Key'),
+            'value' => Yii::t('ra', 'Value'),
         ];
     }
 }

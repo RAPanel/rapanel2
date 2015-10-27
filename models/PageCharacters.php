@@ -1,8 +1,8 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
-use app\admin\helpers\RA;
+use ra\admin\helpers\RA;
 use Yii;
 
 /**
@@ -45,10 +45,10 @@ class PageCharacters extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'page_id' => Yii::t('ra/model', 'Page ID'),
-            'character_id' => Yii::t('ra/model', 'Character ID'),
-            'value' => Yii::t('ra/model', 'Value'),
+            'id' => Yii::t('ra', 'ID'),
+            'page_id' => Yii::t('ra', 'Page ID'),
+            'character_id' => Yii::t('ra', 'Character ID'),
+            'value' => Yii::t('ra', 'Value'),
         ];
     }
 

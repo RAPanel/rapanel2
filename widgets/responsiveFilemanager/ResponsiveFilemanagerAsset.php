@@ -6,14 +6,14 @@
  * Time: 21:53
  */
 
-namespace app\admin\widgets\responsiveFilemanager;
+namespace ra\admin\widgets\responsiveFilemanager;
 
 
 use yii\web\AssetBundle;
 
 class ResponsiveFilemanagerAsset extends AssetBundle
 {
-    public $sourcePath = '@app/admin/widgets/responsiveFilemanager/assets';
+    public $sourcePath = '@ra/admin/widgets/responsiveFilemanager/assets';
 
     public $css = [
     ];

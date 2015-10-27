@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 
@@ -41,10 +41,10 @@ class Replaces extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'name' => Yii::t('ra/model', 'Name'),
-            'value' => Yii::t('ra/model', 'Value'),
-            'updated_at' => Yii::t('ra/model', 'Updated At'),
-            'created_at' => Yii::t('ra/model', 'Created At'),
+            'name' => Yii::t('ra', 'Name'),
+            'value' => Yii::t('ra', 'Value'),
+            'updated_at' => Yii::t('ra', 'Updated At'),
+            'created_at' => Yii::t('ra', 'Created At'),
         ];
     }
 }

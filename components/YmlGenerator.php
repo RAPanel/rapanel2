@@ -6,7 +6,7 @@
  * Time: 14:35
  */
 
-namespace app\admin\components;
+namespace ra\admin\components;
 
 use XMLWriter;
 use yii\base\Component;
@@ -111,17 +111,6 @@ abstract class YmlGenerator extends Component
         $engine->startElement('shop');
     }
 
-    protected function afterWrite()
-    {
-        $engine = $this->getEngine();
-        $engine->fullEndElement();
-        $engine->fullEndElement();
-        $engine->endDocument();
-
-        if (null !== $this->outputFile)
-            rename($this->_tmpFile, $this->outputFile);
-    }
-
     protected function getEngine()
     {
         if (null === $this->_engine) {
@@ -140,6 +129,8 @@ abstract class YmlGenerator extends Component
         }
     }
 
+    abstract protected function shopInfo();
+
     protected function writeCurrencies()
     {
         $engine = $this->getEngine();
@@ -147,6 +138,8 @@ abstract class YmlGenerator extends Component
         $this->currencies();
         $engine->fullEndElement();
     }
+
+    abstract protected function currencies();
 
     protected function writeCategories()
     {
@@ -156,12 +149,30 @@ abstract class YmlGenerator extends Component
         $engine->fullEndElement();
     }
 
+    abstract protected function categories();
+
     protected function writeOffers()
     {
         $engine = $this->getEngine();
         $engine->startElement('offers');
         $this->offers();
         $engine->fullEndElement();
+    }
+
+    abstract protected function offers();
+
+
+    /* Methods that must be implemented in your custom derived class */
+
+    protected function afterWrite()
+    {
+        $engine = $this->getEngine();
+        $engine->fullEndElement();
+        $engine->fullEndElement();
+        $engine->endDocument();
+
+        if (null !== $this->outputFile)
+            rename($this->_tmpFile, $this->outputFile);
     }
 
     /**
@@ -238,15 +249,4 @@ abstract class YmlGenerator extends Component
         }
         $engine->fullEndElement();
     }
-
-
-    /* Methods that must be implemented in your custom derived class */
-
-    abstract protected function shopInfo();
-
-    abstract protected function currencies();
-
-    abstract protected function categories();
-
-    abstract protected function offers();
 }

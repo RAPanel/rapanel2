@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 
@@ -40,9 +40,9 @@ class Session extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'expire' => Yii::t('ra/model', 'Expire'),
-            'data' => Yii::t('ra/model', 'Data'),
+            'id' => Yii::t('ra', 'ID'),
+            'expire' => Yii::t('ra', 'Expire'),
+            'data' => Yii::t('ra', 'Data'),
         ];
     }
 }

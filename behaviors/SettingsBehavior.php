@@ -8,7 +8,7 @@
  * @property \yii\db\ActiveRecord $owner
  */
 
-namespace app\admin\behaviors;
+namespace ra\admin\behaviors;
 
 
 use yii\base\Behavior;

@@ -4,10 +4,10 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model app\admin\models\Form */
+/* @var $model ra\admin\models\Form */
 
-$this->title = Yii::t('ra/view', 'Create Form');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('ra/view', 'Forms'), 'url' => ['index']];
+$this->title = Yii::t('ra', 'Create Form');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('ra', 'Forms'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="form-create">

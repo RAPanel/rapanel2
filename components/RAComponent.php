@@ -6,16 +6,20 @@
  * Time: 11:40
  */
 
-namespace app\admin\components;
+namespace ra\admin\components;
 
-use app\admin\models\Settings;
+use ra\admin\helpers\RA;
+use ra\admin\models\arrays\Modules;
+use ra\admin\models\Settings;
 use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
 use yii\helpers\ArrayHelper;
 
-class RAInit extends Component implements BootstrapInterface
+class RAComponent extends Component implements BootstrapInterface
 {
+    private $_modules;
+
     public function bootstrap($app)
     {
         $list = Settings::find()->select(['path', 'value'])->asArray()->all();
@@ -30,5 +34,17 @@ class RAInit extends Component implements BootstrapInterface
         Yii::$app->params = ArrayHelper::merge(Yii::$app->params, $result);
 
         return true;
+    }
+
+    public function getSettings()
+    {
+        return RA::config();
+    }
+
+    public function getModules()
+    {
+        if (!$this->_modules)
+            $this->_modules = new Modules;
+        return $this->_modules;
     }
 }

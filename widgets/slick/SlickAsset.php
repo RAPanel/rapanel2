@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\widgets\slick;
+namespace ra\admin\widgets\slick;
 
 use Yii;
 use yii\web\AssetBundle;

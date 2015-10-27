@@ -4,10 +4,10 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model app\admin\models\Settings */
+/* @var $model ra\admin\models\Settings */
 
-$this->title = Yii::t('ra/view', 'Create Settings');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('ra/view', 'Settings'), 'url' => ['index']];
+$this->title = Yii::t('ra', 'Create Settings');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('ra', 'Settings'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="settings-create">

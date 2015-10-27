@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 use yii\base\Exception;
@@ -44,10 +44,10 @@ class ModuleSettings extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'module_id' => Yii::t('ra/model', 'Module ID'),
-            'sort' => Yii::t('ra/model', 'Sort'),
-            'url' => Yii::t('ra/model', 'Url'),
-            'value' => Yii::t('ra/model', 'Value'),
+            'module_id' => Yii::t('ra', 'Module ID'),
+            'sort' => Yii::t('ra', 'Sort'),
+            'url' => Yii::t('ra', 'Url'),
+            'value' => Yii::t('ra', 'Value'),
         ];
     }
 

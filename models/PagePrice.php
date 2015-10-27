@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 
@@ -45,13 +45,13 @@ class PagePrice extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'page_id' => Yii::t('ra/model', 'Page ID'),
-            'type_id' => Yii::t('ra/model', 'Type ID'),
-            'unit' => Yii::t('ra/model', 'Unit'),
-            'value' => Yii::t('ra/model', 'Value'),
-            'count' => Yii::t('ra/model', 'Count'),
-            'lastmod' => Yii::t('ra/model', 'Lastmod'),
+            'id' => Yii::t('ra', 'ID'),
+            'page_id' => Yii::t('ra', 'Page ID'),
+            'type_id' => Yii::t('ra', 'Type ID'),
+            'unit' => Yii::t('ra', 'Unit'),
+            'value' => Yii::t('ra', 'Value'),
+            'count' => Yii::t('ra', 'Count'),
+            'lastmod' => Yii::t('ra', 'Lastmod'),
         ];
     }
 }

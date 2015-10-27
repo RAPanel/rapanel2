@@ -6,9 +6,9 @@
  * Time: 11:47
  */
 
-namespace app\admin\components;
+namespace ra\admin\components;
 
-use app\admin\models\Cart;
+use ra\admin\models\Cart;
 use yii\base\Component;
 
 class ShoppingCart extends Component
@@ -22,7 +22,7 @@ class ShoppingCart extends Component
     }
 
     /**
-     * @param $model \app\admin\traits\CartItem
+     * @param $model \ra\admin\traits\CartItem
      */
     public function update($model, $quantity, $add = false)
     {
@@ -45,11 +45,19 @@ class ShoppingCart extends Component
         $item->save(false);
     }
 
+    /**
+     * @return Cart[]
+     */
     public function getItems()
     {
         if ($this->_items === false)
             $this->_items = Cart::findAll(['session_id' => $this->getSessionId(), 'status' => 0, 'order_id' => 0]);
         return $this->_items?:[];
+    }
+
+    public function getSessionId()
+    {
+        return \Yii::$app->user->getId() ?: \Yii::$app->session->hasSessionId || !\Yii::$app->session->open() ? \Yii::$app->session->getId() : '';
     }
 
     public function getQuantity()
@@ -90,10 +98,5 @@ class ShoppingCart extends Component
         }
         $this->_items = false;
         $transaction->commit();
-    }
-
-    public function getSessionId()
-    {
-        return \Yii::$app->user->getId() ?: \Yii::$app->session->hasSessionId || !\Yii::$app->session->open() ? \Yii::$app->session->getId() : '';
     }
 }

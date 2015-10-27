@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\widgets\foundation;
+namespace ra\admin\widgets\foundation;
 
 use Yii;
 use yii\web\AssetBundle;
@@ -18,6 +18,6 @@ class FoundationJsAsset extends AssetBundle
 
     public $depends = [
         '\yii\web\JqueryAsset',
-        'app\admin\widgets\foundation\ModernizrAsset',
+        'ra\admin\widgets\foundation\ModernizrAsset',
     ];
 }

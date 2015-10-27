@@ -6,14 +6,14 @@
  * Time: 16:06
  */
 
-namespace app\admin\widgets;
+namespace ra\admin\widgets;
 
 
 use yii\web\AssetBundle;
 
 class ChosenSortableAsset extends AssetBundle
 {
-    public $sourcePath = '@app/admin/widgets/assets';
+    public $sourcePath = '@ra/admin/widgets/assets';
 
     public $js = [
         'jquery-chosen-sortable.js'

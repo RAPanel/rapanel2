@@ -6,7 +6,7 @@
  * Time: 9:25
  */
 
-namespace app\admin\widgets\foundation;
+namespace ra\admin\widgets\foundation;
 
 
 class ActiveForm extends \yii\widgets\ActiveForm

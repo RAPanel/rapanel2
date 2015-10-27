@@ -1,8 +1,8 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
-use app\admin\traits\SerializeAttribute;
+use ra\admin\traits\SerializeAttribute;
 use Yii;
 
 /**
@@ -22,6 +22,14 @@ class Order extends \yii\db\ActiveRecord
 {
     use SerializeAttribute;
     public $serializeAttributes = ['name', 'phone', 'email', 'address', 'comment'];
+
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return '{{%order}}';
+    }
 
     public function init()
     {
@@ -53,12 +61,22 @@ class Order extends \yii\db\ActiveRecord
         return implode('<br>', $result);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public static function tableName()
+    public function getPay()
     {
-        return '{{%order}}';
+        return isset($this->pais[$this->pay_id ?: 0]) ? $this->pais[$this->pay_id ?: 0] : null;
+    }
+
+    public function getDelivery()
+    {
+        return isset($this->deliveries[$this->delivery_id]) ? $this->deliveries[$this->delivery_id] : null;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getItems()
+    {
+        return $this->hasMany(Cart::className(), ['order_id' => 'id']);
     }
 
     /**
@@ -85,17 +103,17 @@ class Order extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('ra/model', 'ID'),
-            'status_id' => Yii::t('ra/model', 'Status ID'),
-            'is_paied' => Yii::t('ra/model', 'Is Paied'),
-            'session_id' => Yii::t('ra/model', 'Session ID'),
-            'delivery_id' => Yii::t('ra/model', 'Delivery ID'),
-            'delivery' => Yii::t('ra/model', 'Delivery ID'),
-            'pay_id' => Yii::t('ra/model', 'Pay ID'),
-            'pay' => Yii::t('ra/model', 'Pay ID'),
-            'data' => Yii::t('ra/model', 'Data'),
-            'updated_at' => Yii::t('ra/model', 'Updated At'),
-            'created_at' => Yii::t('ra/model', 'Created At'),
+            'id' => Yii::t('ra', 'ID'),
+            'status_id' => Yii::t('ra', 'Status ID'),
+            'is_paied' => Yii::t('ra', 'Is Paied'),
+            'session_id' => Yii::t('ra', 'Session ID'),
+            'delivery_id' => Yii::t('ra', 'Delivery ID'),
+            'delivery' => Yii::t('ra', 'Delivery ID'),
+            'pay_id' => Yii::t('ra', 'Pay ID'),
+            'pay' => Yii::t('ra', 'Pay ID'),
+            'data' => Yii::t('ra', 'Data'),
+            'updated_at' => Yii::t('ra', 'Updated At'),
+            'created_at' => Yii::t('ra', 'Created At'),
 
             'name' => 'Имя',
             'phone' => 'Телефон',
@@ -125,28 +143,10 @@ class Order extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getDelivery()
-    {
-        return isset($this->deliveries[$this->delivery_id]) ? $this->deliveries[$this->delivery_id] : null;
-    }
-
     public function getPais()
     {
         return [
             0 => 'Наличные',
         ];
-    }
-
-    public function getPay()
-    {
-        return isset($this->pais[$this->pay_id ?: 0]) ? $this->pais[$this->pay_id ?: 0] : null;
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getItems()
-    {
-        return $this->hasMany(Cart::className(), ['order_id' => 'id']);
     }
 }

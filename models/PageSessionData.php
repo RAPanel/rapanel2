@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\models;
+namespace ra\admin\models;
 
 use Yii;
 
@@ -44,11 +44,11 @@ class PageSessionData extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'page_id' => Yii::t('ra/model', 'Page ID'),
-            'session' => Yii::t('ra/model', 'Session'),
-            'type' => Yii::t('ra/model', 'Type'),
-            'value' => Yii::t('ra/model', 'Value'),
-            'last_visit' => Yii::t('ra/model', 'Last Visit'),
+            'page_id' => Yii::t('ra', 'Page ID'),
+            'session' => Yii::t('ra', 'Session'),
+            'type' => Yii::t('ra', 'Type'),
+            'value' => Yii::t('ra', 'Value'),
+            'last_visit' => Yii::t('ra', 'Last Visit'),
         ];
     }
 }

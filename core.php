@@ -17,11 +17,11 @@ $config = [
     ],
     'modules' => [
         'rapanel' => [
-            'class' => 'app\admin\AdminModule',
+            'class' => 'ra\admin\AdminModule',
         ],
     ],
     'controllerMap' => [
-        'image' => 'app\admin\controllers\ImageController',
+        'image' => 'ra\admin\controllers\ImageController',
     ],
     'components' => [
         'translation' => [
@@ -38,7 +38,7 @@ $config = [
             ],
         ],
         'authManager' => [
-            'class' => 'app\admin\components\AuthManager',
+            'class' => 'ra\admin\components\AuthManager',
         ],
         'view' => [
             'theme' => [
@@ -63,11 +63,16 @@ $config = [
         ],
         'i18n' => [
             'translations' => [
+                'ra' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'sourceLanguage' => 'en-US',
+                    'basePath' => '@ra/admin/messages',
+                ],
                 '*' => [
                     'class' => 'yii\i18n\DbMessageSource',
                     'messageTable' => '{{%message_translate}}',
                     'sourceMessageTable' => '{{%message}}',
-                    'on missingTranslation' => ['app\admin\components\Translation', 'handleMissingTranslation'],
+                    'on missingTranslation' => ['ra\admin\components\Translation', 'handleMissingTranslation'],
                 ],
             ],
         ],
@@ -77,8 +82,8 @@ $config = [
             'messageTable' => '{{%message_translate}}',
             'sourceMessageTable' => '{{%message}}',
         ],*/
-        'raInit' => [
-            'class' => 'app\admin\components\RAInit',
+        'ra' => [
+            'class' => 'ra\admin\components\RAComponent',
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',

@@ -4,7 +4,7 @@
 /* @var $content string */
 /* template @url(http://www.blacktie.co/demo/dashgum/) */
 
-use app\admin\assets\AppAsset;
+use ra\admin\assets\AppAsset;
 use yii\helpers\Html;
 use yii\widgets\Breadcrumbs;
 
@@ -47,7 +47,7 @@ if (!in_array($this->context->module->id, ['rapanel']))
                     'style' => 'margin-bottom: 0;',
                 ],
                 'homeLink' => [
-                    'label' => Yii::t('ra/view', 'Home'),
+                    'label' => Yii::t('ra', 'Home'),
                     'url' => '/rapanel',
                 ],
                 'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],

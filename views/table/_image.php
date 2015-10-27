@@ -5,9 +5,9 @@
  * Date: 04.09.2015
  * Time: 0:07
  *
- * @var app\models\Photo $data
+ * @var ra\admin\models\Photo $data
  */
-use app\admin\helpers\RA;
+use ra\admin\helpers\RA;
 use yii\helpers\Html;
 
 if (isset($index)) $data->sort_id = $index;

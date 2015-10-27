@@ -1,8 +1,8 @@
 <?php
 
-namespace app\admin\models\forms;
+namespace ra\admin\models\forms;
 
-use app\admin\helpers\RA;
+use ra\admin\helpers\RA;
 use Yii;
 use yii\base\Model;
 use yii\web\User;
@@ -28,7 +28,7 @@ class LoginForm extends Model
     public $rememberMe = true;
 
     /**
-     * @var \app\admin\models\User
+     * @var \ra\admin\models\User
      */
     protected $_user = false;
 
@@ -60,60 +60,16 @@ class LoginForm extends Model
     }
 
     /**
-     * Validate user status
-     */
-    public function validateUserStatus()
-    {
-        // check for ban status
-        $user = $this->getUser();
-        if ($user->ban_time) {
-            $this->addError("username", Yii::t("user", "User is banned - {banReason}", [
-                "banReason" => $user->ban_reason,
-            ]));
-        }
-
-        // check status and resend email if inactive
-        if ($user->status == $user::STATUS_INACTIVE) {
-
-            //@todo Доделать генератор токена для входа
-            /** @var \app\admin\models\UserKey $userKey */
-            $userKey = Yii::$app->getModule("user")->model("UserKey");
-            $userKey = $userKey::generate($user->id, $userKey::TYPE_EMAIL_ACTIVATE);
-            $user->sendEmailConfirmation($userKey);
-            $this->addError("username", Yii::t("user", "Confirmation email resent"));
-        }
-    }
-
-    /**
-     * Validate password
-     */
-    public function validatePassword()
-    {
-        // skip if there are already errors
-        if ($this->hasErrors()) {
-            return;
-        }
-
-        /** @var \app\admin\models\User $user */
-
-        // check if password is correct
-        $user = $this->getUser();
-        if (!$user->validatePassword($this->password)) {
-            $this->addError("password", Yii::t("user", "Incorrect password"));
-        }
-    }
-
-    /**
      * Get user based on email and/or username
      *
-     * @return \app\admin\models\User|null
+     * @return \ra\admin\models\User|null
      */
     public function getUser()
     {
         // check if we need to get user
         if ($this->_user === false) {
 
-            /** @var \app\admin\models\User $userModel */
+            /** @var \ra\admin\models\User $userModel */
             // build query based on email and/or username login properties
             $userModel = RA::config('user')['models']['user'];
             $user = $userModel::find();
@@ -132,6 +88,61 @@ class LoginForm extends Model
         return $this->_user;
     }
 
+    public function getLoginLabel()
+    {
+        if (RA::config('user')['loginEmail'] && RA::config('user')['loginUsername']) {
+            return "Email / Username";
+        } else {
+            return RA::config('user')['loginEmail'] ? "Email" : "Username";
+        }
+    }
+
+    /**
+     * Validate user status
+     */
+    public function validateUserStatus()
+    {
+        // check for ban status
+        $user = $this->getUser();
+        if ($user->ban_time) {
+            $this->addError("username", Yii::t("user", "User is banned - {banReason}", [
+                "banReason" => $user->ban_reason,
+            ]));
+        }
+
+        // check status and resend email if inactive
+        if ($user->status == $user::STATUS_INACTIVE) {
+
+            //@todo Доделать генератор токена для входа
+            /** @var \ra\admin\models\UserKey $userKey */
+            $userKey = Yii::$app->getModule("user")->model("UserKey");
+            $userKey = $userKey::generate($user->id, $userKey::TYPE_EMAIL_ACTIVATE);
+            $user->sendEmailConfirmation($userKey);
+            $this->addError("username", Yii::t("user", "Confirmation email resent"));
+        }
+    }
+
+    /**
+     * Validate password
+     */
+    public function validatePassword()
+    {
+        // skip if there are already errors
+        if ($this->hasErrors()) {
+            return;
+        }
+
+        /** @var \ra\admin\models\User $user */
+
+        // check if password is correct
+        $user = $this->getUser();
+        if (!$user->validatePassword($this->password)) {
+            $this->addError("password", Yii::t("user", "Incorrect password"));
+        }
+    }
+
+    // calculate attribute label for "username"
+
     /**
      * @inheritdoc
      */
@@ -142,16 +153,6 @@ class LoginForm extends Model
             "password" => Yii::t("user", "Password"),
             "rememberMe" => Yii::t("user", "Remember Me"),
         ];
-    }
-
-    // calculate attribute label for "username"
-    public function getLoginLabel()
-    {
-        if (RA::config('user')['loginEmail'] && RA::config('user')['loginUsername']) {
-            return "Email / Username";
-        } else {
-            return RA::config('user')['loginEmail'] ? "Email" : "Username";
-        }
     }
 
     /**
