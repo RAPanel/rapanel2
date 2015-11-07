@@ -10,8 +10,6 @@ use app\admin\widgets\responsiveFilemanager\ResponsiveFilemanagerAsset;
 
 $this->params['breadcrumbs'][] = 'Файловый менеджер';
 
-$data = ResponsiveFilemanagerAsset::register($this);
-
 $js = <<<JS
 $(window).resize(function(){
     $('#fileManager').css('height', $('#sidebar').outerHeight()-60);
@@ -20,6 +18,6 @@ JS;
 $this->registerJs($js);
 ?>
 <div class="row">
-    <iframe id="fileManager" src="<?= $data->baseUrl ?>/dialog.php" frameborder="0" width="100%" height="500"
+    <iframe id="fileManager" src="/rere/admin/widgets/responsiveFilemanager/assets/dialog.php" frameborder="0" width="100%" height="500"
             style="margin-bottom:-25px"></iframe>
 </div>

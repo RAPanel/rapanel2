@@ -137,9 +137,9 @@ class RA
         return false;
     }
 
-    public static function characterCondition($name, $value = false)
+    public static function characterCondition($name, $value = null, $type = null)
     {
-        return ['pageCharacters' => function ($query) use ($name, $value) {
+        return ['pageCharacters' => function ($query) use ($name, $value, $type) {
             /** @var $query \yii\db\ActiveQuery */
             /** @var \yii\db\ActiveRecord $class */
             $class = $query->modelClass;
@@ -148,9 +148,8 @@ class RA
                 $name = reset($name);
             } else
                 $tableName = $name;
-            $query->from([$tableName => $class::tableName()])->where(ArrayHelper::merge([
-                $tableName . '.character_id' => RA::character($name),
-            ], $value ? [$tableName . '.value' => $value] : []));
+            $query->from([$tableName => $class::tableName()])->where([$tableName . '.character_id' => RA::character($name)]);
+            if(!is_null($value)) $query->andWhere($type ? [$type, $tableName . '.value', $value] : [$tableName . '.value' => $value]);
         }];
     }
 
