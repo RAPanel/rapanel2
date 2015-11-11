@@ -6,7 +6,10 @@
  * Time: 16:22
  */
 
+$email = 'no-reply@' . str_replace('www.', $_SERVER['HTTP_HOST'], $_SERVER['HTTP_HOST']);
+
 $config = [
+    'id' => 'rere',
     'bootstrap' => ['raInit'],
     'language' => 'en-US',
     'aliases' => [
@@ -31,8 +34,11 @@ $config = [
             'rules' => [
                 '/' => 'site/index',
                 '<c_:image>/_<type>/<name>' => '<c_>/index',
-                '<c_:rapanel>' => '<c_>/default/index',
+                '<m_:rapanel>' => '<m_>/default/index',
             ],
+        ],
+        'authManager' => [
+            'class' => 'app\admin\components\AuthManager',
         ],
         'view' => [
             'theme' => [
@@ -41,6 +47,14 @@ $config = [
                     '@app/widgets/views' => '@webroot/theme/views/widgets',
                 ],
                 'baseUrl' => '@web/themes',
+            ],
+        ],
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            'useFileTransport' => false,
+            'messageConfig' => [
+                'from' => [$email],
+                'charset' => 'UTF-8',
             ],
         ],
         'request' => [
@@ -56,11 +70,18 @@ $config = [
         'raInit' => [
             'class' => 'app\admin\components\RAInit',
         ],
-    ]
+        'errorHandler' => [
+            'errorAction' => 'site/error',
+        ],
+    ],
+    'params' => [
+        'adminEmail' => 'webmaster@rere-design.ru',
+        'fromEmail' => $email,
+    ],
 ];
 
 if (YII_ENV_DEV) {
-    $allowedIPs = ['192.168.91.1', '78.159.225.99', '192.168.228.1', '192.168.1.1', '10.0.2.2'];
+    $allowedIPs = ['192.168.1.*', '78.159.225.99', '10.*.*.*'];
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
     $config['bootstrap'][] = 'gii';

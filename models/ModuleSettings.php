@@ -3,6 +3,7 @@
 namespace app\admin\models;
 
 use Yii;
+use yii\base\Exception;
 
 /**
  * This is the model class for table "{{%module_settings}}".
@@ -43,10 +44,10 @@ class ModuleSettings extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'module_id' => Yii::t('rere.model', 'Module ID'),
-            'sort' => Yii::t('rere.model', 'Sort'),
-            'url' => Yii::t('rere.model', 'Url'),
-            'value' => Yii::t('rere.model', 'Value'),
+            'module_id' => Yii::t('ra/model', 'Module ID'),
+            'sort' => Yii::t('ra/model', 'Sort'),
+            'url' => Yii::t('ra/model', 'Url'),
+            'value' => Yii::t('ra/model', 'Value'),
         ];
     }
 
@@ -56,5 +57,28 @@ class ModuleSettings extends \yii\db\ActiveRecord
     public function getModule()
     {
         return $this->hasOne(Module::className(), ['id' => 'module_id']);
+    }
+
+    public function init()
+    {
+        parent::init();
+        $serialize = function ($event) {
+            if (is_array($event->sender->value) || is_object($event->sender->value)) {
+                $event->sender->value = serialize($event->sender->value);
+            }
+        };
+        $this->on($this::EVENT_AFTER_VALIDATE, $serialize);
+        $this->on($this::EVENT_BEFORE_INSERT, $serialize);
+        $this->on($this::EVENT_BEFORE_UPDATE, $serialize);
+        $this->on($this::EVENT_AFTER_FIND, function ($event) {
+            if ($event->sender->value) {
+                try{
+                    $value = @unserialize($event->sender->value);
+                    if ($value) $event->sender->value = $value;
+                } catch(Exception $e){
+                    return;
+                }
+            }
+        });
     }
 }

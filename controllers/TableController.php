@@ -3,33 +3,20 @@
 namespace app\admin\controllers;
 
 use app\admin\models\Module;
+use app\admin\models\Page;
 use app\admin\models\Photo;
 use Yii;
-use app\admin\models\Page;
 use yii\data\ActiveDataProvider;
 use yii\helpers\FileHelper;
-use yii\web\Controller;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 
 /**
  * TableController implements the CRUD actions for Page model.
  */
-class TableController extends Controller
+class TableController extends AdminController
 {
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                ],
-            ],
-        ];
-    }
 
     /**
      * @param $url
@@ -56,7 +43,7 @@ class TableController extends Controller
         $model = new $module->class;
         if($id) $model = $model::findOne($id);
 
-        $query = $model::find()->from(['t' => $model::tableName()]);
+        $query = $model::find()->from(['t' => $model::tableName()])->orderBy(['t.lft' => SORT_ASC, 't.id' => SORT_ASC]);
 
         if ($model->hasAttribute('module_id')) {
             $query->andWhere(['t.module_id' => $module->id]);

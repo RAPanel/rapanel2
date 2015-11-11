@@ -3,7 +3,9 @@
 namespace app\admin\models;
 
 use app\admin\behaviors\SettingsBehavior;
+use app\admin\traits\AutoSet;
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%module}}".
@@ -20,6 +22,9 @@ use Yii;
  */
 class Module extends \yii\db\ActiveRecord
 {
+    use AutoSet;
+    private $_name;
+
     /**
      * @inheritdoc
      */
@@ -35,7 +40,7 @@ class Module extends \yii\db\ActiveRecord
     {
         return [
             [['url', 'name', 'class'], 'required'],
-            [['settings'], 'safe'],
+            [['settings', 'moduleCharacters'], 'safe'],
             [['created_at'], 'safe'],
             [['url'], 'string', 'max' => 16],
             [['name'], 'string', 'max' => 64],
@@ -49,11 +54,11 @@ class Module extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'url' => Yii::t('rere.model', 'Url'),
-            'name' => Yii::t('rere.model', 'Name'),
-            'class' => Yii::t('rere.model', 'Class'),
-            'created_at' => Yii::t('rere.model', 'Created At'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'url' => Yii::t('ra/model', 'Url'),
+            'name' => Yii::t('ra/model', 'Name'),
+            'class' => Yii::t('ra/model', 'Class'),
+            'created_at' => Yii::t('ra/model', 'Created At'),
         ];
     }
 
@@ -111,5 +116,42 @@ class Module extends \yii\db\ActiveRecord
             $rootId = \Yii::$app->db->getLastInsertID();
         }
         return $rootId;
+    }
+
+    /*public function getName()
+    {
+        if ($this->_name === false)
+            $this->_name = $this->url ? Yii::t('app/module', Inflector::camel2words($this->url)) : $this->url;
+        return $this->_name;
+    }
+
+    public function setName($value)
+    {
+        if (!$value) return;
+        if (!$this->url) {
+            $translate = Yii::$app->translation->translate(Yii::$app->language, Yii::$app->sourceLanguage, $value);
+            if (isset($translate['code']) && $translate['code'] == 200) {
+                $translation = current($translate['text']);
+                $translation = preg_replace('#[^\w\d]#', ' ', strtolower($translation));
+                $translation = preg_replace('#\s+#', '-', trim($translation));
+                $this->url = $translation;
+            }
+        }
+        if ($this->url)
+            Message::add('app/module', Inflector::camel2words($this->url), Yii::$app->language, $value);
+        $this->_name = $value;
+    }*/
+
+    public function getModuleCharacters()
+    {
+        return ArrayHelper::map($this->characterShows, 'character_id', 'character_id');
+    }
+
+    public function setModuleCharacters($values)
+    {
+        $data = [];
+        if (!empty($values)) foreach ($values as $value)
+            $data[] = ['character_id' => $value];
+        $this->setRelations('characterShows', $data);
     }
 }

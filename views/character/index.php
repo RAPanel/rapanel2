@@ -1,35 +1,41 @@
 <?php
 
-use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('rere.view', 'Characters');
+$this->title = Yii::t('ra/view', 'Characters');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="character-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="row content-panel">
 
-    <p>
-        <?= Html::a(Yii::t('rere.view', 'Create Character'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+        <div class="col-lg-12">
+            <div class="pull-right">
+                <?= Html::a(Yii::t('ra/view', 'Create Character'), ['create'], ['class' => 'btn btn-success']) ?>
+            </div>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            <h4><i class="fa fa-angle-right"></i> <?= Html::encode($this->title) ?></h4>
 
-            'id',
-            'url:url',
-            'type',
-            'multi',
-            'data',
+            <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => [
+//                    ['class' => 'yii\grid\SerialColumn'],
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+                    'id',
+                    'name',
+                    'url',
+                    'type',
+                    'multi',
+                    'data',
 
+                    ['class' => 'yii\grid\ActionColumn'],
+                ],
+            ]); ?>
+
+        </div>
+    </div>
 </div>

@@ -9,9 +9,9 @@ use Yii;
  *
  * @property integer $id
  * @property integer $user_id
- * @property string $provider
- * @property string $provider_id
- * @property string $provider_attributes
+ * @property string $source
+ * @property string $source_id
+ * @property string $source_attributes
  * @property string $updated_at
  * @property string $created_at
  *
@@ -33,11 +33,11 @@ class UserAuth extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'provider', 'provider_id', 'provider_attributes'], 'required'],
+            [['user_id', 'source', 'source_id', 'source_attributes'], 'required'],
             [['user_id'], 'integer'],
-            [['provider_attributes'], 'string'],
+            [['source_attributes'], 'string'],
             [['updated_at', 'created_at'], 'safe'],
-            [['provider', 'provider_id'], 'string', 'max' => 255]
+            [['source', 'source_id'], 'string', 'max' => 255]
         ];
     }
 
@@ -47,13 +47,13 @@ class UserAuth extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'user_id' => Yii::t('rere.model', 'User ID'),
-            'provider' => Yii::t('rere.model', 'Provider'),
-            'provider_id' => Yii::t('rere.model', 'Provider ID'),
-            'provider_attributes' => Yii::t('rere.model', 'Provider Attributes'),
-            'updated_at' => Yii::t('rere.model', 'Updated At'),
-            'created_at' => Yii::t('rere.model', 'Created At'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'user_id' => Yii::t('ra/model', 'User ID'),
+            'source' => Yii::t('ra/model', 'source'),
+            'source_id' => Yii::t('ra/model', 'source ID'),
+            'source_attributes' => Yii::t('ra/model', 'source Attributes'),
+            'updated_at' => Yii::t('ra/model', 'Updated At'),
+            'created_at' => Yii::t('ra/model', 'Created At'),
         ];
     }
 

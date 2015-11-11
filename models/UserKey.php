@@ -64,4 +64,14 @@ class UserKey extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => '\yii\behaviors\TimestampBehavior',
+                'createdAtAttribute'=>'create_time',
+            ]
+        ];
+    }
 }

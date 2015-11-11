@@ -2,7 +2,10 @@
 
 namespace app\admin\models;
 
+use app\admin\helpers\RA;
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "{{%user}}".
@@ -31,8 +34,33 @@ use Yii;
  * @property UserKey[] $userKeys
  * @property UserProfile[] $userProfiles
  */
-class User extends \yii\db\ActiveRecord
+class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
+    /**
+     * @var int Inactive status
+     */
+    const STATUS_INACTIVE = 0;
+    /**
+     * @var int Active status
+     */
+    const STATUS_ACTIVE = 1;
+    /**
+     * @var int Unconfirmed email status
+     */
+    const STATUS_UNCONFIRMED_EMAIL = 2;
+    /**
+     * @var string Current password - for account page updates
+     */
+    public $currentPassword;
+    /**
+     * @var string New password - for registration and changing password
+     */
+    public $newPassword;
+    /**
+     * @var string New password confirmation - for reset
+     */
+    public $newPasswordConfirm;
+
     /**
      * @inheritdoc
      */
@@ -41,19 +69,48 @@ class User extends \yii\db\ActiveRecord
         return '{{%user}}';
     }
 
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
-        return [
-            [['role_id', 'status', 'api_key'], 'required'],
-            [['role_id', 'status'], 'integer'],
-            [['login_time', 'created_at', 'updated_at', 'ban_time'], 'safe'],
-            [['email', 'new_email', 'username', 'password', 'auth_key', 'api_key', 'login_ip', 'create_ip', 'ban_reason'], 'string', 'max' => 255],
-            [['email'], 'unique'],
-            [['username'], 'unique']
+        // set initial rules
+        $rules = [
+            // general email and username rules
+            [['email', 'username'], 'string', 'max' => 255],
+            [['email', 'username'], 'unique'],
+            [['email', 'username'], 'filter', 'filter' => 'trim'],
+            [['email'], 'email'],
+            [['username'], 'match', 'pattern' => RA::config('user')['loginUsername'] ? '/^[A-Za-z0-9_]+$/u' : '/^[\w\d\s]+$/ui', 'message' => Yii::t('user', '{attribute} can contain only letters, numbers, and "_"')],
+
+            // password rules
+            [['newPassword'], 'string', 'min' => 3],
+            [['newPassword'], 'filter', 'filter' => 'trim'],
+            [['newPassword'], 'required', 'on' => ['register', 'reset']],
+            [['newPasswordConfirm'], 'required', 'on' => ['reset']],
+            [['newPasswordConfirm'], 'compare', 'compareAttribute' => 'newPassword', 'message' => Yii::t('user', 'Passwords do not match')],
+
+            // account page
+            [['currentPassword'], 'required', 'on' => ['account']],
+            [['currentPassword'], 'validatePassword', 'on' => ['account']],
+
+            // admin crud rules
+            [['role_id', 'status'], 'required', 'on' => ['admin']],
+            [['role_id', 'status'], 'integer', 'on' => ['admin']],
+            [['ban_time'], 'integer', 'on' => ['admin']],
+            [['ban_reason'], 'string', 'max' => 255, 'on' => 'admin'],
         ];
+
+        // add required rules for email/username depending on module properties
+        foreach (["requireEmail", "requireUsername"] as $requireField) {
+            if (RA::config('user')[$requireField]) {
+                $attribute = strtolower(substr($requireField, 7)); // "email" or "username"
+                $rules[] = [$attribute, "required"];
+            }
+        }
+
+        return $rules;
     }
 
     /**
@@ -130,8 +187,6 @@ class User extends \yii\db\ActiveRecord
     }
 
 
-
-
     /**
      * @inheritdoc
      */
@@ -161,5 +216,93 @@ class User extends \yii\db\ActiveRecord
         }
 
         return parent::beforeSave($insert);
+    }
+
+    /**
+     * Finds an identity by the given ID.
+     * @param string|integer $id the ID to be looked for
+     * @return IdentityInterface the identity object that matches the given ID.
+     * Null should be returned if such an identity cannot be found
+     * or the identity is not in an active state (disabled, deleted, etc.)
+     */
+    public static function findIdentity($id)
+    {
+        return static::findOne($id);
+    }
+
+    /**
+     * Finds an identity by the given token.
+     * @param mixed $token the token to be looked for
+     * @param mixed $type the type of the token. The value of this parameter depends on the implementation.
+     * For example, [[\yii\filters\auth\HttpBearerAuth]] will set this parameter to be `yii\filters\auth\HttpBearerAuth`.
+     * @return IdentityInterface the identity object that matches the given token.
+     * Null should be returned if such an identity cannot be found
+     * or the identity is not in an active state (disabled, deleted, etc.)
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        return static::findOne(["api_key" => $token]);
+    }
+
+    /**
+     * Returns an ID that can uniquely identify a user identity.
+     * @return string|integer an ID that uniquely identifies a user identity.
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Returns a key that can be used to check the validity of a given identity ID.
+     *
+     * The key should be unique for each individual user, and should be persistent
+     * so that it can be used to check the validity of the user identity.
+     *
+     * The space of such keys should be big enough to defeat potential identity attacks.
+     *
+     * This is required if [[User::enableAutoLogin]] is enabled.
+     * @return string a key that is used to check the validity of a given identity ID.
+     * @see validateAuthKey()
+     */
+    public function getAuthKey()
+    {
+        return $this->auth_key;
+    }
+
+    /**
+     * Validates the given auth key.
+     *
+     * This is required if [[User::enableAutoLogin]] is enabled.
+     * @param string $authKey the given auth key
+     * @return boolean whether the given auth key is valid.
+     * @see getAuthKey()
+     */
+    public function validateAuthKey($authKey)
+    {
+        return $this->auth_key === $authKey;
+    }
+
+    /**
+     * Verify password
+     *
+     * @param string $password
+     * @return bool
+     */
+    public function validatePassword($password)
+    {
+        return Yii::$app->security->validatePassword($password, $this->password);
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'value' => function () {
+                    return date("Y-m-d H:i:s");
+                },
+            ],
+        ];
     }
 }

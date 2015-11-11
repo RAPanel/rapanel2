@@ -2,9 +2,9 @@
 
 namespace app\admin\controllers;
 
+use app\admin\models\Character;
 use app\admin\models\Page;
 use Yii;
-use app\admin\models\Character;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -12,7 +12,7 @@ use yii\web\NotFoundHttpException;
 /**
  * CharacterController implements the CRUD actions for Character model.
  */
-class CharacterController extends Controller
+class CharacterController extends AdminController
 {
     public function behaviors()
     {
@@ -63,7 +63,7 @@ class CharacterController extends Controller
         $model = new Character();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if(Yii::$app->request->isAjax) return $this->render('/table/_character', ['data'=>$model, 'model'=>Page::findOne(Yii::$app->request->get('page_id'))]);
+            if(Yii::$app->request->isAjax) return $this->render('/table/_character', ['key' => 9999 + $model->id, 'data'=>$model, 'model'=>Page::findOne(Yii::$app->request->get('page_id')), 'attribute'=>'pageCharacters']);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [

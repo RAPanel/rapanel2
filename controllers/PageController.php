@@ -8,17 +8,21 @@
 
 namespace app\admin\controllers;
 
+use app\admin\helpers\RA;
 use app\admin\models\Page;
 use Yii;
 use yii\web\HttpException;
 
 class PageController extends Controller
 {
-    public $model = '\rere\core\models\Page';
-
     public function actionIndex($url = null)
     {
         if (is_null($url)) $url = "/$this->id";
+        return $this->actionShow($url);
+    }
+
+    public function actionCategory($url = null)
+    {
         return $this->actionShow($url);
     }
 
@@ -31,17 +35,14 @@ class PageController extends Controller
 
     public function page($condition)
     {
-        /** @var Page $model */
-        $model = new $this->model;
-        $page = $model::find()->where($condition)->one();
-        if (!$condition || !$page) throw new HttpException(404, Yii::t('rere.error', 'Can`t find page'));
+        /** @var Page $class */
+        $page = Page::find()->where($condition)->with('pageData')->one();
+        if (!$condition || !$page) throw new HttpException(404, Yii::t('ra/error', 'Can`t find page'));
         return $page;
     }
 
     public function render($view, $params = [])
     {
-        // @todo Для старых проектов
-        if (empty($params['model']) && !empty($params['base'])) $params['model'] = $params['base'];
         /** @var $base Page */
         if (isset($params['model'])) {
             if (method_exists($params['model'], 'getData') && ($data = $params['model']->data)) {
@@ -50,6 +51,27 @@ class PageController extends Controller
                 if (!empty($data['keywords'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['keywords']]);
             }
             $this->getView()->params['model'] = $params['base'] = $params['model'];
+            $this->getView()->params['pageTitle'] = $params['model']->name;
+            $this->getView()->params['breadcrumbs'] = function () {
+                $model = $this->getView()->params['model'];
+                $result = [];
+                if ($model->parent_id) {
+                    if (!$model->level) {
+                        $parent = $model::findOne($model->parent_id);
+                    }
+                    /** @var Page $get */
+                    $get = isset($parent) ? $parent : $model;
+                    $query = $get::findActive($get->module_id, ['and', ['<', 'lft', $get->lft], ['>', 'rgt', $get->rgt]], true, true);
+                    if (!RA::moduleSetting($model->module_id, 'controller'))
+                        $query->andWhere(['<>', 'parent_id', null]);
+                    $rows = $query->all();
+                    if (isset($parent)) $rows[] = $parent;
+                    foreach ($rows as $row)
+                        $result[] = ['label' => $row->name, 'url' => $row->href];
+                }
+                $result[] = $model->name;
+                return $result;
+            };
         }
         return parent::render($view, $params);
     }

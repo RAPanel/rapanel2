@@ -2,24 +2,37 @@
 
 namespace app\admin\controllers;
 
-use app\admin\models\Replaces;
+use app\admin\models\Subscribe;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 
 /**
- * ReplaceController implements the CRUD actions for Replaces model.
+ * SubscribeController implements the CRUD actions for Subscribe model.
  */
-class ReplaceController extends AdminController
+class SubscribeController extends AdminController
 {
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['post'],
+                ],
+            ],
+        ];
+    }
+
     /**
-     * Lists all Replaces models.
+     * Lists all Subscribe models.
      * @return mixed
      */
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Replaces::find(),
+            'query' => Subscribe::find(),
         ]);
 
         return $this->render('index', [
@@ -28,7 +41,7 @@ class ReplaceController extends AdminController
     }
 
     /**
-     * Displays a single Replaces model.
+     * Displays a single Subscribe model.
      * @param string $id
      * @return mixed
      */
@@ -40,16 +53,16 @@ class ReplaceController extends AdminController
     }
 
     /**
-     * Creates a new Replaces model.
+     * Creates a new Subscribe model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Replaces();
+        $model = new Subscribe();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->name]);
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -58,7 +71,7 @@ class ReplaceController extends AdminController
     }
 
     /**
-     * Updates an existing Replaces model.
+     * Updates an existing Subscribe model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param string $id
      * @return mixed
@@ -68,7 +81,7 @@ class ReplaceController extends AdminController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->name]);
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -77,7 +90,7 @@ class ReplaceController extends AdminController
     }
 
     /**
-     * Deletes an existing Replaces model.
+     * Deletes an existing Subscribe model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param string $id
      * @return mixed
@@ -90,15 +103,15 @@ class ReplaceController extends AdminController
     }
 
     /**
-     * Finds the Replaces model based on its primary key value.
+     * Finds the Subscribe model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param string $id
-     * @return Replaces the loaded model
+     * @return Subscribe the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Replaces::findOne($id)) !== null) {
+        if (($model = Subscribe::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

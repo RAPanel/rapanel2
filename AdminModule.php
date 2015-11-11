@@ -15,8 +15,6 @@ class AdminModule extends \yii\base\Module
 {
     public $settings;
 
-    public $layout = '@admin/views/layout/main.php';
-
     public $controllerNamespace = 'app\admin\controllers';
 
     public function init()
@@ -24,18 +22,16 @@ class AdminModule extends \yii\base\Module
         // ставим алис для админки на текущую папку
         Yii::setAlias('@admin', __DIR__);
 
+        $this->module->layout = '@admin/views/layouts/main.php';
+
         // импорт всех файлов конфигураций
-        foreach (FileHelper::findFiles(Yii::getAlias('@admin/config'), ['except' => ['.php']]) as $file)
-            Yii::configure($this, require($file));
+        foreach (FileHelper::findFiles(Yii::getAlias('@admin/config'), ['except' => ['.php']]) as $file) {
+            $data = require($file);
+            foreach ($data as $key => $value)
+                $data[$key] = ArrayHelper::merge($this->module->{$key}, $value);
+            Yii::configure($this->module, $data);
+        }
 
         parent::init();
-
-        // инициализация модуля с помощью конфигурации, загруженной из config.php
-        Yii::$app->setModule('user', [
-            'class' => 'rere\user\Module',
-            'modelClasses' => [
-                'Role' => 'rere\core\models\Role'
-            ],
-        ]);
     }
 }

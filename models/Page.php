@@ -2,11 +2,11 @@
 
 namespace app\admin\models;
 
-use app\admin\behaviors\PageHasManyBehavior;
 use app\admin\helpers\RA;
-use creocoder\nestedsets\NestedSetsBehavior;
 use Yii;
-use yii\behaviors\SluggableBehavior;
+use yii\helpers\Html;
+use yii\helpers\Inflector;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "{{%page}}".
@@ -37,6 +37,10 @@ use yii\behaviors\SluggableBehavior;
  */
 class Page extends \yii\db\ActiveRecord
 {
+    use \app\admin\traits\PageEdit;
+
+    private $_characters = [];
+
     /**
      * @inheritdoc
      */
@@ -51,9 +55,11 @@ class Page extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['is_category', 'status', 'lft', 'rgt', 'level', 'name'], 'required'],
+            [['name', 'module_id'], 'required'],
             [['is_category', 'status', 'lft', 'rgt', 'level', 'parent_id', 'module_id', 'user_id'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
+            [['url', 'name', 'about'], 'string', 'max' => 255],
+            [['url', 'name', 'about'], 'string', 'max' => 255],
             [['url', 'name', 'about'], 'string', 'max' => 255],
             [['pageData', 'pageCharacters', 'photos'], 'safe']
         ];
@@ -65,20 +71,20 @@ class Page extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rere.model', 'ID'),
-            'is_category' => Yii::t('rere.model', 'Is Category'),
-            'status' => Yii::t('rere.model', 'Status'),
-            'lft' => Yii::t('rere.model', 'Lft'),
-            'rgt' => Yii::t('rere.model', 'Rgt'),
-            'level' => Yii::t('rere.model', 'Level'),
-            'parent_id' => Yii::t('rere.model', 'Parent ID'),
-            'module_id' => Yii::t('rere.model', 'Module ID'),
-            'user_id' => Yii::t('rere.model', 'User ID'),
-            'url' => Yii::t('rere.model', 'Url'),
-            'name' => Yii::t('rere.model', 'Name'),
-            'about' => Yii::t('rere.model', 'About'),
-            'updated_at' => Yii::t('rere.model', 'Updated At'),
-            'created_at' => Yii::t('rere.model', 'Created At'),
+            'id' => Yii::t('ra/model', 'ID'),
+            'is_category' => Yii::t('ra/model', 'Is Category'),
+            'status' => Yii::t('ra/model', 'Status'),
+            'lft' => Yii::t('ra/model', 'Lft'),
+            'rgt' => Yii::t('ra/model', 'Rgt'),
+            'level' => Yii::t('ra/model', 'Level'),
+            'parent_id' => Yii::t('ra/model', 'Parent ID'),
+            'module_id' => Yii::t('ra/model', 'Module ID'),
+            'user_id' => Yii::t('ra/model', 'User ID'),
+            'url' => Yii::t('ra/model', 'Url'),
+            'name' => Yii::t('ra/model', 'Name'),
+            'about' => Yii::t('ra/model', 'About'),
+            'updated_at' => Yii::t('ra/model', 'Updated At'),
+            'created_at' => Yii::t('ra/model', 'Created At'),
         ];
     }
 
@@ -146,41 +152,13 @@ class Page extends \yii\db\ActiveRecord
         return $this->hasOne(PageData::className(), ['page_id' => 'id']);
     }
 
-
-
-    private $_save;
-
-    public function behaviors()
+    public static function instantiate($row)
     {
-        return [
-            'hasMany' => PageHasManyBehavior::className(),
-            'tree' => [
-                'class' => NestedSetsBehavior::className(),
-                'treeAttribute' => 'module_id',
-                'depthAttribute' => 'level',
-            ],
-            'sluggable' => [
-                'class' => SluggableBehavior::className(),
-                'attribute' => 'name',
-                'slugAttribute' => 'url',
-                'immutable' => true,
-                'ensureUnique' => true,
-            ],
-        ];
-    }
-
-    public function init()
-    {
-        parent::init();
-        if ($this->module_id) $this->on(self::EVENT_AFTER_FIND, function ($event) {
-            /* @var $class \yii\db\ActiveRecord */
-            $row = $event->sender->attributes;
-            $class = Module::find()->where(['id' => $event->sender->module_id])->select('class')->scalar();
-            $model = $class::instantiate($row);
-            $class::populateRecord($model, $row);
-
-            $event->sender = $model;
-        });
+        if (!empty($row['module_id'])) {
+            $class = RA::module($row['module_id'], 'class');
+            return new $class;
+        }
+        return new static;
     }
 
     /**
@@ -192,6 +170,15 @@ class Page extends \yii\db\ActiveRecord
             ->where(['model' => self::tableName()])->orderBy(['sort_id' => SORT_ASC]);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPhoto()
+    {
+        return $this->hasOne(Photo::className(), ['owner_id' => 'id'])
+            ->where(['model' => self::tableName()])->orderBy(['sort_id' => SORT_ASC]);
+    }
+
     public function getExistCharacters()
     {
         return $this->hasMany(Character::className(), ['id' => 'character_id'])->viaTable(CharacterShow::tableName(), ['module_id' => 'module_id', 'filter' => 'is_category']);
@@ -199,6 +186,7 @@ class Page extends \yii\db\ActiveRecord
 
     public function setPageData($data)
     {
+        $this->doEditable();
         $model = $this->pageData;
         if (!$model && ($class = $this->getPageData()->modelClass)) {
             $model = new $class;
@@ -212,51 +200,19 @@ class Page extends \yii\db\ActiveRecord
         else $model->save(false);
     }
 
-    public function setPageCharacters($value)
-    {
-        $this->set($value, 'pageCharacters');
-    }
-
-    public function setPhotos($value)
-    {
-        $this->set($value, 'photos');
-
-    }
-
-    public function save($runValidation = true, $attributeNames = null)
-    {
-        if ($this->_save !== true) {
-            if ($this->is_category) {
-                $this->_save = true;
-                /** @var $this NestedSetsBehavior|self */
-                if ($this->isNewRecord || $this->isAttributeChanged('parent_id')) {
-                    $parent = $this->parent_id ? self::findOne($this->parent_id) : $this->root;
-                    $this->appendTo($parent, $runValidation, $attributeNames);
-                }
-            }
-
-            $this->detachBehavior('tree');
-        }
-
-        return parent::save($runValidation, $attributeNames);
-    }
-
     public function getHref($normalizeUrl = true, $scheme = false)
     {
         if (strpos($this->url, '/') !== false) return $this->url;
         $module = RA::module($this->module_id);
+        $moduleSettings = RA::moduleSetting($this->module_id);
         $action = 'show';
         $additional = [];
-        if ($module == 'category') {
-            $action = 'index';
-            $url = Page::find()->where(['id' => $this->parents])->andWhere('url!="/"')->orderBy('id')->select('url')->scalar();
-            if ($url) $module = $url;
-        } elseif ($this->parent && $this->parent->module_id = RA::module('category')) {
-            if (strpos($this->parent->url, '/') !== false)
-                return str_replace('//', '/', $this->parent->url . '/' . $this->url);
-            if ($module != $this->parent->url) $additional['category'] = $this->parent->url;
-
-            $action = 'show';
+        if (!empty($moduleSettings['hasCategory'])) {
+            if ($this->is_category) {
+                $action = 'category';
+            } elseif ($this->parent && $this->parent->is_category) {
+                $additional['parent'] = $this->parent->url;
+            }
         }
         if (RA::module($this->url)) $url = ["/{$this->url}/index"];
         else $url = ["/{$module}/{$action}", 'url' => $this->url] + $additional;
@@ -265,7 +221,7 @@ class Page extends \yii\db\ActiveRecord
 
     public function getRoot()
     {
-        return $this->hasOne($this, ['module_id' => 'module_id'])->where(['lft' => 1, 'level' => 0])->andWhere('rgt>lft');
+        return $this->hasOne($this, ['module_id' => 'module_id'])->where(['is_category' => 1, 'level' => 0, 'parent_id' => null])->andWhere('rgt>lft');
     }
 
     public function getData()
@@ -275,7 +231,7 @@ class Page extends \yii\db\ActiveRecord
 
     public function getContent()
     {
-        return $this->data->content;
+        return $this->data ? $this->data->content : null;
     }
 
     public function getLabel()
@@ -285,6 +241,80 @@ class Page extends \yii\db\ActiveRecord
 
     public function getActive()
     {
-        return $this->getHref() == \Yii::$app->request->pathInfo;
+        return $this->getHref() == \Yii::$app->request->pathInfo ?: null;
+    }
+
+    public function getCharacterName($url){
+        return Yii::t('app/character', Inflector::camel2words($url));
+    }
+
+    public function getCharacter($url = null)
+    {
+        $characters = $this->getCharacters();
+        return isset($characters[$url]) ? $characters[$url] : null;
+    }
+
+    public function getCharacters($url = null, $refresh = false)
+    {
+        if (empty($this->_characters) || $refresh) {
+            foreach ($this->pageCharacters as $row)
+                $this->_characters[RA::character($row->character_id)] = $row->value;
+        }
+        return is_null($url) ? $this->_characters : (isset($this->_characters[$url]) ? $this->_characters[$url] : null);
+    }
+
+    public function getPhotoHref($size, $scheme = false)
+    {
+        /** @var Photo $photo */
+        $photo = $this->photo;
+        return $photo ? $photo->getHref($size, $scheme) : '/image/_' . $size . '/default.jpg';
+    }
+
+    public function getPhotoImg($size, $options = [])
+    {
+        /** @var Photo $photo */
+        $photo = $this->photo;
+        if(empty($options['alt'])) $options['alt'] = $photo ? $photo->about : $this->name;
+        return Html::img($this->getPhotoHref($size), $options);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getItems()
+    {
+        return $this->hasMany(self::className(), ['parent_id' => 'id'])->viaTable(self::tableName(), ['module_id' => 'module_id'],
+            function ($query) {
+                $query->select('id')->onCondition(['between', 'lft', $this->lft, $this->rgt]);
+            })->where(['is_category' => 0, 'status'=>'1', 'module_id' => $this->module_id]);
+    }
+
+    public function getModuleUrl()
+    {
+        return RA::module($this->module_id);
+    }
+
+    /**
+     * @param $module string|int
+     * @param array $condition
+     * @param bool $withRoot
+     * @param bool $allStatuses
+     * @return \yii\db\ActiveQuery the newly created [[ActiveQuery]] instance.
+     */
+    public static function findActive($module = null, $condition = [], $withRoot = false, $allStatuses = false)
+    {
+        $query = self::find()->from(['t' => self::tableName()])->orderBy(['t.lft' => SORT_ASC, 't.id' => SORT_ASC]);
+        if (!$allStatuses) $query->where(['t.status' => 1]);
+        if (!empty($module))
+            if (is_array($module)) {
+                $subQuery = Module::find()->select('id')->where(['or', ['id' => $module], ['url' => $module]]);
+                if (!$withRoot) $query->andWhere(['not', ['t.id' => $subQuery]]);
+                $query->andWhere(['t.module_id' => $subQuery]);
+            } else {
+                if (!$withRoot) $query->andWhere(['!=', 't.id', RA::moduleId($module)]);
+                $query->andWhere(['t.module_id' => RA::moduleId($module)]);
+            }
+        if (!empty($condition)) $query->andWhere($condition);
+        return $query;
     }
 }

@@ -6,15 +6,15 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('rere.view', 'Replaces');
+$this->title = Yii::t('ra/view', 'Subscribes');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="replaces-index">
+<div class="subscribe-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('rere.view', 'Create Replaces'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('ra/view', 'Create Subscribe'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
@@ -22,10 +22,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
+            'id',
             'name',
-            'value:ntext',
-            'update_at',
-            'create_at',
+            'email:email',
+            'data',
+            'updated_at',
+            // 'created_at',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
