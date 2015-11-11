@@ -1,6 +1,6 @@
 <?php
 
-namespace app\behaviors;
+namespace app\admin\behaviors;
 
 use ReflectionClass;
 use Yii;
