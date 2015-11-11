@@ -14,11 +14,13 @@ use app\models\Page;
 use creocoder\nestedsets\NestedSetsBehavior;
 use yii\behaviors\AttributeBehavior;
 use yii\behaviors\SluggableBehavior;
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
 trait PageEdit
 {
     private $_save;
+    private $_attached;
 
     public function setPageCharacters($value)
     {
@@ -41,6 +43,7 @@ trait PageEdit
                 /** @var $this NestedSetsBehavior|self */
                 if ($this->isNewRecord || $this->isAttributeChanged('parent_id')) {
                     $parent = $this->parent_id ? Page::findOne($this->parent_id) : $this->root;
+                    $parent->doEditable();
                     if ($this->id != $this->root->id) {
                         if (!$this->parent_id)
                             $this->parent_id = $this->root->id;
@@ -48,7 +51,6 @@ trait PageEdit
                     }
                 }
             }
-
             $this->detachBehavior('tree');
         }
 
@@ -57,6 +59,7 @@ trait PageEdit
 
     public function doEditable()
     {
+        if ($this->_attached) return;
         $this->attachBehaviors([
             'hasMany' => PageHasManyBehavior::className(),
             'tree' => [
@@ -71,6 +74,12 @@ trait PageEdit
                 'immutable' => true,
                 'ensureUnique' => true,
             ],
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'value' => function () {
+                    return date("Y-m-d H:i:s");
+                },
+            ],
             'statusChange' => [
                 'class' => AttributeBehavior::className(),
                 'attributes' => [
@@ -84,5 +93,6 @@ trait PageEdit
                 }
             ]
         ]);
+        $this->_attached = true;
     }
 }

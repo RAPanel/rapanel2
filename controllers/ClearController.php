@@ -13,7 +13,7 @@ use app\admin\models\Photo;
 use Yii;
 use yii\helpers\FileHelper;
 
-class ClearController extends Controller
+class ClearController extends AdminController
 {
     public function actionIndex($back = true)
     {

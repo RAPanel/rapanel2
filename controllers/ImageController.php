@@ -8,11 +8,10 @@
 
 namespace app\admin\controllers;
 
-use Imagine\Image\Point;
 use app\admin\helpers\Image;
+use Imagine\Image\Point;
 use Yii;
 use yii\helpers\FileHelper;
-use yii\web\Controller;
 use yii\web\Response;
 
 class ImageController extends Controller

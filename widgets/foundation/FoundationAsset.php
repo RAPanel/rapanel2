@@ -3,7 +3,6 @@
 namespace app\admin\widgets\foundation;
 
 use Yii;
-use yii\web\AssetBundle;
 
 class FoundationAsset extends FoundationJsAsset
 {

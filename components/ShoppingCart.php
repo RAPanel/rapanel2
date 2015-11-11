@@ -40,7 +40,7 @@ class ShoppingCart extends Component
             $item->data = $model;
             $item->setAttributes(['session_id' => $this->getSessionId(), 'item_id' => $model->getId(), 'status' => 0, 'order_id' => 0], false);
         }
-        $item->price = $model->getPrice();
+        $item->price = $model->getPrice(0);
         $item->quantity = $add ? ($item->quantity + $quantity) : $quantity;
         $item->save(false);
     }

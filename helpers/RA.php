@@ -12,11 +12,10 @@ namespace app\admin\helpers;
 use app\admin\models\Character;
 use app\admin\models\Module;
 use app\admin\models\ModuleSettings;
+use app\admin\models\User;
 use Yii;
-use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
-use yii\web\HttpException;
 
 class RA
 {
@@ -76,7 +75,7 @@ class RA
      * @param string $alias
      * @return array
      */
-    public static function dropDownList(array $data, $alias = 'ra/app/dropdown')
+    public static function dropDownList(array $data, $alias = 'ra/dropDown')
     {
         $list = [];
         foreach ($data as $key => $value)
@@ -138,17 +137,19 @@ class RA
         return false;
     }
 
-    public static function characterCondition($name, $value)
+    public static function characterCondition($name, $value = null, $type = null)
     {
-        return ['pageCharacters' => function ($query) use ($name, $value) {
+        return ['pageCharacters' => function ($query) use ($name, $value, $type) {
             /** @var $query \yii\db\ActiveQuery */
             /** @var \yii\db\ActiveRecord $class */
             $class = $query->modelClass;
-            $tableName = 'pc_' . $name;
-            $query->from([$tableName => $class::tableName()])->where([
-                $tableName . '.character_id' => RA::character($name),
-                $tableName . '.value' => $value,
-            ]);
+            if (is_array($name)) {
+                $tableName = key($name);
+                $name = reset($name);
+            } else
+                $tableName = $name;
+            $query->from([$tableName => $class::tableName()])->where([$tableName . '.character_id' => RA::character($name)]);
+            if(!is_null($value)) $query->andWhere($type ? [$type, $tableName . '.value', $value] : [$tableName . '.value' => $value]);
         }];
     }
 
@@ -158,7 +159,10 @@ class RA
      */
     public static function pageItems($query)
     {
-        $query->orderBy(ArrayHelper::merge(['is_category' => SORT_ASC, 'level' => SORT_DESC], $query->orderBy));
+        $queryOrder = $query->orderBy;
+        $query->orderBy(['is_category' => SORT_ASC, 'level' => SORT_DESC]);
+        $query->andWhere(['status'=>1]);
+        if($queryOrder) $query->addOrderBy($queryOrder);
         $query->addOrderBy(['lft' => SORT_ASC, 'id' => SORT_ASC]);
         $items = [];
         /** @var \app\admin\models\Page $row */
@@ -176,5 +180,24 @@ class RA
     public static function info($name = false, $default = null)
     {
         return isset(Yii::$app->params[$name]) ? Yii::$app->params[$name] : $default;
+    }
+
+    public static function config($type = null)
+    {
+        $data = [
+            'user' => [
+                'models' => [
+                    'user' => User::className(),
+                ],
+                'loginEmail' => true,
+                'loginUsername' => false,
+                'requireEmail' => true,
+                'requireUsername' => true,
+                'loginDuration' => 60 * 60 * 30,
+                'loginRedirect' => '/',
+                'logoutRedirect' => null,
+            ],
+        ];
+        return is_null($type) ? $data : $data[$type];
     }
 }

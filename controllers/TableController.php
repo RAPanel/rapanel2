@@ -202,9 +202,4 @@ class TableController extends AdminController
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-
-    public function actionSave($id)
-    {
-        return Yii::$app->db->createCommand()->update(Page::tableName(), Yii::$app->request->get(), compact('id'))->execute();
-    }
 }

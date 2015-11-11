@@ -6,7 +6,6 @@ use app\admin\behaviors\SettingsBehavior;
 use app\admin\traits\AutoSet;
 use Yii;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Inflector;
 
 /**
  * This is the model class for table "{{%module}}".

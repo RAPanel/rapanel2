@@ -10,7 +10,6 @@ namespace app\admin\widgets;
 
 
 use app\admin\widgets\responsiveFilemanager\ResponsiveFilemanagerAsset;
-use yii\web\AssetManager;
 
 class TinyMce extends \dosamigos\tinymce\TinyMce
 {

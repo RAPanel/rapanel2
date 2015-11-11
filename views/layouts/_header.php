@@ -5,9 +5,7 @@
  * Date: 10.09.2015
  * Time: 17:21
  */
-use yii\bootstrap\Dropdown;
 use yii\helpers\Html;
-use yii\helpers\Url;
 
 ?>
 
@@ -188,7 +186,7 @@ use yii\helpers\Url;
 
     <div class="top-menu">
         <ul class="nav pull-right top-menu">
-            <li><a class="logout" href="<?= \yii\helpers\Url::to(['auth/logout']) ?>">Logout</a></li>
+            <li><a class="logout" href="<?= \yii\helpers\Url::to(['default/logout']) ?>">Logout</a></li>
         </ul>
     </div>
 </header>

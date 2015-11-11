@@ -16,6 +16,8 @@ else $index = $data->sort_id;
 $model = $data->page;
 $name = "photos[{$index}]";
 
+$types = array_map('trim', explode(',', RA::moduleSetting($model->module_id, 'photosTypes')));
+
 ?>
 <div class="image col-md-<?= $index ? 6 : 12 ?>" id="photo<?= $data->id ?>">
     <div class="thumbnail">
@@ -28,7 +30,7 @@ $name = "photos[{$index}]";
             <div class="col-md-7 right text form-group">
                 <div class="row">
                     <div class="col-sm-6 type"><?=
-                        Html::activeDropDownList($model, "{$name}[type]", RA::dropDownList(['main']), ['class' => 'form-control', 'value' => $data->type]) ?></div>
+                        Html::activeDropDownList($model, "{$name}[type]", RA::dropDownList(array_merge_recursive(['main'], $types)), ['class' => 'form-control', 'value' => $data->type]) ?></div>
                     <div class="col-sm-4 size"><span class="width"><?= $data->width ?></span> x <span
                             class="height"><?= $data->height ?></span></div>
                     <div class="col-sm-2"><?=

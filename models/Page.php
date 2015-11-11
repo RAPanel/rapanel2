@@ -2,13 +2,10 @@
 
 namespace app\admin\models;
 
-use app\admin\behaviors\PageHasManyBehavior;
 use app\admin\helpers\RA;
-use creocoder\nestedsets\NestedSetsBehavior;
 use Yii;
-use yii\behaviors\AttributeBehavior;
-use yii\behaviors\SluggableBehavior;
-use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+use yii\helpers\Inflector;
 use yii\helpers\Url;
 
 /**
@@ -189,6 +186,7 @@ class Page extends \yii\db\ActiveRecord
 
     public function setPageData($data)
     {
+        $this->doEditable();
         $model = $this->pageData;
         if (!$model && ($class = $this->getPageData()->modelClass)) {
             $model = new $class;
@@ -246,6 +244,10 @@ class Page extends \yii\db\ActiveRecord
         return $this->getHref() == \Yii::$app->request->pathInfo ?: null;
     }
 
+    public function getCharacterName($url){
+        return Yii::t('app/character', Inflector::camel2words($url));
+    }
+
     public function getCharacter($url = null)
     {
         $characters = $this->getCharacters();
@@ -254,7 +256,7 @@ class Page extends \yii\db\ActiveRecord
 
     public function getCharacters($url = null, $refresh = false)
     {
-        if(empty($this->_characters) || $refresh){
+        if (empty($this->_characters) || $refresh) {
             foreach ($this->pageCharacters as $row)
                 $this->_characters[RA::character($row->character_id)] = $row->value;
         }
@@ -268,15 +270,23 @@ class Page extends \yii\db\ActiveRecord
         return $photo ? $photo->getHref($size, $scheme) : '/image/_' . $size . '/default.jpg';
     }
 
+    public function getPhotoImg($size, $options = [])
+    {
+        /** @var Photo $photo */
+        $photo = $this->photo;
+        if(empty($options['alt'])) $options['alt'] = $photo ? $photo->about : $this->name;
+        return Html::img($this->getPhotoHref($size), $options);
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getItems()
     {
-        return $this->hasMany(Page::className(), ['parent_id' => 'id'])->viaTable(self::tableName(), ['module_id' => 'module_id'],
+        return $this->hasMany(self::className(), ['parent_id' => 'id'])->viaTable(self::tableName(), ['module_id' => 'module_id'],
             function ($query) {
-                $query->onCondition(['between', 'lft', $this->lft, $this->rgt]);
-            })->where(['is_category' => 0, 'module_id' => $this->module_id]);
+                $query->select('id')->onCondition(['between', 'lft', $this->lft, $this->rgt]);
+            })->where(['is_category' => 0, 'status'=>'1', 'module_id' => $this->module_id]);
     }
 
     public function getModuleUrl()
@@ -290,21 +300,19 @@ class Page extends \yii\db\ActiveRecord
      * @param bool $withRoot
      * @param bool $allStatuses
      * @return \yii\db\ActiveQuery the newly created [[ActiveQuery]] instance.
-     * @internal param bool $allStauses
-     * @internal param bool $allStaus
      */
     public static function findActive($module = null, $condition = [], $withRoot = false, $allStatuses = false)
     {
-        $query = self::find()->orderBy(['lft' => SORT_ASC, 'id' => SORT_ASC]);
-        if (!$allStatuses) $query->where(['status' => 1]);
+        $query = self::find()->from(['t' => self::tableName()])->orderBy(['t.lft' => SORT_ASC, 't.id' => SORT_ASC]);
+        if (!$allStatuses) $query->where(['t.status' => 1]);
         if (!empty($module))
             if (is_array($module)) {
                 $subQuery = Module::find()->select('id')->where(['or', ['id' => $module], ['url' => $module]]);
-                if (!$withRoot) $query->andWhere(['not', ['id' => $subQuery]]);
-                $query->andWhere(['module_id' => $subQuery]);
+                if (!$withRoot) $query->andWhere(['not', ['t.id' => $subQuery]]);
+                $query->andWhere(['t.module_id' => $subQuery]);
             } else {
-                if (!$withRoot) $query->andWhere(['!=', 'id', RA::moduleId($module)]);
-                $query->andWhere(['module_id' => RA::moduleId($module)]);
+                if (!$withRoot) $query->andWhere(['!=', 't.id', RA::moduleId($module)]);
+                $query->andWhere(['t.module_id' => RA::moduleId($module)]);
             }
         if (!empty($condition)) $query->andWhere($condition);
         return $query;

@@ -9,7 +9,6 @@
 namespace app\admin\controllers;
 
 use app\admin\helpers\RA;
-use app\admin\models\Module;
 use app\admin\models\Page;
 use Yii;
 use yii\web\HttpException;
@@ -52,6 +51,7 @@ class PageController extends Controller
                 if (!empty($data['keywords'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['keywords']]);
             }
             $this->getView()->params['model'] = $params['base'] = $params['model'];
+            $this->getView()->params['pageTitle'] = $params['model']->name;
             $this->getView()->params['breadcrumbs'] = function () {
                 $model = $this->getView()->params['model'];
                 $result = [];

@@ -67,6 +67,7 @@ class ModuleSettings extends \yii\db\ActiveRecord
                 $event->sender->value = serialize($event->sender->value);
             }
         };
+        $this->on($this::EVENT_AFTER_VALIDATE, $serialize);
         $this->on($this::EVENT_BEFORE_INSERT, $serialize);
         $this->on($this::EVENT_BEFORE_UPDATE, $serialize);
         $this->on($this::EVENT_AFTER_FIND, function ($event) {

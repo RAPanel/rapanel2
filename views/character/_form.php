@@ -11,24 +11,52 @@ use yii\widgets\ActiveForm;
 
 ?>
 
+<script>
+    function characterGetter(e) {
+        $('.dataField').hide().find(':input').prop('disabled', 1);
+        if($(e).val())
+            $('.dataField.' + $(e).val()).show().find(':input').prop('disabled', 0);
+    }
+</script>
+
 <div class="character-form">
 
-    <?php $form = ActiveForm::begin(['id'=>'addCharacterForm']); ?>
+    <?php $form = ActiveForm::begin(['id' => 'addCharacterForm']); ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'value'=>$model->getName()]) ?>
+    <?= $form->errorSummary($model) ?>
 
-    <? if(!$model->isNewRecord) echo $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'value' => $model->getName()]) ?>
+
+    <? if (!$model->isNewRecord) echo $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
 
     <div class="row">
         <div class="col-md-8">
-            <?= $form->field($model, 'type')->dropDownList(RA::dropDownList($model->getTableSchema()->columns['type']->enumValues, 'ra/dropdown'), ['prompt' => Yii::t('ra/placeholder', 'Select Type')])->label(false) ?>
+            <?= $form->field($model, 'type')->dropDownList(RA::dropDownList($model->getTableSchema()->columns['type']->enumValues), ['prompt' => Yii::t('ra/placeholder', 'Select Type'), 'onchange' => 'characterGetter(this)'])->label(false) ?>
         </div>
         <div class="col-md-4">
             <?= $form->field($model, 'multi')->checkbox() ?>
         </div>
     </div>
 
-    <?= $form->field($model, 'data')->textarea() ?>
+    <div class="dataField" style="display: none">
+        <? //= $form->field($model, 'data')->textarea() ?>
+    </div>
+
+    <? $disable = !$model->type || $model->type != 'extend' ?>
+    <div class="dataField extend row" <? if ($model->type != 'extend') echo 'style="display: none"' ?>>
+        <div class="col-md-4">
+            <?= $form->field($model, 'module')->dropDownList(RA::module(null, 'name'), ['prompt' => 'Выберите модуль', 'disabled' => $disable])->label('Модуль') ?>
+        </div>
+        <div class="col-md-4">
+            <?= $form->field($model, 'filter[is_category]')->dropDownList(['все', 'товар', 'категория'], ['disabled' => $disable])->label('Тип') ?>
+        </div>
+        <div class="col-md-4">
+            <?= $form->field($model, 'filter[status]')->dropDownList(['все', 'скрыт', 'видим'], ['disabled' => $disable])->label('Статус') ?>
+        </div>
+    </div>
+
+    <div class="dataField dropdown" style="display: none">
+    </div>
 
     <? if ($model->isNewRecord): ?>
         <? if ($value = Yii::$app->request->get('page_id'))

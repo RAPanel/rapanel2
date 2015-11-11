@@ -36,11 +36,15 @@ use yii\helpers\Html;
                     'class' => 'sub-menu',
                     'data-pjax' => 0,
                 ], 'url' => 'javascript:;', 'items' => $list],
-                ['label' => '<i class="fa fa-cogs"></i> <span>Пользователи</span>', 'options' => [
+                ['label' => '<i class="fa fa-user"></i> <span>Пользователи</span>', 'options' => [
                     'class' => 'sub-menu',
                     'data-pjax' => 0,
                 ], 'url' => 'javascript:;', 'items' => [
+                    ['label' => Yii::t('ra/view', 'Orders'), 'url' => ['order/index']],
+                    ['label' => Yii::t('ra/view', 'Users'), 'url' => ['user/index']],
+                    ['label' => Yii::t('ra/view', 'Forms'), 'url' => ['form/index']],
                     ['label' => Yii::t('ra/view', 'Subscribes'), 'url' => ['subscribe/index']],
+                    ['label' => Yii::t('ra/view', 'Orders'), 'url' => ['order/index']],
                 ]],
                 ['label' => '<i class="fa fa-cogs"></i> <span>Система</span>', 'options' => [
                     'class' => 'sub-menu',

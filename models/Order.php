@@ -2,8 +2,8 @@
 
 namespace app\admin\models;
 
+use app\admin\traits\SerializeAttribute;
 use Yii;
-use yii\swiftmailer\Message;
 
 /**
  * This is the model class for table "{{%order}}".
@@ -20,51 +20,37 @@ use yii\swiftmailer\Message;
  */
 class Order extends \yii\db\ActiveRecord
 {
+    use SerializeAttribute;
     public $serializeAttributes = ['name', 'phone', 'email', 'address', 'comment'];
-    private $_data = [];
 
     public function init()
     {
-        $this->on(self::EVENT_AFTER_INSERT, function($event){
+        $this->on(self::EVENT_AFTER_INSERT, function ($event) {
+            Yii::$app->cart->toOrder($event->sender->id);
+
             Yii::$app->mailer->compose()
-                ->setTo('semyonchick@gmail.com')
-//                ->setFrom([$this->email => $this->name])
+                ->setTo(explode(',', Yii::$app->params['adminEmail']))
+                ->setFrom([Yii::$app->params['fromEmail'] => Yii::$app->name])
                 ->setSubject('Заказ на АвтоКом')
-                ->setTextBody($event->sender->id)
+                ->setHtmlBody($event->sender->getBody())
                 ->send();
         });
         parent::init();
     }
 
-    public function beforeSave($insert)
+    public function getBody()
     {
-        $this->data = serialize($this->_data);
-        return parent::beforeSave($insert);
-    }
-
-    public function __set($name, $value)
-    {
-        if (in_array($name, $this->serializeAttributes)) {
-            if ($this->_data === false) $this->_data = unserialize($this->_data);
-            $this->_data[$name] = $value;
-            $this->on($this->isNewRecord ? self::EVENT_AFTER_INSERT : self::EVENT_AFTER_UPDATE, function ($event) {
-                if ($event->sender->_data) {
-                    $event->sender->data = serialize($event->sender->_data);
-                    $event->sender->_data = false;
-                }
-            });
-            return;
+        $result = ['Номер заказа: ' . $this->id];
+        $result[] = 'Способ оплаты: ' . $this->getPay();
+        $result[] = 'Способ доставки: ' . $this->getDelivery();
+        $result[] = '';
+        foreach (unserialize($this->data) as $key => $row) {
+            $result[] = $this->getAttributeLabel($key) . ": " . $row;
         }
-        parent::__set($name, $value);
-    }
+        $result[] = '';
+        $result[] = Yii::$app->view->render('//cart/_table', ['query' => $this->getItems()]);
 
-    public function __get($name)
-    {
-        if (in_array($name, $this->serializeAttributes)) {
-            if ($this->_data === false) $this->_data = unserialize($this->_data);
-            return isset($this->_data[$name]) ? $this->_data[$name] : null;
-        }
-        return parent::__get($name);
+        return implode('<br>', $result);
     }
 
     /**
@@ -81,7 +67,7 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['delivery_id'], 'required'],
+            [['name', 'phone', 'delivery_id'], 'required'],
             [['status_id', 'is_paied', 'delivery_id', 'pay_id'], 'integer'],
             [['data'], 'string'],
             [['updated_at', 'created_at'], 'safe'],
@@ -103,8 +89,10 @@ class Order extends \yii\db\ActiveRecord
             'status_id' => Yii::t('ra/model', 'Status ID'),
             'is_paied' => Yii::t('ra/model', 'Is Paied'),
             'session_id' => Yii::t('ra/model', 'Session ID'),
-            'delivery_id' => 'Адрес доставки',
+            'delivery_id' => Yii::t('ra/model', 'Delivery ID'),
+            'delivery' => Yii::t('ra/model', 'Delivery ID'),
             'pay_id' => Yii::t('ra/model', 'Pay ID'),
+            'pay' => Yii::t('ra/model', 'Pay ID'),
             'data' => Yii::t('ra/model', 'Data'),
             'updated_at' => Yii::t('ra/model', 'Updated At'),
             'created_at' => Yii::t('ra/model', 'Created At'),
@@ -117,11 +105,48 @@ class Order extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getStatuses()
+    {
+        return [
+            0 => 'Новый заказ',
+        ];
+    }
+
+    public function getStatus()
+    {
+        return isset($this->statuses[$this->status_id]) ? $this->statuses[$this->status_id] : null;
+    }
+
     public function getDeliveries()
     {
         return [
             1 => 'Самовывоз',
             5 => 'Доставка по Перми',
         ];
+    }
+
+    public function getDelivery()
+    {
+        return isset($this->deliveries[$this->delivery_id]) ? $this->deliveries[$this->delivery_id] : null;
+    }
+
+    public function getPais()
+    {
+        return [
+            0 => 'Наличные',
+        ];
+    }
+
+    public function getPay()
+    {
+        return isset($this->pais[$this->pay_id ?: 0]) ? $this->pais[$this->pay_id ?: 0] : null;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getItems()
+    {
+        return $this->hasMany(Cart::className(), ['order_id' => 'id']);
     }
 }

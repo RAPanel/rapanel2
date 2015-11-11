@@ -10,7 +10,6 @@ namespace app\admin\helpers;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\ImagineInterface;
-use Imagine\Image\Palette\Color\RGB;
 use Imagine\Image\Point;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -142,7 +141,7 @@ class Image
                     if ($crop == 2)
                         $newWidth = $k > 1 ? $newHeight * $k : $newHeight / $k;
                     else
-                        $newHeight = $k > 1 ? $newWidth / $k : $newWidth * $k;
+                        $newHeight = $k > 1 ? $newWidth * $k : $newWidth / $k;
                 }
             }
 

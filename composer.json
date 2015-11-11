@@ -12,6 +12,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
+        "php": ">=5.4.0",
         "yiisoft/yii2": "*",
         "yiisoft/yii2-jui": "~2.0.0",
         "yiisoft/yii2-bootstrap": "*",
@@ -20,7 +21,9 @@
         "bower-asset/jquery-tags-input": "*",
         "2amigos/yii2-tinymce-widget": "*",
         "imagine/imagine": "*",
-        "creocoder/yii2-nested-sets": "^0.9.0",
+        "creocoder/yii2-nested-sets": "^0.9.0"
+    },
+    "require-dev": {
         "nex/yii2-chosen": "dev-master",
         "wfstudioru/yii2-yandex-translate-api": "dev-master"
     },
