@@ -9,7 +9,6 @@
 namespace app\admin\widgets;
 
 
-use nex\chosen\ChosenAsset;
 use yii\web\AssetBundle;
 
 class ChosenSortableAsset extends AssetBundle

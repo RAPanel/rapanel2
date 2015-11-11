@@ -12,7 +12,6 @@ namespace app\admin\behaviors;
 
 
 use yii\base\Behavior;
-use yii\base\Object;
 
 class PageHasManyBehavior extends Behavior
 {

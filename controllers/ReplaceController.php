@@ -2,30 +2,16 @@
 
 namespace app\admin\controllers;
 
-use Yii;
 use app\admin\models\Replaces;
+use Yii;
 use yii\data\ActiveDataProvider;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * ReplaceController implements the CRUD actions for Replaces model.
  */
-class ReplaceController extends Controller
+class ReplaceController extends AdminController
 {
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Lists all Replaces models.
      * @return mixed
