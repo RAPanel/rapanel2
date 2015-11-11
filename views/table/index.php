@@ -1,66 +1,22 @@
 <?php
 
 use app\admin\helpers\RA;
-use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $model yii\db\ActiveRecord */
 
 $this->title = $model->name ? $model->name : $module->name;
-if(Yii::$app->request->get('q')) $this->title .= ': поиск "'.Yii::$app->request->get('q').'"';
+if (Yii::$app->request->get('q')) $this->title .= ': поиск "' . Yii::$app->request->get('q') . '"';
 require_once(__DIR__ . '/_breadcrumbs.php');
 
 
 $moduleColumns = empty($module->settings['columns']) ? [] : $module->settings['columns'];
-//$columns = $relations = [];
-//$i = 0;
-//if (count($moduleColumns))
-//    foreach ($model->getTableSchema()->columns as $key => $value) {
-//        if (!$model->isAttributeSafe($key) || $key == 'module_id') continue;
-//        $format = 'text';
-//        if (strpos($key, '_id')) {
-//            $name = str_replace('_id', '', $key);
-//            $get = 'get' . ucfirst($name);
-//            if (method_exists($model, $get)) {
-//                $modelClass = $model->$get()->modelClass;
-//                /** @var yii\db\ActiveRecord $class */
-//                $class = new $modelClass;
-//                foreach (array_keys($class->attributes) as $attribute)
-//                    if (in_array($attribute, ['username', 'name', 'value']))
-//                        break;
-//                if (isset($attribute)) {
-//                    $key = "{$name}.{$attribute}";
-//                    $relations[$name] = function ($query) use ($name, $class) {
-//                        $query->from(["{$name}_alias" => $class::tableName()]);
-//                    };
-//                }
-//            }
-//        } else {
-//            if (in_array($value->type, ['timestamp', 'date', 'datetime']))
-//                $format = 'date';
-//            if (strpos($value->type, 'int') !== false && $value->size == 1)
-//                $format = 'boolean';
-//            if (strpos($value->type, 'int') !== false && $value->size == 11)
-//                $format = 'integer';
-//        }
-//
-//        if (empty($moduleColumns) || in_array($key, $moduleColumns)) {
-//            $columns[empty($moduleColumns) ? $i++ : current(array_keys($moduleColumns, $key))] = [
-//                'attribute' => $key,
-//                'label' => Yii::t('ra/model', mb_convert_case(str_replace(['_', '.'], ' ', $key), MB_CASE_TITLE)),
-//                'format' => $format,
-//            ];
-//            if (in_array($key, $moduleColumns)) unset($moduleColumns[array_search($key, $moduleColumns)]);
-//        }
-//    }
-//
-//ksort($columns);
-//
-//if (count($relations))
-//    $dataProvider->query->joinWith($relations);
 
+if(Yii::$app->request->get('sortMode'))
+    $moduleColumns = [['value'=>function(){return '';}]];
 ?>
 <div class="page-index">
     <div class="row content-panel">
@@ -86,17 +42,22 @@ $moduleColumns = empty($module->settings['columns']) ? [] : $module->settings['c
                 <?= Html::a('<i class="fa fa-cog"></i>', [
                     'module/update', 'id' => $module->id, 'back' => Yii::$app->request->url
                 ], ['class' => 'btn btn-theme tooltips', 'title' => Yii::t('ra/view', 'Module Settings')]) ?>
+
+                <?= Html::a('<i class="fa fa-sort-amount-asc"></i>', [
+                    'index', 'url' => Yii::$app->request->get('url'), 'id' => Yii::$app->request->get('id'), 'sortMode' => !Yii::$app->request->get('sortMode')
+                ], ['class' => 'btn btn-theme02 tooltips', 'title' => Yii::t('ra/view', Yii::$app->request->get('sortMode') ? 'Disable Sort Mode' : 'Enable Sort Mode')]) ?>
             </div>
 
             <h4>
                 <span>
                     <i class="fa fa-angle-right"></i>
                     <? if ($model->parent_id) echo Html::a('<i class="fa fa-chevron-left"></i>', ['index', 'url' => RA::module($model->module_id), 'id' => $model->parent_id], ['class' => 'hide']) ?>
-                </span> <?= Html::encode($this->title) ?> <? if($model->id) echo Html::a('<i class="fa fa-pencil"></i>', ['update', 'id' => $model->id]) ?>
+                </span> <?= Html::encode($this->title) ?> <? if ($model->id) echo Html::a('<i class="fa fa-pencil"></i>', ['update', 'id' => $model->id]) ?>
             </h4>
 
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
+                'options' => ['class' => Yii::$app->request->get('sortMode') ? 'sortableTable' : false],
                 'columns' => \yii\helpers\ArrayHelper::merge([
                     [
                         'attribute' => 'id',

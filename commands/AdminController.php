@@ -10,8 +10,24 @@ namespace app\admin\commands;
  */
 class AdminController extends \yii\console\Controller
 {
+
+    public function command($command)
+    {
+        $dir = \Yii::getAlias('@app');
+        $php = PHP_BINDIR . '/php';
+        echo `{$php} {$dir}/composer.phar {$command} --working-dir={$dir}/`;
+    }
+
+    public function actionUpdate()
+    {
+        $this->command('self-update');
+        $this->command('update -o');
+    }
+
     public function actionInstall()
     {
+        $this->command('require rere/yii2-admin "dev-master"');
+
         $data = [
             'app\admin\models\UserRole' => [
                 ['id' => 1, 'name' => 'Admin', 'can_admin' => 1,],

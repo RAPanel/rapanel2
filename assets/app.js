@@ -40,4 +40,22 @@ $(function () {
             });
             return false;
         });
+
+    $( ".sortableTable tbody" ).sortable({
+        helper: function(e, tr)
+        {
+            var $originals = tr.children();
+            var $helper = tr.clone();
+            $helper.children().each(function(index)
+            {
+                // Set helper cell sizes to match the original sizes
+                $(this).width($originals.eq(index).outerWidth());
+            });
+            return $helper;
+        },
+        stop: function(e, ui){
+            var el = ui.item;
+            $.get('move', {id:el.data('key'), prev: el.prev('[data-key]').data('key'), next: el.next('[data-key]').data('key')});
+        }
+    });
 });

@@ -154,4 +154,32 @@ class Module extends \yii\db\ActiveRecord
             $data[] = ['character_id' => $value];
         $this->setRelations('characterShows', $data);
     }
+
+    public function fixTree()
+    {
+        Page::deleteAll(['module_id' => $this->id, 'status' => 9]);
+        $data = Page::find()
+            ->where(['and', ['module_id' => $this->id], ['>', 'lft', 0], ['>', 'rgt', 0]])
+            ->select(['id', 'parent_id', 'lft', 'rgt', 'level'])
+            ->orderBy('lft, id DESC')
+            ->asArray()->all();
+        $items = array();
+        foreach ($data as $row) {
+            $items[(int)$row['parent_id']][] = $row;
+        }
+//        var_dump($items);
+        $lft = 1;
+        $index = function ($parent_id) use ($items, &$lft, &$index) {
+            if (!empty($items[$parent_id]))
+                foreach ($items[$parent_id] as $row) {
+                    $update['lft'] = $lft++;
+                    call_user_func($index, $row['id']);
+                    $update['rgt'] = $lft++;
+                    Page::updateAll($update, ['id' => $row['id']]);
+                }
+        };
+        $transaction = Yii::$app->db->beginTransaction();
+        call_user_func($index, 0);
+        $transaction->commit();
+    }
 }

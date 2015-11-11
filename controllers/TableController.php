@@ -7,11 +7,14 @@ use app\admin\helpers\Text;
 use app\admin\models\Module;
 use app\admin\models\Page;
 use app\admin\models\Photo;
+use creocoder\nestedsets\NestedSetsBehavior;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\db\ActiveRecord;
 use yii\helpers\FileHelper;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use yii\web\UploadedFile;
 
 /**
@@ -37,7 +40,7 @@ class TableController extends AdminController
      * Lists all Page models.
      * @return mixed
      */
-    public function actionIndex($url = null, $id = null)
+    public function actionIndex($url = null, $id = null, $sortMode = null)
     {
         $module = $this->getModule($url);
 
@@ -62,6 +65,11 @@ class TableController extends AdminController
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+
+        if ($sortMode) {
+            $dataProvider->sort = false;
+            $dataProvider->pagination = false;
+        }
 
         return $this->render('index', [
             'model' => $model,
@@ -201,5 +209,47 @@ class TableController extends AdminController
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionMove($id, $prev = null, $next = null)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $model = $this->findModel($id);
+        /** @var $model NestedSetsBehavior|Page */
+        $model->doEditable();
+        if ($model->lft && $model->rgt && $model->level) {
+            if ($prev && ($prev = $this->findModel($prev))) {
+                $prev->doEditable();
+                $model->insertAfter($prev, false);
+                return $model->errors;
+            } elseif ($next && ($next = $this->findModel($next))) {
+                $next->doEditable();
+                $model->insertBefore($next, false);
+                return $model->errors;
+            }
+        } else {
+            $before = $prev ? $this->findModel($prev) : null;
+            $after = $next ? $this->findModel($next) : null;
+            $lft = $before ? $before->lft : 0;
+            if($after){
+                $count = $after->lft - $lft;
+                if ($count < 2) Page::updateAllCounters(['lft' => $count == 0 ? 2 : 1], ['and',
+                    ['module_id' => $model->module_id, 'parent_id' => $model->parent_id],
+                    ['or',
+                        ['>', 'lft', $lft],
+                        ['and', ['=', 'lft', $lft], ['>', 'id', $before ? $before->id : 0]],
+                    ],
+                ]);
+            }
+            $model->lft = $lft + 1;
+            $model->save(false, ['lft']);
+            return $model->errors;
+        }
+        return $model;
+    }
+
+    public function actionFixTree($id)
+    {
+        Module::findOne(RA::moduleId($id))->fixTree();
     }
 }
