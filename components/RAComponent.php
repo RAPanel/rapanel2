@@ -26,52 +26,34 @@ class RAComponent extends Component implements BootstrapInterface
 
     public function bootstrap($app)
     {
-        // Include clever debug module
-        $this->debug();
-
         // Configure app
-        $this->configure('default', false);
+        $this->configure($app, 'default', false);
         foreach ($this->configList as $config)
-            $this->configure($config);
+            $this->configure($app, $config);
 
         // Import params
-        Yii::$app->params = $this->getParams();
+        $app->params = $this->getParams();
 
         return true;
     }
 
-    public function debug($debug = true)
-    {
-        if (in_array(php_uname('n'), ['localhost', 'devhost'])) {
-            $debug = true;
-            defined('YII_ENV') or define('YII_ENV', 'dev');
-            defined('YII_ENV_DEV') or define('YII_ENV_DEV', true);
-        }
-
-        if ($debug) {
-            error_reporting(E_ALL);
-            ini_set('display_errors', true);
-            ini_set('display_startup_errors', true);
-            ini_set('html_errors', true);
-
-            defined('YII_DEBUG') or define('YII_DEBUG', true);
-        }
-    }
-
-    public function configure($name, $priority = true)
+    public function configure($app, $name, $priority = true)
     {
         $file = Yii::getAlias('@ra/admin/config/' . $name . '.php');
         if (!file_exists($file))
             throw new HttpException(400, Yii::t('ra', 'Can`t find file "{file}"', ['file' => $file]));
         $data = require(Yii::getAlias('@ra/admin/config/' . $name . '.php'));
-        foreach ($data as $key => $value) if (isset(Yii::$app->{$key})) {
-            if (!$priority && Yii::$app->{$key} || Yii::$app->{$key} == $value)
-                continue;
-            if (is_array(Yii::$app->{$key}) && is_array($value))
-                Yii::$app->$key = ArrayHelper::merge(Yii::$app->{$key}, $value);
-            else
-                Yii::$app->$key = $value;
-        }
+        foreach ($data as $key => $value)
+            if ($key == 'aliases') {
+                $app->setAliases($value);
+            } elseif (isset(Yii::$app->{$key})) {
+                if (!$priority && Yii::$app->{$key} || Yii::$app->{$key} == $value)
+                    continue;
+                if (is_array(Yii::$app->{$key}) && is_array($value))
+                    $app->$key = ArrayHelper::merge(Yii::$app->{$key}, $value);
+                else
+                    $app->$key = $value;
+            }
     }
 
     public function getParams()

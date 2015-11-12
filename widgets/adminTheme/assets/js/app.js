@@ -41,7 +41,7 @@ $(function () {
             return false;
         });
 
-    $(".sortableTable tbody").sortable({
+    $("[data-sort] tbody").sortable({
         helper: function (e, tr) {
             var $originals = tr.children();
             var $helper = tr.clone();
@@ -53,7 +53,7 @@ $(function () {
         },
         stop: function (e, ui) {
             var el = ui.item;
-            $.get('move', {
+            $.get(el.parents('[data-sort]').data('sort'), {
                 id: el.data('key'),
                 prev: el.prev('[data-key]').data('key'),
                 next: el.next('[data-key]').data('key')

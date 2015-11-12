@@ -6,7 +6,7 @@
  * Time: 16:03
  */
 
-namespace ra\admin\widgets\chosen;
+namespace ra\admin\widgets;
 
 use Yii;
 use yii\bootstrap\Button;

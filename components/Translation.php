@@ -19,7 +19,7 @@ class Translation
     public static function handleMissingAdminTranslation(MissingTranslationEvent $event)
     {
         self::log($event->category, $event->message, $event->language);
-        $event->translatedMessage = YII_ENV_DEV ? "@MISSING: {$event->category}.{$event->message} FOR LANGUAGE {$event->language} @" : $event->message;
+        $event->translatedMessage = YII_ENV_DEV ? "@MISSING: {$event->category}.{$event->message} FOR LANGUAGE {$event->language} @" : "EN: " . $event->message;
     }
 
     static function log($category, $message, $language)
