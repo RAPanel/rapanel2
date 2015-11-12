@@ -76,12 +76,6 @@ $config = [
                 ],
             ],
         ],
-        /*'i18n' => [
-            'class' => Zelenin\yii\modules\I18n\components\I18N::className(),
-            'languages' => ['ru-RU'],
-            'messageTable' => '{{%message_translate}}',
-            'sourceMessageTable' => '{{%message}}',
-        ],*/
         'ra' => [
             'class' => 'ra\admin\components\RAComponent',
         ],

@@ -172,7 +172,7 @@ package happyworm.jPlayer {
 		}
 		private function connectStream():void {
 			this.dispatchEvent(new JplayerEvent(JplayerEvent.DEBUG_MSG, myStatus, "connectStream."));
-			var customClient:Object = new Object();
+			var customClient:Object = {};
 			customClient.onMetaData = onMetaDataHandler;
 			// customClient.onPlayStatus = onPlayStatusHandler; // According to the forums and my tests, onPlayStatus only works with FMS (Flash Media Server).
 			myStream = null;

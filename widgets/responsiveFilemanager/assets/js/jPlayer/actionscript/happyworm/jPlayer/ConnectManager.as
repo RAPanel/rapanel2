@@ -36,8 +36,8 @@ package happyworm.jPlayer {
 
 	public class ConnectManager extends Object {
 		
-		private var protocols_arr:Array = new Array("rtmp","rtmpt","rtmpe","rtmpte","rtmps");
-		private var ports_arr:Array = new Array("",":1935",":80",":443");
+		private var protocols_arr:Array = ["rtmp","rtmpt","rtmpe","rtmpte","rtmps"];
+		private var ports_arr:Array = ["",":1935",":80",":443"];
 		private const protCount:Number = 5;
 		private const portCount:Number = 4;
 		
@@ -94,14 +94,14 @@ package happyworm.jPlayer {
 			// Createe a NetConnection for each of the protocols/ports listed in the m_connList list.
 			// Connection attempts occur at intervals of 1.5 seconds. 
 			// The first connection to succeed will be used, all the others will be closed.
-			_aNC = new Array();
+			_aNC = [];
 			for (var i:uint = 0; i < m_connList.length; i++)
 			{
 				_aNC[i] = new NetConnection();
 				_aNC[i].addEventListener(NetStatusEvent.NET_STATUS,netStatus);
 				_aNC[i].addEventListener(SecurityErrorEvent.SECURITY_ERROR,netSecurityError);
 				_aNC[i].addEventListener(AsyncErrorEvent.ASYNC_ERROR,asyncError);      
-				_aNC[i].client = new Object;
+				_aNC[i].client = {};
 				_aNC[i].client.owner = this;
 				_aNC[i].client.connIndex = i;
 				_aNC[i].client.id = i;
@@ -218,7 +218,7 @@ package happyworm.jPlayer {
 
 				switch (event.info.code) {
 					case "NetConnection.Connect.IdleTimeOut":
-					trace("IDLE TIMEOUT OCCURRED!")
+					trace("IDLE TIMEOUT OCCURRED!");
 					negotiating=true;
 					idleTimeOut=true;
 					_ncRef.shutDownNcNs();

@@ -6,7 +6,7 @@
  * Time: 16:06
  */
 
-namespace ra\admin\widgets;
+namespace ra\admin\widgets\chosen;
 
 
 use yii\web\AssetBundle;

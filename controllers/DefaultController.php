@@ -46,7 +46,7 @@ class DefaultController extends AdminController
         $model = new LoginForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->login(RA::config('user')['loginDuration'])) {
-            return $this->goBack(RA::config('user')['loginRedirect']);
+            return $this->goBack(['rapanel/default/index']);
         }
 
         return $this->render('login', [

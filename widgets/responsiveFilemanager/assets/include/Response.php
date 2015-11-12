@@ -143,27 +143,22 @@ class Response {
 		510 => 'Not Extended',                                                // RFC2774
 		511 => 'Network Authentication Required',                             // RFC6585
 	);
-
-	/**
-	 * @var  string
-	 */
-	protected $content;
-
-	/**
-	 * @var  int
-	 */
-	protected $statusCode;
-
-	/**
-	 * @var  string
-	 */
-	protected $statusText;
-
 	/**
 	 * @var  array
 	 */
 	public $headers;
-
+	/**
+	 * @var  string
+	 */
+	protected $content;
+	/**
+	 * @var  int
+	 */
+	protected $statusCode;
+	/**
+	 * @var  string
+	 */
+	protected $statusText;
 	/**
 	 * @var string
 	 */
@@ -200,25 +195,6 @@ class Response {
 		}
 
 		$this->content = $content;
-	}
-
-	/**
-	 * Returns the Response as an HTTP string.
-	 *
-	 * The string representation of the Response is the same as the
-	 * one that will be sent to the client only if the prepare() method
-	 * has been called before.
-	 *
-	 * @return string The Response as an HTTP string
-	 *
-	 * @see prepare()
-	 */
-	public function __toString()
-	{
-		return
-			sprintf('HTTP/%s %s %s', $this->version, $this->statusCode, $this->statusText)."\r\n".
-			$this->headers."\r\n".
-			$this->getContent();
 	}
 
 	/**
@@ -260,7 +236,6 @@ class Response {
 		return $this;
 	}
 
-	// http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
 	/**
 	 * Is response invalid?
 	 *
@@ -271,6 +246,27 @@ class Response {
 	public function isInvalid()
 	{
 		return $this->statusCode < 100 || $this->statusCode >= 600;
+	}
+
+	// http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+
+	/**
+	 * Returns the Response as an HTTP string.
+	 *
+	 * The string representation of the Response is the same as the
+	 * one that will be sent to the client only if the prepare() method
+	 * has been called before.
+	 *
+	 * @return string The Response as an HTTP string
+	 *
+	 * @see prepare()
+	 */
+	public function __toString()
+	{
+		return
+			sprintf('HTTP/%s %s %s', $this->version, $this->statusCode, $this->statusText)."\r\n".
+			$this->headers."\r\n".
+			$this->getContent();
 	}
 
 	/**
@@ -319,18 +315,6 @@ class Response {
 	}
 
 	/**
-	 * Sends content for the current web response.
-	 *
-	 * @return Response
-	 */
-	public function sendContent()
-	{
-		echo $this->content;
-
-		return $this;
-	}
-
-	/**
 	 * Sends HTTP headers.
 	 *
 	 * @return Response
@@ -359,6 +343,18 @@ class Response {
 				header($name . ': ' . $values, false, $this->statusCode);
 			}
 		}
+
+		return $this;
+	}
+
+	/**
+	 * Sends content for the current web response.
+	 *
+	 * @return Response
+	 */
+	public function sendContent()
+	{
+		echo $this->content;
 
 		return $this;
 	}
