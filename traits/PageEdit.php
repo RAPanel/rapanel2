@@ -75,23 +75,20 @@ trait PageEdit
 
     public function save($runValidation = true, $attributeNames = null)
     {
+        /** @var $this NestedSetsBehavior|self|Page */
         $this->doEditable();
-        if ($this->_save !== true) {
-            if ($this->is_category) {
-                $this->_save = true;
-                /** @var $this NestedSetsBehavior|self */
-                if ($this->isNewRecord || $this->isAttributeChanged('parent_id')) {
-                    $parent = $this->parent_id ? Page::findOne($this->parent_id) : $this->root;
-                    $parent->doEditable();
-                    if ($this->id != $this->root->id) {
-                        if (!$this->parent_id)
-                            $this->parent_id = $this->root->id;
-                        return $this->appendTo($parent, $runValidation, $attributeNames);
-                    }
-                }
+        if ($this->_save !== true && $this->is_category && ($this->isNewRecord || $this->isAttributeChanged('parent_id'))) {
+            $this->_save = true;
+            $parent = $this->parent_id ? Page::findOne($this->parent_id) : $this->root;
+            $parent->doEditable();
+            if ($this->id != $this->root->id) {
+                if (!$this->parent_id)
+                    $this->parent_id = $this->root->id;
+                return $this->appendTo($parent, $runValidation, $attributeNames);
             }
-            $this->detachBehavior('tree');
         }
+        if(!RA::moduleSetting($this->module_id, 'hasChild') && !$this->is_category)
+            $this->detachBehavior('tree');
 
         return parent::save($runValidation, $attributeNames);
     }

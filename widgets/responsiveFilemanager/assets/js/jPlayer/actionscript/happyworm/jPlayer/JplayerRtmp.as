@@ -552,7 +552,7 @@ package happyworm.jPlayer
 			trace(("*** APPNAME: " + appName));
 			trace(("*** StreamName: " + streamFileName));
 
-			var streamParts:Object = new Object;
+			var streamParts:Object = {};
 			streamParts.streamTYPE=streamTYPE;
 			streamParts.appName = appName;
 			streamParts.streamFileName = streamFileName;
@@ -641,7 +641,7 @@ package happyworm.jPlayer
 			myConnection=nc;
 			trace(((("onBWDone " + info) + " :: ") + myStatus.src));
 
-			var customClient:Object = new Object  ;
+			var customClient:Object = {}  ;
 			customClient.onMetaData = onMetaDataHandler;
 			customClient.onPlayStatus = onPlayStatusHandler;// According to the forums and my tests, onPlayStatus only works with FMS (Flash Media Server).
 

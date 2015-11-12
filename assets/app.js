@@ -32,7 +32,7 @@ $(function () {
                     el.toggleClass('fa-toggle-on').toggleClass('fa-toggle-off');
                     var to = el.hasClass('fa-toggle-on') ? 1 : 0;
                     var from = to ? 0 : 1;
-                    a.attr('href').replace('status=' + from, 'status=' + to)
+                    a.attr('href').replace('status=' + from, 'status=' + to);
                     if(to) a.attr('href').title('Скрыть');
                     else a.attr('href').title('Отобразить');
 
@@ -41,21 +41,23 @@ $(function () {
             return false;
         });
 
-    $( ".sortableTable tbody" ).sortable({
-        helper: function(e, tr)
-        {
+    $(".sortableTable tbody").sortable({
+        helper: function (e, tr) {
             var $originals = tr.children();
             var $helper = tr.clone();
-            $helper.children().each(function(index)
-            {
+            $helper.children().each(function (index) {
                 // Set helper cell sizes to match the original sizes
                 $(this).width($originals.eq(index).outerWidth());
             });
             return $helper;
         },
-        stop: function(e, ui){
+        stop: function (e, ui) {
             var el = ui.item;
-            $.get('move', {id:el.data('key'), prev: el.prev('[data-key]').data('key'), next: el.next('[data-key]').data('key')});
+            $.get('move', {
+                id: el.data('key'),
+                prev: el.prev('[data-key]').data('key'),
+                next: el.next('[data-key]').data('key')
+            });
         }
     });
 });

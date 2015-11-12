@@ -143,7 +143,7 @@ function loadDocument() {
 
 
     function estimateTypeByFileExtension(extension) {
-        var matchingPluginData = doEstimateTypeByFileExtension(extension)
+        var matchingPluginData = doEstimateTypeByFileExtension(extension);
 
         if (matchingPluginData) {
             console.log('Found plugin by parameter type: ' + extension);
@@ -157,7 +157,7 @@ function loadDocument() {
         // See to get any path from the url and grep what could be a file extension
         var documentPath = documentUrl.split('?')[0],
             extension = documentPath.split('.').pop(),
-            matchingPluginData = doEstimateTypeByFileExtension(extension)
+            matchingPluginData = doEstimateTypeByFileExtension(extension);
 
         if (matchingPluginData) {
             console.log('Found plugin by file extension from path: ' + extension);

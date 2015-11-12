@@ -410,7 +410,7 @@ package {
 		private function fl_setAudio_m4a(src:String):Boolean {
 			if (src != null) {
 				log("fl_setAudio_m4a: "+src);
-				switchType("mp4")
+				switchType("mp4");
 				myMp3Player.clearFile();
 				myRtmpPlayer.clearFile();
 				myMp4Player.setFile(src);

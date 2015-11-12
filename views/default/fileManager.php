@@ -6,8 +6,6 @@
  * Time: 22:22
  */
 
-use ra\admin\widgets\responsiveFilemanager\ResponsiveFilemanagerAsset;
-
 $this->params['breadcrumbs'][] = 'Файловый менеджер';
 
 $js = <<<JS
