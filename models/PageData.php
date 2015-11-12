@@ -67,6 +67,12 @@ class PageData extends \yii\db\ActiveRecord
         if (empty($this->title) && $this->page->name)
             $this->title = $this->page->name;
 
+        if (empty($this->keywords) && $this->tags)
+            $this->keywords = $this->tags;
+
+        if (empty($this->description) && $this->about)
+            $this->description = $this->about;
+
         return parent::beforeSave($insert);
     }
 
