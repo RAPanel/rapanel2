@@ -27,6 +27,8 @@ class AppAsset extends AssetBundle
     public $depends = [
         'yii\web\YiiAsset',
         'yii\jui\JuiAsset',
+        'ra\admin\assets\TagsInputAsset',
+        'ra\admin\assets\DropZoneAsset',
         'ra\admin\widgets\adminTheme\AdminThemeAsset',
     ];
 }
