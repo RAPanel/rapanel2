@@ -10,7 +10,7 @@ $email = 'no-reply@' . str_replace('www.', $_SERVER['HTTP_HOST'], $_SERVER['HTTP
 
 $config = [
     'aliases' => [
-        '@theme' => '/theme',
+        '@theme' => '@web/theme',
     ],
     'modules' => [
         'rapanel' => [
@@ -50,21 +50,6 @@ $config = [
                 'charset' => 'UTF-8',
             ],
         ],
-        'i18n' => [
-            'translations' => [
-                'ra' => [
-                    'class' => 'yii\i18n\PhpMessageSource',
-                    'sourceLanguage' => 'en-US',
-                    'basePath' => '@ra/admin/messages',
-                ],
-                '*' => [
-                    'class' => 'yii\i18n\DbMessageSource',
-                    'messageTable' => '{{%message_translate}}',
-                    'sourceMessageTable' => '{{%message}}',
-                    'on missingTranslation' => ['ra\admin\components\Translation', 'handleMissingTranslation'],
-                ],
-            ],
-        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -76,20 +61,5 @@ $config = [
         ],
     ],
 ];
-
-if (YII_ENV_DEV) {
-    $allowedIPs = ['192.168.1.*', '78.159.225.99', '10.*.*.*'];
-    // configuration adjustments for 'dev' environment
-    $config['bootstrap'][] = 'debug';
-    $config['bootstrap'][] = 'gii';
-    $config['modules']['debug'] = [
-        'class' => 'yii\debug\Module',
-        'allowedIPs' => $allowedIPs,
-    ];
-    $config['modules']['gii'] = [
-        'class' => 'yii\gii\Module',
-        'allowedIPs' => $allowedIPs,
-    ];
-}
 
 return $config;

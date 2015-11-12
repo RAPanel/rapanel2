@@ -3,22 +3,23 @@
 use ra\admin\helpers\RA;
 use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $model yii\db\ActiveRecord */
+/* @var $sortMode string */
 
 $this->title = $model->name ? $model->name : $module->name;
-if(Yii::$app->request->get('q')) $this->title .= ': поиск "'.Yii::$app->request->get('q').'"';
+if (Yii::$app->request->get('q')) $this->title .= ': поиск "' . Yii::$app->request->get('q') . '"';
 require_once(__DIR__ . '/_breadcrumbs.php');
 
 
-$moduleColumns = empty($module->settings['columns']) ? [] : $module->settings['columns'];
-
-if (Yii::$app->request->get('sortMode'))
-    $moduleColumns = [['value' => function () {
+$moduleColumns = empty($module->settings['columns']) || $sortMode ? [
+    ['value' => function () {
         return '';
-    }]];
+    }]
+] : $module->settings['columns'];
 ?>
 <div class="page-index">
     <div class="row content-panel">
@@ -46,20 +47,20 @@ if (Yii::$app->request->get('sortMode'))
                 ], ['class' => 'btn btn-theme tooltips', 'title' => Yii::t('ra', 'Module Settings')]) ?>
 
                 <?= Html::a('<i class="fa fa-sort-amount-asc"></i>', [
-                    'index', 'url' => Yii::$app->request->get('url'), 'id' => Yii::$app->request->get('id'), 'sortMode' => !Yii::$app->request->get('sortMode')
-                ], ['class' => 'btn btn-theme02 tooltips', 'title' => Yii::t('ra', Yii::$app->request->get('sortMode') ? 'Disable Sort Mode' : 'Enable Sort Mode')]) ?>
+                    'index', 'url' => Yii::$app->request->get('url'), 'id' => Yii::$app->request->get('id'), 'sortMode' => !$sortMode
+                ], ['class' => 'btn btn-theme02 tooltips', 'title' => Yii::t('ra', $sortMode ? 'Disable Sort Mode' : 'Enable Sort Mode')]) ?>
             </div>
 
             <h4>
                 <span>
                     <i class="fa fa-angle-right"></i>
                     <? if ($model->parent_id) echo Html::a('<i class="fa fa-chevron-left"></i>', ['index', 'url' => RA::module($model->module_id), 'id' => $model->parent_id], ['class' => 'hide']) ?>
-                </span> <?= Html::encode($this->title) ?> <? if($model->id) echo Html::a('<i class="fa fa-pencil"></i>', ['update', 'id' => $model->id]) ?>
+                </span> <?= Html::encode($this->title) ?> <? if ($model->id) echo Html::a('<i class="fa fa-pencil"></i>', ['update', 'id' => $model->id]) ?>
             </h4>
 
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
-                'options' => ['class' => Yii::$app->request->get('sortMode') ? 'sortableTable' : false],
+                'options' => ['data-sort' => $sortMode ? Url::to(['move']) : false],
                 'columns' => \yii\helpers\ArrayHelper::merge([
                     [
                         'attribute' => 'id',

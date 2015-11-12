@@ -19,11 +19,9 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
 
     public $css = [
-//        'css/site.css',
     ];
 
     public $js = [
-        '/rere/admin/assets/app.js',
     ];
 
     public $depends = [
