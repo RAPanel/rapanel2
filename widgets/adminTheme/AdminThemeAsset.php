@@ -26,6 +26,7 @@ class AdminThemeAsset extends \yii\web\AssetBundle
         'js/jquery.scrollTo.min.js',
         'js/jquery.nicescroll.js',
         'js/common-scripts.js',
+        'js/app.js',
     ];
 
     public $depends = [

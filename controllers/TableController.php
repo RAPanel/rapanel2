@@ -25,7 +25,7 @@ class TableController extends AdminController
      * Lists all Page models.
      * @return mixed
      */
-    public function actionIndex($url = null, $id = null)
+    public function actionIndex($url = null, $id = null, $sortMode = null)
     {
         $module = $this->getModule($url);
 
@@ -59,6 +59,7 @@ class TableController extends AdminController
         return $this->render('index', [
             'model' => $model,
             'module' => $module,
+            'sortMode' => $sortMode,
             'dataProvider' => $dataProvider,
         ]);
     }

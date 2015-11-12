@@ -17,8 +17,8 @@ return [
     ],*/
     'components' => [
         'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
+//            'enablePrettyUrl' => true,
+//            'showScriptName' => false,
             'rules' => [
                 '<m_:rapanel>/<a_:auth>/<authclient>' => '<m_>/default/<a_>',
                 '<m_:rapanel>' => '<m_>/default/index',

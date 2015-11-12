@@ -10,12 +10,14 @@ $email = 'no-reply@' . str_replace('www.', $_SERVER['HTTP_HOST'], $_SERVER['HTTP
 
 $config = [
     'id' => 'rere',
-    'language' => 'en-US',
+//    'language' => 'en-US',
+//    'sourceLanguage'  => 'en-US',
     'components' => [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '/' => 'site/index',
                 '<c_:image>/_<type>/<name>' => '<c_>/index',
                 '<m_:rapanel>' => '<m_>/default/index',
             ],
@@ -43,6 +45,24 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'lVZD-kar4vfyeUGHVnVZbijmWiwgteuU',
+        ],
+        'i18n' => [
+            'translations' => [
+                /*'ra' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'sourceLanguage' => 'en-US',
+                    'basePath' => '@ra/admin/messages',
+                    'fileMap' => [
+                        'ra' => 'ra.php',
+                    ],
+                ],*/
+                '*' => [
+                    'class' => 'yii\i18n\DbMessageSource',
+                    'messageTable' => '{{%message_translate}}',
+                    'sourceMessageTable' => '{{%message}}',
+                    'on missingTranslation' => ['ra\admin\components\Translation', 'handleMissingTranslation'],
+                ],
+            ],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
