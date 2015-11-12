@@ -15,8 +15,7 @@
             "email": "semyonchick@gmail.com"
         }
     ],
-    "stability": "dev",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "php": ">=5.4.0",
         "yiisoft/yii2": "*",

@@ -9,9 +9,6 @@
 $email = 'no-reply@' . str_replace('www.', $_SERVER['HTTP_HOST'], $_SERVER['HTTP_HOST']);
 
 $config = [
-    'id' => 'rere',
-    'bootstrap' => ['raInit'],
-    'language' => 'en-US',
     'aliases' => [
         '@theme' => '/theme',
     ],
@@ -29,12 +26,8 @@ $config = [
             'key' => 'trnsl.1.1.20150430T103740Z.3bbb7c3d5fb6affa.0b2f8a6b338cce2e1b8b554495628fbd158d1784',
         ],
         'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
             'rules' => [
                 '/' => 'site/index',
-                '<c_:image>/_<type>/<name>' => '<c_>/index',
-                '<m_:rapanel>' => '<m_>/default/index',
             ],
         ],
         'authManager' => [
@@ -57,10 +50,6 @@ $config = [
                 'charset' => 'UTF-8',
             ],
         ],
-        'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => 'lVZD-kar4vfyeUGHVnVZbijmWiwgteuU',
-        ],
         'i18n' => [
             'translations' => [
                 'ra' => [
@@ -76,16 +65,15 @@ $config = [
                 ],
             ],
         ],
-        'ra' => [
-            'class' => 'ra\admin\components\RAComponent',
+        'log' => [
+            'traceLevel' => YII_DEBUG ? 3 : 0,
+            'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error', 'warning'],
+                ],
+            ],
         ],
-        'errorHandler' => [
-            'errorAction' => 'site/error',
-        ],
-    ],
-    'params' => [
-        'adminEmail' => 'webmaster@rere-design.ru',
-        'fromEmail' => $email,
     ],
 ];
 
