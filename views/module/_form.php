@@ -22,7 +22,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'class')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
-        <?= $form->field($model, 'settings[columns]')->widget(\ra\admin\widgets\ChosenSortable::className(), [
+        <?= $form->field($model, 'settings[columns]')->widget(\ra\admin\widgets\chosen\ChosenSortable::className(), [
             'items' => RA::tableColumns($model::className(), isset($model->settings['columns']) ? $model->settings['columns'] : []),
             'clientOptions' => [
                 'search_contains' => true,

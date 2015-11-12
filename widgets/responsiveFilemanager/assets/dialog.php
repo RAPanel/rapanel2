@@ -945,7 +945,7 @@ $files=array_merge(array($prev_folder),array($current_folder),$sorted);
     </div>
 </div>
 <script>
-    var files_prevent_duplicate = new Array();
+    var files_prevent_duplicate = [];
     <?php
     foreach ($files_prevent_duplicate as $key => $value): ?>
         files_prevent_duplicate[<?php echo $key;?>] = '<?php echo $value; ?>';

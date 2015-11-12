@@ -6,7 +6,7 @@
  * Time: 11:45
  */
 
-namespace ra\admin\widgets;
+namespace ra\admin\widgets\chosen;
 
 
 use nex\chosen\Chosen;
