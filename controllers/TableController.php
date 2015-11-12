@@ -10,7 +10,6 @@ use app\admin\models\Photo;
 use creocoder\nestedsets\NestedSetsBehavior;
 use Yii;
 use yii\data\ActiveDataProvider;
-use yii\db\ActiveRecord;
 use yii\helpers\FileHelper;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
