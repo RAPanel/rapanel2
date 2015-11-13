@@ -115,8 +115,11 @@ trait PageEdit
                 return $this->appendTo($parent, $runValidation, $attributeNames);
             }
         }
-        if(!RA::moduleSetting($this->module_id, 'hasChild') && !$this->is_category)
+        if (!RA::moduleSetting($this->module_id, 'hasChild') && !$this->is_category) {
             $this->detachBehavior('tree');
+            if ($this->isNewRecord && $this->parent_id && !$this->lft)
+                $this->lft = $this::find()->select('MAX(lft)')->where(['parent_id' => $this->parent_id, 'module_id' => $this->module_id])->scalar();
+        }
 
         return parent::save($runValidation, $attributeNames);
     }
