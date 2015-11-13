@@ -251,7 +251,8 @@ class Page extends \yii\db\ActiveRecord
         return $normalizeUrl ? Url::to($url, $scheme) : $url;
     }
 
-    public function getCharacterName($url){
+    public function getCharacterName($url)
+    {
         return Yii::t('app/character', Inflector::camel2words($url));
     }
 
@@ -273,7 +274,8 @@ class Page extends \yii\db\ActiveRecord
     public function getPhotoImg($size, $options = [])
     {
         /** @var Photo $photo */
-        $photo = $this->photo;
+        $relation = isset($options['relation']) ? $options['relation'] : 'photo';
+        $photo = $this->{$relation};
         if (empty($options['alt'])) $options['alt'] = $photo ? $photo->about : $this->name;
         return Html::img($this->getPhotoHref($size), $options);
     }
@@ -293,7 +295,7 @@ class Page extends \yii\db\ActiveRecord
         return $this->hasMany(self::className(), ['parent_id' => 'id'])->viaTable(self::tableName(), ['module_id' => 'module_id'],
             function ($query) {
                 $query->select('id')->onCondition(['between', 'lft', $this->lft, $this->rgt]);
-            })->where(['is_category' => 0, 'status'=>'1', 'module_id' => $this->module_id]);
+            })->where(['is_category' => 0, 'status' => '1', 'module_id' => $this->module_id]);
     }
 
     public function getModuleUrl()
