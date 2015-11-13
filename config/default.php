@@ -48,14 +48,11 @@ $config = [
         ],
         'i18n' => [
             'translations' => [
-                /*'ra' => [
+                'ra' => [
                     'class' => 'yii\i18n\PhpMessageSource',
                     'sourceLanguage' => 'en-US',
                     'basePath' => '@ra/admin/messages',
-                    'fileMap' => [
-                        'ra' => 'ra.php',
-                    ],
-                ],*/
+                ],
                 '*' => [
                     'class' => 'yii\i18n\DbMessageSource',
                     'messageTable' => '{{%message_translate}}',

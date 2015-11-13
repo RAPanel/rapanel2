@@ -8,14 +8,13 @@ use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $model yii\db\ActiveRecord */
-/* @var $sortMode string */
 
 $this->title = $model->name ? $model->name : $module->name;
 if (Yii::$app->request->get('q')) $this->title .= ': поиск "' . Yii::$app->request->get('q') . '"';
 require_once(__DIR__ . '/_breadcrumbs.php');
 
 
-$moduleColumns = empty($module->settings['columns']) || $sortMode ? [
+$moduleColumns = empty($module->settings['columns']) || !empty($sortMode) ? [
     ['value' => function () {
         return '';
     }]
@@ -46,7 +45,8 @@ $moduleColumns = empty($module->settings['columns']) || $sortMode ? [
                     'module/update', 'id' => $module->id, 'back' => Yii::$app->request->url
                 ], ['class' => 'btn btn-theme tooltips', 'title' => Yii::t('ra', 'Module Settings')]) ?>
 
-                <?= Html::a('<i class="fa fa-sort-amount-asc"></i>', [
+
+                <?php if (isset($sortMode)) echo Html::a('<i class="fa fa-sort-amount-asc"></i>', [
                     'index', 'url' => Yii::$app->request->get('url'), 'id' => Yii::$app->request->get('id'), 'sortMode' => !$sortMode
                 ], ['class' => 'btn btn-theme02 tooltips', 'title' => Yii::t('ra', $sortMode ? 'Disable Sort Mode' : 'Enable Sort Mode')]) ?>
             </div>
@@ -60,7 +60,7 @@ $moduleColumns = empty($module->settings['columns']) || $sortMode ? [
 
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
-                'options' => ['data-sort' => $sortMode ? Url::to(['move']) : false],
+                'options' => ['data-sort' => !empty($sortMode) ? Url::to(['move']) : false],
                 'columns' => \yii\helpers\ArrayHelper::merge([
                     [
                         'attribute' => 'id',
