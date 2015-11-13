@@ -33,6 +33,12 @@ return [
                     'basePath' => '@ra/admin/messages',
                     'on missingTranslation' => ['ra\admin\components\Translation', 'handleMissingAdminTranslation']
                 ],
+                '*' => [
+                    'class' => 'yii\i18n\DbMessageSource',
+                    'messageTable' => '{{%message_translate}}',
+                    'sourceMessageTable' => '{{%message}}',
+                    'on missingTranslation' => ['ra\admin\components\Translation', 'handleMissingTranslation'],
+                ],
             ]
         ],
         'user' => [

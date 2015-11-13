@@ -22,6 +22,18 @@ trait PageEdit
     private $_save;
     private $_attached;
 
+    public function setCharacters($value)
+    {
+        $data = [];
+        foreach ($value as $key => $val) {
+            $data[] = [
+                'character_id' => RA::character($key),
+                'value' => $val,
+            ];
+        }
+        $this->setPageCharacters($data);
+    }
+
     public function setPageCharacters($value)
     {
         $this->doEditable();
@@ -65,6 +77,22 @@ trait PageEdit
             ]
         ]);
         $this->_attached = true;
+    }
+
+    public function setPageData($data)
+    {
+        $this->doEditable();
+        $model = $this->pageData;
+        if (!$model && ($class = $this->getPageData()->modelClass)) {
+            $model = new $class;
+            $model->page_id = $this->id;
+        }
+        $model->setAttributes($data);
+        if ($this->isNewRecord) $this->on(self::EVENT_AFTER_INSERT, function ($event) {
+            $event->data->setAttributes(['page_id' => $event->sender->id]);
+            $event->data->save(false);
+        }, $model);
+        else $model->save(false);
     }
 
     public function setPhotos($value)
