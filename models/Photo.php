@@ -7,7 +7,6 @@ use ra\admin\helpers\Image;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\helpers\Url;
-use yii\web\HttpException;
 
 /**
  * This is the model class for table "{{%photo}}".
@@ -39,27 +38,43 @@ class Photo extends \yii\db\ActiveRecord
         return '{{%photo}}';
     }
 
-    public static function add($file, $about, $owner_id, $model)
+    public static function add($file, $about, $owner_id, $options)
     {
-        $name = basename($file);
-        $newFile = Yii::getAlias('@app/../' . self::$tmpPath . '/') . $name;
+        $newFile = Yii::getAlias('@app/../' . self::$tmpPath . '/') . basename($file);
 
-        FileHelper::createDirectory(dirname($newFile));
+        if (file_exists($newFile)) {
+            $existFile = $newFile;
+            $newFile = str_replace(basename($existFile), uniqid() . '-' . basename($file), $existFile);
+        } else
+            FileHelper::createDirectory(dirname($newFile));
+
         if (Image::thumbnail($file, 1920)->save($newFile, [
             'quality' => 100,
             'png_compression_level' => 9,
         ])
-        ) $file = $newFile;
+        ) {
+            if (isset($existFile) && md5_file($existFile) == md5_file($newFile)) {
+                $file = $existFile;
+                unlink($existFile);
+                copy($newFile, $existFile);
+                unlink($newFile);
+                $model = self::findOne(['name' => basename($file), 'owner_id' => $owner_id]);
+            } else
+                $file = $newFile;
+        }
 
         list($width, $height) = getimagesize($file);
-        $hash = md5($file);
+        $hash = md5_file($file);
+        $name = basename($file);
 
-        $class = new self;
-        $class->setAttributes(compact('owner_id', 'model', 'name', 'width', 'height', 'about', 'hash'));
-        if ($class->save())
-            return $class;
+        if (!$model) $model = new self;
+        if (is_string($options)) $options = ['model' => $options];
+        $model->setAttributes(compact('owner_id', 'name', 'width', 'height', 'about', 'hash') + $options);
 
-        throw new HttpException(400, implode("\n", $class->errors));
+        if ($model->save())
+            return $model;
+
+        throw new \yii\base\Exception(print_r($model->errors, 1));
     }
 
     /**
@@ -68,7 +83,7 @@ class Photo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['sort_id', 'owner_id', 'model', 'type', 'name', 'width', 'height', 'about', 'cropParams', 'hash'], 'required'],
+            [['sort_id', 'owner_id', 'model', 'type', 'name', 'width', 'height', 'cropParams', 'hash'], 'required'],
             [['sort_id', 'owner_id', 'width', 'height'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
             [['model', 'hash'], 'string', 'max' => 32],
@@ -108,6 +123,8 @@ class Photo extends \yii\db\ActiveRecord
                 $event->sender->sort_id = 0;
             if (is_null($event->sender->cropParams))
                 $event->sender->cropParams = serialize([]);
+            if (!$event->sender->about)
+                $event->sender->about = preg_replace('#.\w+$#iu', '', $event->sender->name);
         });
         parent::init();
     }

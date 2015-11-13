@@ -46,9 +46,9 @@ $moduleColumns = empty($module->settings['columns']) || !empty($sortMode) ? [
                 ], ['class' => 'btn btn-theme tooltips', 'title' => Yii::t('ra', 'Module Settings')]) ?>
 
 
-                <?php if (isset($sortMode)) echo Html::a('<i class="fa fa-sort-amount-asc"></i>', [
-                    'index', 'url' => Yii::$app->request->get('url'), 'id' => Yii::$app->request->get('id'), 'sortMode' => !$sortMode
-                ], ['class' => 'btn btn-theme02 tooltips', 'title' => Yii::t('ra', $sortMode ? 'Disable Sort Mode' : 'Enable Sort Mode')]) ?>
+                <?php echo Html::a('<i class="fa fa-sort-amount-asc"></i>', [
+                    'index', 'url' => Yii::$app->request->get('url'), 'id' => Yii::$app->request->get('id'), 'sortMode' => empty($sortMode)
+                ], ['class' => 'btn btn-theme02 tooltips', 'title' => Yii::t('ra', !empty($sortMode) ? 'Disable Sort Mode' : 'Enable Sort Mode')]) ?>
             </div>
 
             <h4>
