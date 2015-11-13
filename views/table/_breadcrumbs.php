@@ -5,10 +5,13 @@
  * User: semyonchick
  * Date: 10.09.2015
  * Time: 21:58
+ *
+ * @var $model Page
  */
 
 
 use ra\admin\helpers\RA;
+use ra\admin\models\Page;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('ra', 'Modules'), 'url' => ['module/index']];
 if (isset($model->module_id) && RA::module($model->module_id, 'name') != $this->title)

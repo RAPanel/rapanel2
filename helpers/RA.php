@@ -151,13 +151,10 @@ class RA
      * @param $query \yii\db\ActiveQuery
      * @return array
      */
-    public static function pageItems($query)
+    public static function pageItems($query, $order = ['is_category' => SORT_ASC, 'level' => SORT_DESC, 'lft' => SORT_ASC, 'id' => SORT_ASC])
     {
-        $queryOrder = $query->orderBy;
-        $query->orderBy(['is_category' => SORT_ASC, 'level' => SORT_DESC]);
+        $query->orderBy(array_merge_recursive($order, $query->orderBy));
         $query->andWhere(['status'=>1]);
-        if($queryOrder) $query->addOrderBy($queryOrder);
-        $query->addOrderBy(['lft' => SORT_ASC, 'id' => SORT_ASC]);
         $items = [];
         /** @var \ra\admin\models\Page $row */
         foreach ($query->all() as $row) {
