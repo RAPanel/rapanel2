@@ -9,6 +9,7 @@
 namespace ra\admin\controllers;
 
 
+use ra\admin\helpers\Text;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\data\ActiveDataProvider;
@@ -59,16 +60,26 @@ class AdminController extends Controller
      */
     public function actionSearch($url = null, $q = null)
     {
-        $class = 'ra\\admin\\models\\' . ucfirst($this->id);
+        if (!$q) return $this->redirect(['index'], $_GET);
 
-        $model = new $class;
-
-        $module = $this->getModule($url);
+        $class = '\\ra\\admin\\models\\' . ucfirst($this->id);
 
         /** @var \yii\db\ActiveRecord $model */
-        $model = new $module->class;
+        $model = new $class;
 
-        $query = (new \yii\elasticsearch\Query())->from($model::tableName())->search();
+        $or = ['or'];
+        $lang = $q == preg_replace('#а-я#iu', '', $q) ? 'en' : 'ru';
+//        var_dump($model->getTableSchema());die;
+        foreach ($model->getTableSchema()->columns as $key => $column) {
+            if (
+                in_array($column->phpType, ['resource']) ||
+                (in_array($column->phpType, ['integer']) && !is_numeric($q)) ||
+                (!empty($column->enumValues) && $lang == 'ru')
+            ) continue;
+            $or[] = ['or', [$column->name => $q], ['like', $column->name, Text::search($q)]];
+        }
+
+        $query = $model::find()->where($or);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
