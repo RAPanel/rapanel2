@@ -64,9 +64,10 @@ class PageData extends \yii\db\ActiveRecord
 
     public function beforeSave($insert)
     {
+        if (empty($this->header) && $this->page->name)
+            $this->header = $this->page->name;
         if (empty($this->title) && $this->page->name)
             $this->title = $this->page->name;
-
         if (empty($this->description) && $this->page->about) {
             $this->description = preg_replace('#[\r\n\s]*#', '\s', trim($this->page->about));
             if (mb_strlen($this->description) > 255)

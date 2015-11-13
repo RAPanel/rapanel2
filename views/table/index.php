@@ -29,7 +29,6 @@ $moduleColumns = empty($module->settings['columns']) || !empty($sortMode) ? [
                 $list['file'] = ['create',
                     'url' => $module->url,
                     'parent_id' => Yii::$app->request->get('id'),
-                    'is_category' => !empty($module->settings['hasChild']),
                 ];
                 if (!empty($module->settings['hasCategory']))
                     $list['folder'] = ['create', 'url' => $module->url, 'parent_id' => Yii::$app->request->get('id'), 'is_category' => 1];
@@ -77,7 +76,7 @@ $moduleColumns = empty($module->settings['columns']) || !empty($sortMode) ? [
                         'buttons' => [
                             'add' => function ($url, $model, $key) use ($module) {
                                 return $model->is_category ? Html::a('<span class="glyphicon glyphicon-plus"></span>',
-                                    ['create', 'url' => RA::module($model->module_id), 'parent_id' => $model->id, 'is_category' => !empty($module->settings['hasChild'])], [
+                                    ['create', 'url' => RA::module($model->module_id), 'parent_id' => $model->id], [
                                         'title' => 'Добавить запись в ' . $model->name,
                                         'data-toggle' => 'tooltip',
                                         'data-placement' => 'top',
