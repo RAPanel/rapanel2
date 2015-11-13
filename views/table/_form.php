@@ -59,6 +59,8 @@ $tabs = ['main', 'data', 'seo', 'position', 'characters', 'photos'];
 
                                     <?= $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
 
+                                    <?= $form->field($model, 'pageData[header]')->textInput(['maxlength' => true])->label(Yii::t('ra', 'Header')) ?>
+
                                     <?= $form->field($model, 'pageData[title]')->textInput(['maxlength' => true])->label(Yii::t('ra', 'Title')) ?>
 
                                     <?= $form->field($model, 'pageData[description]')->textarea(['maxlength' => true])->label(Yii::t('ra', 'Description')) ?>

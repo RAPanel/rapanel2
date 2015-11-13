@@ -22,28 +22,16 @@ trait PageEdit
     private $_save;
     private $_attached;
 
-    public function setCharacters($value)
+    public function afterFind()
     {
-        $data = [];
-        foreach ($value as $key => $val) {
-            $data[] = [
-                'character_id' => RA::character($key),
-                'value' => $val,
-            ];
-        }
-        $this->setPageCharacters($data);
+        if ($this->is_category || RA::moduleSetting($this->module_id, 'hasChild'))
+            $this->addBehavior('tree');
+        parent::afterFind();
     }
 
-    public function setPageCharacters($value)
+    public function addBehavior($name)
     {
-        $this->doEditable();
-        $this->set($value, 'pageCharacters');
-    }
-
-    public function doEditable()
-    {
-        if ($this->_attached) return;
-        $this->attachBehaviors([
+        $list = [
             'hasMany' => PageHasManyBehavior::className(),
             'tree' => [
                 'class' => NestedSetsBehavior::className(),
@@ -75,13 +63,33 @@ trait PageEdit
                     return $event->sender->status;
                 }
             ]
-        ]);
-        $this->_attached = true;
+        ];
+
+        if (isset($list[$name]))
+            $this->attachBehavior($name, $list[$name]);
+    }
+
+    public function setCharacters($value)
+    {
+        $data = [];
+        foreach ($value as $key => $val) {
+            $data[] = [
+                'character_id' => RA::character($key),
+                'value' => $val,
+            ];
+        }
+        $this->setPageCharacters($data);
+    }
+
+    public function setPageCharacters($value)
+    {
+        $this->addBehavior('hasMany');
+        $this->set($value, 'pageCharacters');
     }
 
     public function setPageData($data)
     {
-        $this->doEditable();
+        $this->addBehavior('hasMany');
         $model = $this->pageData;
         if (!$model && ($class = $this->getPageData()->modelClass)) {
             $model = new $class;
@@ -97,28 +105,25 @@ trait PageEdit
 
     public function setPhotos($value)
     {
-        $this->doEditable();
+        $this->addBehavior('hasMany');
         $this->set($value, 'photos');
     }
 
     public function save($runValidation = true, $attributeNames = null)
     {
+        $this->addBehavior('sluggable');
+        $this->addBehavior('timestamp');
+        $this->addBehavior('statusChange');
+
         /** @var $this NestedSetsBehavior|self|Page */
-        $this->doEditable();
-        if ($this->_save !== true && $this->is_category && ($this->isNewRecord || $this->isAttributeChanged('parent_id'))) {
+        if ($this->_save !== true && $this->getBehavior('tree') && ($this->isNewRecord || $this->isAttributeChanged('parent_id', false))) {
             $this->_save = true;
             $parent = $this->parent_id ? Page::findOne($this->parent_id) : $this->root;
-            $parent->doEditable();
             if ($this->id != $this->root->id) {
                 if (!$this->parent_id)
                     $this->parent_id = $this->root->id;
                 return $this->appendTo($parent, $runValidation, $attributeNames);
             }
-        }
-        if (!RA::moduleSetting($this->module_id, 'hasChild') && !$this->is_category) {
-            $this->detachBehavior('tree');
-            if ($this->isNewRecord && $this->parent_id && !$this->lft)
-                $this->lft = $this::find()->select('MAX(lft)')->where(['parent_id' => $this->parent_id, 'module_id' => $this->module_id])->scalar();
         }
 
         return parent::save($runValidation, $attributeNames);

@@ -154,7 +154,7 @@ class TableController extends AdminController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($url, $parent_id = null, $is_category = null)
+    public function actionCreate($url, $parent_id = 0, $is_category = 0)
     {
         $module = $this->getModule($url);
 
@@ -215,14 +215,11 @@ class TableController extends AdminController
         Yii::$app->response->format = Response::FORMAT_JSON;
         $model = $this->findModel($id);
         /** @var $model \creocoder\nestedsets\NestedSetsBehavior|Page */
-        $model->doEditable();
         if ($model->lft && $model->rgt && $model->level) {
             if ($prev && ($prev = $this->findModel($prev))) {
-                $prev->doEditable();
                 $model->insertAfter($prev, false);
                 return $model->errors;
             } elseif ($next && ($next = $this->findModel($next))) {
-                $next->doEditable();
                 $model->insertBefore($next, false);
                 return $model->errors;
             }

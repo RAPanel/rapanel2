@@ -26,7 +26,7 @@ class ImageController extends Controller
         if (file_exists($dir . $name))
             $this->printFile($dir . $name);
 
-        if (!file_exists($dir)) FileHelper::createDirectory($dir);
+        FileHelper::createDirectory($dir);
 
         $crop = 1;
         if (strpos($type, 'x') !== false) {
@@ -45,9 +45,6 @@ class ImageController extends Controller
             $fromDir = Yii::getAlias("@runtime/");
             file_put_contents($fromDir . $name, base64_decode($this->default));
         }
-
-        if (file_exists($dir . $name))
-            $this->printFile($dir . $name);
 
         $thumb = Image::thumbnail(Yii::getAlias($fromDir . $name), $width, $height, $crop);
 
