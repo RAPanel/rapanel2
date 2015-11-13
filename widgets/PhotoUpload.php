@@ -11,6 +11,7 @@ namespace ra\admin\widgets;
 
 use Yii;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\JsExpression;
 
 class PhotoUpload extends DropZone
@@ -25,10 +26,11 @@ function(file, response) {
 }
 JS;
         $this->clientEvents['success'] = new JsExpression($event);
+        $deleteAction = Url::to(['delete', 'type' => 'photo', 'id' => '']);
         $js = <<<JS
 $('.photoWrapper').on('click', '.close', function(){
     var block = $(this).parents('.image');
-    $.post('/rapanel/table/delete?id='+block.attr('id').replace('photo', '') + '&type=photo');
+    $.post('{$deleteAction}'+block.attr('id').replace('photo', ''));
     $(this).parents('.image').remove();
     return false;
 });
