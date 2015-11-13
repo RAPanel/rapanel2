@@ -8,6 +8,7 @@ use Yii;
  * This is the model class for table "{{%page_data}}".
  *
  * @property string $page_id
+ * @property string $header
  * @property string $title
  * @property string $description
  * @property string $keywords
@@ -32,10 +33,10 @@ class PageData extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['page_id', 'title', 'description', 'keywords', 'content', 'tags'], 'required'],
+            [['page_id', 'header', 'title', 'description', 'keywords', 'content', 'tags'], 'required'],
             [['page_id'], 'integer'],
             [['content', 'tags'], 'string'],
-            [['title', 'description', 'keywords'], 'string', 'max' => 255]
+            [['header', 'title', 'description', 'keywords'], 'string', 'max' => 255]
         ];
     }
 
@@ -46,7 +47,8 @@ class PageData extends \yii\db\ActiveRecord
     {
         return [
             'page_id' => Yii::t('ra', 'Page ID'),
-            'title' => Yii::t('ra', 'Title'),
+            'title' => Yii::t('ra', 'Header'),
+            'header' => Yii::t('ra', 'Title'),
             'description' => Yii::t('ra', 'Description'),
             'keywords' => Yii::t('ra', 'Keywords'),
             'content' => Yii::t('ra', 'Content'),
