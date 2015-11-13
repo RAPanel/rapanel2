@@ -83,7 +83,7 @@ class Photo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['sort_id', 'owner_id', 'model', 'type', 'name', 'width', 'height', 'about', 'cropParams', 'hash'], 'required'],
+            [['sort_id', 'owner_id', 'model', 'type', 'name', 'width', 'height', 'cropParams', 'hash'], 'required'],
             [['sort_id', 'owner_id', 'width', 'height'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
             [['model', 'hash'], 'string', 'max' => 32],
