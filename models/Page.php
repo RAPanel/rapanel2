@@ -91,9 +91,8 @@ class Page extends \yii\db\ActiveRecord
             [['name', 'module_id'], 'required'],
             [['is_category', 'status', 'lft', 'rgt', 'level', 'parent_id', 'module_id', 'user_id'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
-            [['url', 'name', 'about'], 'string', 'max' => 255],
-            [['url', 'name', 'about'], 'string', 'max' => 255],
-            [['url', 'name', 'about'], 'string', 'max' => 255],
+            [['url', 'name'], 'string', 'max' => 255],
+            [['about'], 'string', 'max' => 2560],
             [['pageData', 'pageCharacters', 'photos'], 'safe']
         ];
     }
@@ -198,22 +197,6 @@ class Page extends \yii\db\ActiveRecord
     public function getExistCharacters()
     {
         return $this->hasMany(Character::className(), ['id' => 'character_id'])->viaTable(CharacterShow::tableName(), ['module_id' => 'module_id', 'filter' => 'is_category']);
-    }
-
-    public function setPageData($data)
-    {
-        $this->doEditable();
-        $model = $this->pageData;
-        if (!$model && ($class = $this->getPageData()->modelClass)) {
-            $model = new $class;
-            $model->page_id = $this->id;
-        }
-        $model->setAttributes($data);
-        if ($this->isNewRecord) $this->on(self::EVENT_AFTER_INSERT, function ($event) {
-            $event->data->setAttributes(['page_id' => $event->sender->id]);
-            $event->data->save(false);
-        }, $model);
-        else $model->save(false);
     }
 
     /**
