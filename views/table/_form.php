@@ -41,7 +41,7 @@ $tabs = ['main', 'data', 'seo', 'position', 'characters', 'photos'];
                                             <?= $form->field($model, 'status')->checkbox() ?>
                                         </div>
                                         <div class="col-md-2">
-                                            <?= $form->field($model, 'created_at')->textInput(['type' => 'date']) ?>
+                                            <?= $form->field($model, 'created_at')->textInput(['type' => 'date', 'value' => preg_replace('#\s.*#', '', $model->created_at)]) ?>
                                         </div>
                                     </div>
 

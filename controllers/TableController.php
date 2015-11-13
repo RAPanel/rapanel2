@@ -207,7 +207,7 @@ class TableController extends AdminController
         else $this->findModel($id)->delete();
 
         if (Yii::$app->request->isAjax) return '1';
-        return $this->redirect(['index']);
+        return $this->goBack();
     }
 
     public function actionMove($id, $prev = null, $next = null)

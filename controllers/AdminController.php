@@ -19,13 +19,17 @@ use yii\filters\VerbFilter;
 
 class AdminController extends Controller
 {
-
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
         return [
+            'returnUrl' => [
+                'class' => 'ra\admin\filter\ReturnUrl',
+                'returnUrlParam' => 'return' . ucfirst($this->id),
+                'only' => ['index'],
+            ],
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
