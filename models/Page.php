@@ -47,7 +47,7 @@ class Page extends \yii\db\ActiveRecord
             $class = RA::module($row['module_id'], 'class');
             return new $class;
         }
-        return new static;
+        return parent::instantiate($row);
     }
 
     /**
@@ -277,13 +277,13 @@ class Page extends \yii\db\ActiveRecord
         $relation = isset($options['relation']) ? $options['relation'] : 'photo';
         $photo = $this->{$relation};
         if (empty($options['alt'])) $options['alt'] = $photo ? $photo->about : $this->name;
-        return Html::img($this->getPhotoHref($size), $options);
+        return Html::img($this->getPhotoHref($size, !empty($options['absoluteUrl']), $relation), $options);
     }
 
-    public function getPhotoHref($size, $scheme = false)
+    public function getPhotoHref($size, $scheme = false, $relation = 'photo')
     {
         /** @var Photo $photo */
-        $photo = $this->photo;
+        $photo = $this->{$relation};
         return $photo ? $photo->getHref($size, $scheme) : '/image/_' . $size . '/default.jpg';
     }
 
