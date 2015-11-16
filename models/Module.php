@@ -127,7 +127,7 @@ class Module extends \yii\db\ActiveRecord
         $data = [];
         if (!empty($values)) foreach ($values as $value)
             $data[] = ['character_id' => $value];
-        $this->setRelations('characterShows', $data);
+        $this->setRelation('characterShows', $data);
     }
 
     public function getSettings()

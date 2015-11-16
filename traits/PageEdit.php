@@ -9,7 +9,6 @@
 namespace ra\admin\traits;
 
 use creocoder\nestedsets\NestedSetsBehavior;
-use ra\admin\behaviors\PageHasManyBehavior;
 use ra\admin\helpers\RA;
 use ra\admin\models\Page;
 use yii\behaviors\AttributeBehavior;
@@ -19,11 +18,14 @@ use yii\db\ActiveRecord;
 
 trait PageEdit
 {
+    use AutoSet;
+
     private $_save;
     private $_attached;
 
     public function afterFind()
     {
+        if (!$this instanceof ActiveRecord) return;
         if ($this->is_category || RA::moduleSetting($this->module_id, 'hasChild'))
             $this->addBehavior('tree');
         parent::afterFind();
@@ -32,7 +34,6 @@ trait PageEdit
     public function addBehavior($name)
     {
         $list = [
-            'hasMany' => PageHasManyBehavior::className(),
             'tree' => [
                 'class' => NestedSetsBehavior::className(),
                 'treeAttribute' => 'module_id',
@@ -65,7 +66,7 @@ trait PageEdit
             ]
         ];
 
-        if (isset($list[$name]))
+        if (isset($list[$name]) && $this instanceof ActiveRecord)
             $this->attachBehavior($name, $list[$name]);
     }
 
@@ -83,34 +84,23 @@ trait PageEdit
 
     public function setPageCharacters($value)
     {
-        $this->addBehavior('hasMany');
-        $this->set($value, 'pageCharacters');
+        $this->setRelation('pageCharacters', $value, ['pk' => 'character_id']);
     }
 
-    public function setPageData($data)
+    public function setPageData($value)
     {
-        $this->addBehavior('hasMany');
-        $model = $this->pageData;
-        if (!$model && ($class = $this->getPageData()->modelClass)) {
-            $model = new $class;
-            $model->page_id = $this->id;
-        }
-        $model->setAttributes($data);
-        if ($this->isNewRecord) $this->on(self::EVENT_AFTER_INSERT, function ($event) {
-            $event->data->setAttributes(['page_id' => $event->sender->id]);
-            $event->data->save(false);
-        }, $model);
-        else $model->save(false);
+        $this->setRelation('pageData', $value);
     }
 
     public function setPhotos($value)
     {
-        $this->addBehavior('hasMany');
-        $this->set($value, 'photos');
+        $this->setRelation('photos', $value);
     }
 
     public function save($runValidation = true, $attributeNames = null)
     {
+        if (!$this instanceof ActiveRecord) return false;
+
         $this->addBehavior('sluggable');
         $this->addBehavior('timestamp');
         $this->addBehavior('statusChange');
