@@ -32,9 +32,9 @@ class PageCharacters extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['page_id', 'character_id', 'value'], 'required'],
+            [['page_id', 'character_id'], 'required'],
             [['page_id', 'character_id'], 'integer'],
-            [['value'], 'string'],
+            [['value'], 'safe'],
             [['page_id', 'character_id'], 'unique', 'targetAttribute' => ['page_id', 'character_id'], 'message' => 'The combination of Page ID and Character ID has already been taken.']
         ];
     }

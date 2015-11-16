@@ -93,7 +93,7 @@ class Page extends \yii\db\ActiveRecord
             [['updated_at', 'created_at'], 'safe'],
             [['url', 'name'], 'string', 'max' => 255],
             [['about'], 'string', 'max' => 2560],
-            [['pageData', 'pageCharacters', 'photos'], 'safe']
+            [['pageData', 'pageCharacters', 'characters', 'photos'], 'safe']
         ];
     }
 
@@ -191,7 +191,7 @@ class Page extends \yii\db\ActiveRecord
     public function getPhoto()
     {
         return $this->hasOne(Photo::className(), ['owner_id' => 'id'])
-            ->where(['model' => self::tableName()])->orderBy(['sort_id' => SORT_ASC]);
+            ->where(['model' => self::tableName(), 'type' => 'main'])->orderBy(['sort_id' => SORT_ASC]);
     }
 
     public function getExistCharacters()
