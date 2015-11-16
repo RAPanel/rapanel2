@@ -5,6 +5,7 @@ namespace ra\admin\traits;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\db\Query;
+use yii\helpers\ArrayHelper;
 
 /**
  * Created by PhpStorm.
@@ -14,35 +15,65 @@ use yii\db\Query;
  */
 trait AutoSet
 {
-
-
-    public function setRelations($name, $value)
+    public function setRelation($name, $value, $settings = [])
     {
         if (!$this instanceof ActiveRecord) return;
 
-//        $relationName = 'get' . ucfirst($name);
-        /** @var Query $relationMethod */
-        $relationMethod = $this->{'get' . ucfirst($name)}();
+        $settings = ArrayHelper::merge([
+            'pk' => null,
+            'validation' => true,
+            'safeOnly' => true,
+        ], $settings);
 
-        $relationData = $this->isNewRecord ? [] : $this->{$name};
-
-        $function = function ($event) use ($relationMethod, $relationData) {
+        $function = function ($event) use ($name, $settings) {
             $transaction = Yii::$app->db->beginTransaction();
 
+            /** @var Query $relationMethod */
+            $relationMethod = $this->{'get' . ucfirst($name)}();
+
+            $modelClass = $relationMethod->modelClass;
             $pkAttribute = key($relationMethod->link);
             $extendAttribute = reset($relationMethod->link);
-            $keyValue = $event->sender->{$extendAttribute};
 
-            $relationMap = [];
-            foreach ($relationData as $row)
-                $relationMap[$row[$pkAttribute]] = $row;
+            $relationData = $event->sender->isNewRecord ? [] : $event->sender->{$name};
 
-            foreach ($event->data as $key => $row) {
+            if ($relationMethod->multiple) {
+                $modelPK = is_null($settings['pk']) ? $modelClass::primaryKey() : (array)$settings['pk'];
+
+                $relationMap = [];
+                foreach ($relationData as $row) {
+                    $key = '';
+                    foreach ($modelPK as $value)
+                        if (isset($row->{$value}))
+                            $key .= "{$value}:{$row->{$value}};";
+
+                    $relationMap[$key] = $row;
+                }
+
+                foreach ($event->data as $row) {
+                    $key = '';
+                    foreach ($modelPK as $value)
+                        if (isset($row[$value]))
+                            $key .= "{$value}:{$row[$value]};";
+
+                    /** @var ActiveRecord $model */
+                    $model = isset($relationMap[$key]) ? $relationMap[$key] : new $modelClass;
+                    if (!$model->isNewRecord) unset($relationMap[$key]);
+                    else $model->{$pkAttribute} = $this->{$extendAttribute};
+                    $model->setAttributes($row, $settings['safeOnly']);
+                    $model->save($settings['validation']);
+                }
+
+                /** @var ActiveRecord $row */
+                foreach ($relationMap as $row)
+                    $row->delete();
+            } else {
                 /** @var ActiveRecord $model */
-                $model = isset($relationMap[$keyValue]) ? $relationMap[$keyValue] : new $relationMethod->modelClass;
-                if (!$model->isNewRecord) unset($relationMap[$keyValue]);
-                $model->setAttributes($row);
-                $model->save();
+                $model = $relationData ?: new $modelClass;
+                if ($model->isNewRecord)
+                    $model->{$pkAttribute} = $this->{$extendAttribute};
+                $model->setAttributes($event->data, $settings['safeOnly']);
+                $model->save($settings['validation']);
             }
 
             $transaction->commit();
