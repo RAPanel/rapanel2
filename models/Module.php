@@ -127,7 +127,7 @@ class Module extends \yii\db\ActiveRecord
         $data = [];
         if (!empty($values)) foreach ($values as $value)
             $data[] = ['character_id' => $value];
-        $this->setRelation('characterShows', $data);
+        $this->setRelation('characterShows', $data, ['pk' => 'character_id']);
     }
 
     public function getSettings()
@@ -147,7 +147,6 @@ class Module extends \yii\db\ActiveRecord
         foreach ($data as $row) {
             $items[(int)$row['parent_id']][] = $row;
         }
-//        var_dump($items);
         $lft = 1;
         $index = function ($parent_id) use ($items, &$lft, &$index) {
             if (!empty($items[$parent_id]))
