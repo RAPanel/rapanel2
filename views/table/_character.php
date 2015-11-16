@@ -24,7 +24,7 @@ echo Html::activeHiddenInput($model, "{$attribute}[{$key}][page_id]", ['value' =
 echo Html::activeHiddenInput($model, "{$attribute}[{$key}][character_id]", ['value' => $data->id]);
 echo Html::activeHiddenInput($model, $name, ['value' => is_array($value) ? implode(',', $value) : $value, 'id' => false]);
 
-$label = Yii::t('app/character', Inflector::camel2words($data->url)) . ' /<span>'.$data->url.'</span>';
+$label = Yii::t('app/character', Inflector::camel2words($data->url)) . ' /<span>' . $data->url . '</span>';
 if ($data['type'] == 'boolean') {
     echo Html::activeCheckbox($model, $name, ['label' => $label]);
 } elseif ($data['type'] == 'textarea') {

@@ -60,7 +60,10 @@ use yii\widgets\ActiveForm;
         <?= $form->field($model, 'settings[photosCount]')->textInput(['type' => 'number', 'class' => 'col-md-10'])->label(Yii::t('ra', 'Photo Count'), ['class' => 'col-md-2 right']) ?>
         <?= $form->field($model, 'settings[photosTypes]')->textInput(['type' => 'text', 'class' => 'col-md-10'])->label(Yii::t('ra', 'Photo Types'), ['class' => 'col-md-2 right']) ?>
     </div>
+
     <?= $form->field($model, 'settings[controller]')->checkbox(['label' => Yii::t('ra', 'Is Controller')]) ?>
+
+    <?= $form->field($model, 'settings[sort]')->radioList([0 => 'asc', 1 => 'desc', 2 => 'custom'])->label(Yii::t('ra', 'Sort Type')) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

@@ -33,7 +33,8 @@ class TableController extends AdminController
         $model = new $module->class;
         if ($id) $model = $model::findOne($id);
 
-        $query = $model::find()->from(['t' => $model::tableName()])->orderBy(['t.lft' => SORT_ASC, 't.id' => SORT_ASC]);
+        $sort = $module->getSettings()['sort'] == 0 ? SORT_ASC : SORT_DESC;
+        $query = $model::find()->from(['t' => $model::tableName()])->orderBy(['t.lft' => $sort, 't.id' => $sort]);
 
         if ($model->hasAttribute('module_id')) {
             $query->andWhere(['t.module_id' => $module->id]);
@@ -214,6 +215,10 @@ class TableController extends AdminController
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $model = $this->findModel($id);
+
+        if (RA::moduleSetting($model->module_id, 'sort'))
+            list($prev, $next) = [$next, $prev];
+
         /** @var $model \creocoder\nestedsets\NestedSetsBehavior|Page */
         if ($model->lft && $model->rgt && $model->level) {
             if ($prev && ($prev = $this->findModel($prev))) {
@@ -227,8 +232,9 @@ class TableController extends AdminController
             $before = $prev ? $this->findModel($prev) : null;
             $after = $next ? $this->findModel($next) : null;
             $lft = $before ? $before->lft : 0;
-            if($after){
+            if ($after) {
                 $count = $after->lft - $lft;
+                var_dump($count);
                 if ($count < 2) Page::updateAllCounters(['lft' => $count == 0 ? 2 : 1], ['and',
                     ['module_id' => $model->module_id, 'parent_id' => $model->parent_id],
                     ['or',
@@ -238,6 +244,7 @@ class TableController extends AdminController
                 ]);
             }
             $model->lft = $lft + 1;
+            var_dump($model->lft, $before->lft, $model->lft);
             $model->save(false, ['lft']);
             return $model->errors;
         }

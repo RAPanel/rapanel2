@@ -73,7 +73,6 @@ class AdminController extends Controller
 
         $or = ['or'];
         $lang = $q == preg_replace('#а-я#iu', '', $q) ? 'en' : 'ru';
-//        var_dump($model->getTableSchema());die;
         foreach ($model->getTableSchema()->columns as $key => $column) {
             if (
                 in_array($column->phpType, ['resource']) ||
