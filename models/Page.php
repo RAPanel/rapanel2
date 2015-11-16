@@ -59,7 +59,8 @@ class Page extends \yii\db\ActiveRecord
      */
     public static function findActive($module = null, $condition = [], $withRoot = false, $allStatuses = false)
     {
-        $query = self::find()->from(['t' => self::tableName()])->orderBy(['t.lft' => SORT_ASC, 't.id' => SORT_ASC]);
+        $sort = RA::moduleSetting($module, 'sort') == 0 ? SORT_ASC : SORT_DESC;
+        $query = self::find()->from(['t' => self::tableName()])->orderBy(['t.lft' => $sort, 't.id' => $sort]);
         if (!$allStatuses) $query->where(['t.status' => 1]);
         if (!empty($module))
             if (is_array($module)) {

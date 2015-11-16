@@ -34,7 +34,7 @@ class CharacterShow extends \yii\db\ActiveRecord
         return [
             [['character_id', 'module_id', 'page_id', 'filter'], 'required'],
             [['character_id', 'module_id', 'page_id', 'filter'], 'integer'],
-            [['filter'], 'defult', 'value'=>0],
+            [['filter'], 'default', 'value' => 0],
         ];
     }
 
