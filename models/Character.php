@@ -94,7 +94,7 @@ class Character extends \yii\db\ActiveRecord
     public function getName()
     {
         if (!$this->_name)
-            $this->_name = $this->url ? Yii::t('app/character', Inflector::camel2words($this->url)) : $this->url;
+            $this->_name = $this->url ? Yii::t('app\character', Inflector::camel2words($this->url)) : $this->url;
         return $this->_name;
     }
 
@@ -114,7 +114,7 @@ class Character extends \yii\db\ActiveRecord
             }
         }
         if ($this->url)
-            Message::add('app/character', Inflector::camel2words($this->url), Yii::$app->language, $value);
+            Message::add('app\character', Inflector::camel2words($this->url), Yii::$app->language, $value);
         $this->_name = $value;
     }
 
