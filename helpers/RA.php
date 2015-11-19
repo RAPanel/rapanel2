@@ -153,7 +153,8 @@ class RA
      */
     public static function pageItems($query, $order = ['is_category' => SORT_ASC, 'level' => SORT_DESC, 'lft' => SORT_ASC, 'id' => SORT_ASC])
     {
-        $query->orderBy(array_merge_recursive($order, $query->orderBy));
+        if (is_array($query->orderBy) && is_array($order)) $query->orderBy(array_merge_recursive($order, $query->orderBy));
+        if (empty($query->orderBy)) $query->orderBy($order);
         $query->andWhere(['status'=>1]);
         $items = [];
         /** @var \ra\admin\models\Page $row */

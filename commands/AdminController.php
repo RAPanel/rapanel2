@@ -44,6 +44,7 @@ class AdminController extends \yii\console\Controller
         ]);
 
         $this->addRunFile('../index.php');
+        die;
 
         $this->runSqlFile(Yii::getAlias('@ra/admin/data/ra.sql'));
 
@@ -115,12 +116,13 @@ class AdminController extends \yii\console\Controller
     {
         $configs = func_get_args();
         foreach ($configs as $config) {
-            if (is_file($config)) {
-                $dir = str_replace(dirname(__DIR__), '', __DIR__);
-                $content = "<?php require(__DIR__ . \"" . $dir . "/web/index.php\");";
+            if (!file_exists($config)) {
+                $dir = Yii::getAlias('@app');
+                $dir = str_replace(dirname($dir), '', $dir);
+                $content = "<?php
+                require(__DIR__ . \"" . $dir . "/web/index.php\");";
                 file_put_contents($config, $content);
-
-
+                echo "FileCreation({$config})...done";
             }
         }
     }
