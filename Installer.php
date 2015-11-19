@@ -34,6 +34,18 @@ class Installer extends \yii\composer\Installer
     }
 
     /**
+     * Copy file.
+     * @param array $paths the files from (keys) and the files to copy (values)
+     */
+    public static function copyFile(array $paths)
+    {
+        foreach ($paths as $from => $to) {
+            if (is_file($from))
+                copy($from, $to);
+        }
+    }
+
+    /**
      * Insert run script.
      */
     public static function addRunFile()
