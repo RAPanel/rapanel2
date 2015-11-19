@@ -308,6 +308,7 @@ DROP TABLE IF EXISTS `ra_page_data`;
 
 CREATE TABLE `ra_page_data` (
   `page_id`     INT(11) UNSIGNED NOT NULL,
+  `header`      VARCHAR(255)     NOT NULL,
   `title`       VARCHAR(255)     NOT NULL,
   `description` VARCHAR(255)     NOT NULL,
   `keywords`    VARCHAR(255)     NOT NULL,
@@ -442,7 +443,7 @@ CREATE TABLE `ra_subscribe` (
   `created_at` TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 )
-  ENGINE = MyISAM
+  ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
 /*Table structure for table `ra_user` */
