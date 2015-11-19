@@ -29,7 +29,21 @@ class AdminController extends \yii\console\Controller
     {
 //        $this->command('require rere/yii2-admin "dev-master"');
 
-        var_dump($this->runSqlFile(Yii::getAlias('@ra/admin/data/ra.sql')));
+        $this->mkDir([
+            "../assets" => "0777",
+            "../image" => "0777",
+            "../source" => "0777",
+            "../theme" => "0777",
+        ]);
+
+        $this->copyFile([
+            "web/.htaccess" => "../.htaccess",
+            "web/favicon.ico" => "../favicon.ico",
+        ]);
+
+        $this->addRunFile('../index.php');
+
+        $this->runSqlFile(Yii::getAlias('@ra/admin/data/ra.sql'));
 
         $data = [
             'ra\admin\models\UserRole' => [
@@ -55,6 +69,57 @@ class AdminController extends \yii\console\Controller
                 if ($query->exists()) continue;
 
                 Yii::$app->db->createCommand()->insert($model::tableName(), $row)->execute();
+            }
+        }
+    }
+
+    /**
+     * Create directories listed in the extra section with $permission.
+     * @param array $paths the paths (keys) and the corresponding permission octal strings (values)
+     */
+    public static function mkDir(array $paths)
+    {
+        foreach ($paths as $path => $permission) {
+            if (is_numeric($path) && $permission && is_string($permission)) {
+                $path = $permission;
+                $permission = 0777;
+            }
+            mkdir($path, $permission ?: 0777, true);
+            echo "mkdir('$path', $permission)...";
+            if (is_dir($path)) {
+                chmod($path, octdec($permission));
+                echo "done.\n";
+            } else {
+                echo "dir can`t create.\n";
+            }
+        }
+    }
+
+    /**
+     * Copy file.
+     * @param array $paths the files from (keys) and the files to copy (values)
+     */
+    public static function copyFile(array $paths)
+    {
+        foreach ($paths as $from => $to) {
+            if (is_file($from))
+                copy($from, $to);
+        }
+    }
+
+    /**
+     * Insert run script.
+     */
+    public static function addRunFile()
+    {
+        $configs = func_get_args();
+        foreach ($configs as $config) {
+            if (is_file($config)) {
+                $dir = str_replace(dirname(__DIR__), '', __DIR__);
+                $content = "<?php require(__DIR__ . \"" . $dir . "/web/index.php\");";
+                file_put_contents($config, $content);
+
+
             }
         }
     }
