@@ -1,6 +1,7 @@
 <?php
 
 namespace ra\admin\commands;
+
 use Yii;
 use yii\helpers\FileHelper;
 
@@ -102,10 +103,9 @@ class AdminController extends \yii\console\Controller
      */
     public static function copyFile(array $paths)
     {
-        foreach ($paths as $from => $to) {
-            if (is_file($from))
-                copy($from, $to);
-        }
+        foreach ($paths as $from => $to)
+            if (is_file($from) && !file_exists($to) && copy($from, $to))
+                echo "copy($from, $to)...done.\n";
     }
 
     /**
