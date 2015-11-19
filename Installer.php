@@ -11,6 +11,12 @@ namespace ra\admin;
 
 class Installer extends \yii\composer\Installer
 {
+
+    public static function postCreateProject($event)
+    {
+        parent::postCreateProject($event);
+    }
+
     /**
      * Create directories listed in the extra section with $permission.
      * @param array $paths the paths (keys) and the corresponding permission octal strings (values)
