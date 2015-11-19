@@ -45,7 +45,6 @@ CREATE TABLE `ra_character` (
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
-  AUTO_INCREMENT = 71
   DEFAULT CHARSET = latin1
   COLLATE = latin1_general_ci;
 
@@ -124,7 +123,6 @@ CREATE TABLE `ra_message` (
   KEY `category` (`category`, `message`(64))
 )
   ENGINE = InnoDB
-  AUTO_INCREMENT = 172
   DEFAULT CHARSET = latin1;
 
 /*Table structure for table `ra_message_translate` */
@@ -168,7 +166,6 @@ CREATE TABLE `ra_module` (
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
-  AUTO_INCREMENT = 14
   DEFAULT CHARSET = utf8;
 
 /*Table structure for table `ra_module_settings` */
@@ -240,7 +237,7 @@ CREATE TABLE `ra_page` (
     ON DELETE SET NULL
 )
   ENGINE = InnoDB
-  AUTO_INCREMENT = 1154
+  AUTO_INCREMENT = 1001
   DEFAULT CHARSET = utf8;
 
 /*Table structure for table `ra_page_characters` */
@@ -264,7 +261,6 @@ CREATE TABLE `ra_page_characters` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  AUTO_INCREMENT = 906
   DEFAULT CHARSET = utf8;
 
 /*Table structure for table `ra_page_comments` */
@@ -345,7 +341,6 @@ CREATE TABLE `ra_page_price` (
   KEY `value` (`value`)
 )
   ENGINE = MyISAM
-  AUTO_INCREMENT = 430186
   DEFAULT CHARSET = utf8;
 
 /*Table structure for table `ra_page_session_data` */
@@ -388,7 +383,6 @@ CREATE TABLE `ra_photo` (
   KEY `sort_id` (`sort_id`)
 )
   ENGINE = InnoDB
-  AUTO_INCREMENT = 627
   DEFAULT CHARSET = utf8;
 
 /*Table structure for table `ra_replaces` */
@@ -433,7 +427,6 @@ CREATE TABLE `ra_settings` (
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
-  AUTO_INCREMENT = 8
   DEFAULT CHARSET = utf8;
 
 /*Table structure for table `ra_subscribe` */
@@ -489,7 +482,6 @@ CREATE TABLE `ra_user` (
   CONSTRAINT `ra_user_role_id` FOREIGN KEY (`role_id`) REFERENCES `ra_user_role` (`id`)
 )
   ENGINE = InnoDB
-  AUTO_INCREMENT = 9
   DEFAULT CHARSET = utf8
   COLLATE = utf8_unicode_ci;
 
@@ -597,7 +589,6 @@ CREATE TABLE `ra_user_role` (
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
-  AUTO_INCREMENT = 3
   DEFAULT CHARSET = utf8
   COLLATE = utf8_unicode_ci;
 
