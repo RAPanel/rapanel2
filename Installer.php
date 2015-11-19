@@ -60,9 +60,8 @@ class Installer extends \yii\composer\Installer
         foreach ($configs as $config) {
             if (is_file($config)) {
                 $dir = str_replace(dirname(__DIR__), '', __DIR__);
-                $content = "<?php
-require(__DIR__ . \"{$dir}/web/index.php\");";
-                file_put_contents($config, $content);
+                $content = "<?php require(__DIR__ . \"" . str_replace(dirname(__DIR__), '', __DIR__) . "/web/index.php\");";
+                file_put_contents($config, '<?php require(__DIR__ . \'' . str_replace(dirname(__DIR__), '', __DIR__) . '/web/index.php\');');
 
 
             }
