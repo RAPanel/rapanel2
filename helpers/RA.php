@@ -155,13 +155,14 @@ class RA
     {
         if (is_array($query->orderBy) && is_array($order)) $query->orderBy(array_merge_recursive($order, $query->orderBy));
         if (empty($query->orderBy)) $query->orderBy($order);
-        $query->andWhere(['status'=>1]);
+        $query->andWhere(['status' => 1]);
         $items = [];
         /** @var \ra\admin\models\Page $row */
         foreach ($query->all() as $row) {
             $items[$row->parent_id][] = [
                 'label' => $row->name,
                 'url' => $row->getHref(0),
+                'options' => ['class' => $row->url],
                 'items' => isset($items[$row->id]) ? $items[$row->id] : null,
             ];
         }
