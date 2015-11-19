@@ -1,6 +1,7 @@
 <?php
 
 namespace ra\admin\commands;
+use Yii;
 
 /**
  * Created by PhpStorm.
@@ -26,7 +27,9 @@ class AdminController extends \yii\console\Controller
 
     public function actionInstall()
     {
-        $this->command('require rere/yii2-admin "dev-master"');
+//        $this->command('require rere/yii2-admin "dev-master"');
+
+        var_dump($this->runSqlFile(Yii::getAlias('@ra/admin/data/ra.sql')));
 
         $data = [
             'ra\admin\models\UserRole' => [
@@ -51,12 +54,12 @@ class AdminController extends \yii\console\Controller
                     $query->andWhere([$pk => $row[$pk]]);
                 if ($query->exists()) continue;
 
-                \Yii::$app->db->createCommand()->insert($model::tableName(), $row)->execute();
+                Yii::$app->db->createCommand()->insert($model::tableName(), $row)->execute();
             }
         }
     }
 
-    function run_sql_file($location)
+    public function runSqlFile($location)
     {
         //load file
         $commands = file_get_contents($location);
@@ -66,7 +69,7 @@ class AdminController extends \yii\console\Controller
         $commands = '';
         foreach ($lines as $line) {
             $line = trim($line);
-            if ($line && !startsWith($line, '--')) {
+            if ($line && !$this->startsWith($line, '--')) {
                 $commands .= $line . "\n";
             }
         }
@@ -78,7 +81,7 @@ class AdminController extends \yii\console\Controller
         $total = $success = 0;
         foreach ($commands as $command) {
             if (trim($command)) {
-                $success += (@mysql_query($command) == false ? 0 : 1);
+                $success += (Yii::$app->db->createCommand($command)->execute() == false ? 0 : 1);
                 $total += 1;
             }
         }
@@ -92,7 +95,7 @@ class AdminController extends \yii\console\Controller
 
 
 // Here's a startsWith function
-    function startsWith($haystack, $needle)
+    public function startsWith($haystack, $needle)
     {
         $length = strlen($needle);
         return (substr($haystack, 0, $length) === $needle);
