@@ -254,7 +254,7 @@ class Page extends \yii\db\ActiveRecord
 
     public function getCharacterName($url)
     {
-        return Yii::t('app/character', Inflector::camel2words($url));
+        return Yii::t('app\character', Inflector::camel2words($url));
     }
 
     public function getCharacter($url = null)

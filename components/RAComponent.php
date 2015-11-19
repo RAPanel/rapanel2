@@ -47,10 +47,10 @@ class RAComponent extends Component implements BootstrapInterface
             if ($key == 'aliases') {
                 $app->setAliases($value);
             } elseif (isset(Yii::$app->{$key})) {
-                if (!$priority && Yii::$app->{$key} || Yii::$app->{$key} == $value)
+                if ($app->{$key} == $value)
                     continue;
-                if (is_array(Yii::$app->{$key}) && is_array($value))
-                    $app->$key = ArrayHelper::merge(Yii::$app->{$key}, $value);
+                elseif (is_array(Yii::$app->{$key}) && is_array($value))
+                    $app->$key = $priority ? ArrayHelper::merge(Yii::$app->{$key}, $value) : ArrayHelper::merge($value, Yii::$app->{$key});
                 else
                     $app->$key = $value;
             }
