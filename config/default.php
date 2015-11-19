@@ -10,7 +10,6 @@ $email = 'no-reply@' . str_replace('www.', $_SERVER['HTTP_HOST'], $_SERVER['HTTP
 
 $config = [
     'id' => 'rere',
-    'language' => 'en-US',
     'sourceLanguage' => 'en-US',
     'components' => [
         'urlManager' => [

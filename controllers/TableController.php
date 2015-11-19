@@ -33,7 +33,7 @@ class TableController extends AdminController
         $model = new $module->class;
         if ($id) $model = $model::findOne($id);
 
-        $sort = $module->getSettings()['sort'] == 0 ? SORT_ASC : SORT_DESC;
+        $sort = empty($module->settings['sort']) ? SORT_ASC : SORT_DESC;
         $query = $model::find()->from(['t' => $model::tableName()])->orderBy(['t.lft' => $sort, 't.id' => $sort]);
 
         if ($model->hasAttribute('module_id')) {
