@@ -16,7 +16,7 @@ trait CartItem
         return $this->id;
     }
 
-    public function getPrice()
+    public function getPrice($format = true)
     {
         return 0;
     }
