@@ -44,7 +44,6 @@ class AdminController extends \yii\console\Controller
         ]);
 
         $this->addRunFile('../index.php');
-        die;
 
         $this->runSqlFile(Yii::getAlias('@ra/admin/data/ra.sql'));
 
@@ -87,14 +86,12 @@ class AdminController extends \yii\console\Controller
                 $path = $permission;
                 $permission = 0777;
             }
-            FileHelper::createDirectory($path, $permission ?: 0777, true);
             echo "mkdir('$path', $permission)...";
-            if (is_dir($path)) {
-                chmod($path, octdec($permission));
+            if (FileHelper::createDirectory($path, $permission ?: 0777, true))
                 echo "done.\n";
-            } else {
+            else
                 echo "dir can`t create.\n";
-            }
+
         }
     }
 
