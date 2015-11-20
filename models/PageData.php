@@ -33,7 +33,7 @@ class PageData extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['page_id', 'header', 'title', 'description', 'keywords', 'content', 'tags'], 'required'],
+            [['page_id'], 'required'],
             [['page_id'], 'integer'],
             [['content', 'tags'], 'string'],
             [['header', 'title', 'description', 'keywords'], 'string', 'max' => 255]
@@ -64,7 +64,7 @@ class PageData extends \yii\db\ActiveRecord
         return $this->hasOne(Page::className(), ['id' => 'page_id']);
     }
 
-    public function beforeSave($insert)
+    public function beforeValidate()
     {
         if (empty($this->header) && $this->page->name)
             $this->header = $this->page->name;
@@ -79,7 +79,7 @@ class PageData extends \yii\db\ActiveRecord
         if (empty($this->keywords) && $this->tags)
             $this->keywords = $this->tags;
 
-        return parent::beforeSave($insert);
+        return parent::beforeValidate();
     }
 
     public function afterFind()

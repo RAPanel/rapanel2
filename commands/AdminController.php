@@ -45,6 +45,8 @@ class AdminController extends \yii\console\Controller
 
         $this->addRunFile('../index.php');
 
+        $transaction = Yii::$app->db->beginTransaction();
+
         $this->runSqlFile(Yii::getAlias('@ra/admin/data/ra.sql'));
 
         $data = [
@@ -73,6 +75,8 @@ class AdminController extends \yii\console\Controller
                 Yii::$app->db->createCommand()->insert($model::tableName(), $row)->execute();
             }
         }
+
+        $transaction->commit();
     }
 
     /**
