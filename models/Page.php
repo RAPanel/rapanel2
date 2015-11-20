@@ -218,6 +218,11 @@ class Page extends \yii\db\ActiveRecord
         return $this->pageData;
     }
 
+    public function getHeader()
+    {
+        return $this->data ? $this->data->header : $this->name;
+    }
+
     public function getContent()
     {
         return $this->data ? $this->data->content : null;

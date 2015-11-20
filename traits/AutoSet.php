@@ -50,7 +50,7 @@ trait AutoSet
                     $relationMap[$key] = $row;
                 }
 
-                foreach ($event->data as $row) {
+                if (is_array($event->data)) foreach ($event->data as $row) {
                     $key = '';
                     foreach ($modelPK as $value)
                         if (isset($row[$value]))
