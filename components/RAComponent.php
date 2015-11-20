@@ -58,7 +58,7 @@ class RAComponent extends Component implements BootstrapInterface
 
     public function getParams()
     {
-        if ($this->_params === false) {
+        if (is_null($this->_params)) {
             $this->_params = Yii::$app->params;
             $list = Settings::find()->select(['path', 'value'])->asArray()->all();
             foreach ($list as $row) {
@@ -70,6 +70,7 @@ class RAComponent extends Component implements BootstrapInterface
                 $this->_params = ArrayHelper::merge($this->_params, $data);
             }
         }
+
         return $this->_params;
     }
 
