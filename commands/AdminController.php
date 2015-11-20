@@ -49,32 +49,7 @@ class AdminController extends \yii\console\Controller
 
         $this->runSqlFile(Yii::getAlias('@ra/admin/data/ra.sql'));
 
-        $data = [
-            'ra\admin\models\UserRole' => [
-                ['id' => 1, 'name' => 'Admin', 'can_admin' => 1,],
-                ['id' => 2, 'name' => 'User',],
-            ],
-            'ra\admin\models\User' => [
-                ['id' => 1, 'status' => 1, 'username' => 'semyonchick', 'email' => 'semyonchick@gmail.com', 'password' => '$2y$13$PNXd8rZ1/k4avlEQE.IlJOFqj81jJLiyfbw6pWqthODGxJWR61bUC', 'role_id' => 1],
-                ['id' => 3, 'status' => 1, 'username' => 'valeryrere', 'email' => 'mail@rere-design.ru', 'password' => '$2y$13$Ff.UTgG4SbxYMsO.kIz5NefS9p60NaGvSknntHu16KdBzLM.pJtyO', 'role_id' => 1],
-                ['id' => 4, 'status' => 1, 'username' => 'denart89', 'email' => 'denart89@gmail.com', 'password' => '$2y$13$/JlaJ1KhWIlPPtFXJOjVU.goTnn2KtZUuRtdSzt0Onl/4DQq4fVSC', 'role_id' => 1],
-                ['id' => 5, 'status' => 1, 'username' => 'last_leaf', 'email' => 'v.a.elokhova@gmail.com', 'password' => '$2y$13$Vo0lztRy.i/pb94Oni/pLOEpXNCyicszCS/M1OfluwQE5yBXZUKnq', 'role_id' => 1],
-            ],
-        ];
-
-        foreach ($data as $key => $value) {
-            foreach ($value as $row) {
-                /** @var \yii\db\ActiveRecord $model */
-                $model = new $key();
-
-                $query = $model::find();
-                foreach ($model->primaryKey() as $pk)
-                    $query->andWhere([$pk => $row[$pk]]);
-                if ($query->exists()) continue;
-
-                Yii::$app->db->createCommand()->insert($model::tableName(), $row)->execute();
-            }
-        }
+        $this->actionInsert();
 
         $transaction->commit();
     }
@@ -162,11 +137,48 @@ class AdminController extends \yii\console\Controller
         );
     }
 
-
-// Here's a startsWith function
     public function startsWith($haystack, $needle)
     {
         $length = strlen($needle);
         return (substr($haystack, 0, $length) === $needle);
+    }
+
+
+// Here's a startsWith function
+
+    public function actionInsert()
+    {
+        $data = [
+            'ra\admin\models\UserRole' => [
+                ['id' => 1, 'name' => 'Admin', 'can_admin' => 1,],
+                ['id' => 2, 'name' => 'User',],
+            ],
+            'ra\admin\models\User' => [
+                ['id' => 1, 'status' => 1, 'username' => 'semyonchick', 'email' => 'semyonchick@gmail.com', 'password' => '$2y$13$PNXd8rZ1/k4avlEQE.IlJOFqj81jJLiyfbw6pWqthODGxJWR61bUC', 'role_id' => 1],
+                ['id' => 3, 'status' => 1, 'username' => 'valeryrere', 'email' => 'mail@rere-design.ru', 'password' => '$2y$13$Ff.UTgG4SbxYMsO.kIz5NefS9p60NaGvSknntHu16KdBzLM.pJtyO', 'role_id' => 1],
+                ['id' => 4, 'status' => 1, 'username' => 'denart89', 'email' => 'denart89@gmail.com', 'password' => '$2y$13$/JlaJ1KhWIlPPtFXJOjVU.goTnn2KtZUuRtdSzt0Onl/4DQq4fVSC', 'role_id' => 1],
+                ['id' => 5, 'status' => 1, 'username' => 'last_leaf', 'email' => 'v.a.elokhova@gmail.com', 'password' => '$2y$13$Vo0lztRy.i/pb94Oni/pLOEpXNCyicszCS/M1OfluwQE5yBXZUKnq', 'role_id' => 1],
+            ],
+            'ra\admin\models\Settings' => [
+                ['id' => 1, 'path' => 'name', 'inputType' => 'text', 'name' => 'Название компании'],
+                ['id' => 2, 'path' => 'adminEmail', 'inputType' => 'text', 'name' => 'Адрес администратора'],
+                ['id' => 3, 'path' => 'fromEmail', 'inputType' => 'text', 'name' => 'Отправитель по умолчанию'],
+                ['id' => 4, 'path' => 'phone', 'inputType' => 'text', 'name' => 'Телефон'],
+            ],
+        ];
+
+        foreach ($data as $key => $value) {
+            foreach ($value as $row) {
+                /** @var \yii\db\ActiveRecord $model */
+                $model = new $key();
+
+                $query = $model::find();
+                foreach ($model->primaryKey() as $pk)
+                    $query->andWhere([$pk => $row[$pk]]);
+                if ($query->exists()) continue;
+
+                Yii::$app->db->createCommand()->insert($model::tableName(), $row)->execute();
+            }
+        }
     }
 }

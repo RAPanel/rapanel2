@@ -188,7 +188,15 @@ class TableController extends AdminController
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $model->status = !empty($model->module->settings['status']);
             $model->save();
-            return $this->redirect(['index', 'url' => $model->module->url, 'id' => $model->parent_id]);
+
+            switch (Yii::$app->request->post('submit')):
+                case 'open':
+                    return $this->redirect($model->getHref());
+                case 'refresh':
+                    return $this->refresh();
+                default:
+                    return $this->redirect(['index', 'url' => $model->module->url, 'id' => $model->parent_id]);
+            endswitch;
         } else {
             return $this->render('update', [
                 'model' => $model,

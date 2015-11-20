@@ -66,7 +66,7 @@ trait PageEdit
             ]
         ];
 
-        if (isset($list[$name]) && $this instanceof ActiveRecord)
+        if (isset($list[$name]) && $this instanceof ActiveRecord && !(bool)$this->getBehavior($name))
             $this->attachBehavior($name, $list[$name]);
     }
 
@@ -100,6 +100,8 @@ trait PageEdit
     public function save($runValidation = true, $attributeNames = null)
     {
         if (!$this instanceof ActiveRecord) return false;
+        if ($this->isNewRecord || $this->is_category || RA::moduleSetting($this->module_id, 'hasChild'))
+            $this->addBehavior('tree');
 
         $this->addBehavior('sluggable');
         $this->addBehavior('timestamp');
