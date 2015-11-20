@@ -13,6 +13,8 @@ $tabs = ['main', 'data', 'seo', 'position', 'characters', 'photos'];
 
 <div class="page-form">
 
+    <?= Html::a(Yii::t('ra', 'Cancel'), ['index', 'url' => $model->module->url, 'id' => $model->parent_id], ['class' => 'btn btn-warning pull-right', 'onclick' => 'return history.back()']) ?>
+
     <ul class="nav nav-tabs" style="margin-bottom: 0">
         <? foreach (\ra\admin\helpers\RA::dropDownList($tabs, 'ra') as $key => $value) if ($key == 'main' || !empty($settings[$key])): ?>
             <li class="<?= $key == 'main' ? 'active' : '' ?>"><a href="#<?= $key ?>" data-toggle="tab"><?= $value ?></a>
@@ -89,7 +91,9 @@ $tabs = ['main', 'data', 'seo', 'position', 'characters', 'photos'];
                     </div>
 
                     <div class="form-group">
-                        <?= Html::submitButton($model->isNewRecord ? Yii::t('ra', 'Create') : Yii::t('ra', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+                        <?= Html::submitButton(Yii::t('ra', 'Update'), ['class' => 'btn btn-success', 'name' => 'submit', 'value' => 'back']) ?>
+                        <?= Html::submitButton(Yii::t('ra', 'Apply'), ['class' => 'btn btn-primary', 'name' => 'submit', 'value' => 'refresh']) ?>
+                        <?= Html::submitButton(Yii::t('ra', 'Save&Go'), ['class' => 'btn btn-info pull-right', 'name' => 'submit', 'value' => 'open']) ?>
                     </div>
 
                     <div class="clearfix"></div>
