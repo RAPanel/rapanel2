@@ -18,8 +18,6 @@ $id = 'character' . $key;
 $name = "{$attribute}[{$key}][value]";
 $value = Html::getAttributeValue($model, $name);
 
-var_dump($value);
-
 echo Html::activeHiddenInput($model, "{$attribute}[{$key}][page_id]", ['value' => $model->id]);
 echo Html::activeHiddenInput($model, "{$attribute}[{$key}][character_id]", ['value' => $data->id]);
 echo Html::activeHiddenInput($model, $name, ['value' => is_array($value) ? implode(',', $value) : $value, 'id' => false]);
