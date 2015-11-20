@@ -56,6 +56,7 @@ use yii\helpers\Html;
                     ['label' => Yii::t('ra', 'Messages'), 'url' => ['message/index']],
                     ['label' => Yii::t('ra', 'Replaces'), 'url' => ['replace/index']],
                     ['label' => Yii::t('ra', 'File Manager'), 'url' => ['default/file-manager']],
+                    ['label' => Yii::t('ra', 'SQL Manager'), 'url' => ['sql/index']],
                     ['label' => Yii::t('ra', 'Update'), 'url' => ['default/update']],
                 ]],
             ],
