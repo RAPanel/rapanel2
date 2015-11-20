@@ -34,6 +34,8 @@ use yii\helpers\Url;
  * @property PageCharacters[] $pageCharacters
  * @property PageComments[] $pageComments
  * @property PageData $pageData
+ * @property Photo $photo
+ * @property Photo[] $photos
  */
 class Page extends \yii\db\ActiveRecord
 {

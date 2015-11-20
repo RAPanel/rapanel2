@@ -67,7 +67,7 @@ class Photo extends \yii\db\ActiveRecord
         $hash = md5_file($file);
         $name = basename($file);
 
-        if (!$model) $model = new self;
+        if (empty($model)) $model = new self;
         if (is_string($options)) $options = ['model' => $options];
         $model->setAttributes(compact('owner_id', 'name', 'width', 'height', 'about', 'hash') + $options);
 

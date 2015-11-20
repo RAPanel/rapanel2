@@ -21,6 +21,9 @@ $config = [
         'image' => 'ra\admin\controllers\ImageController',
     ],
     'components' => [
+        'cart' => [
+            'class' => 'ra\admin\components\ShoppingCart',
+        ],
         'translation' => [
             'class' => 'wfstudioru\translate\Translation',
             'key' => 'trnsl.1.1.20150430T103740Z.3bbb7c3d5fb6affa.0b2f8a6b338cce2e1b8b554495628fbd158d1784',
