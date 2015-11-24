@@ -4,6 +4,7 @@ namespace ra\admin\models;
 
 use ra\admin\traits\SerializeAttribute;
 use Yii;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "{{%form}}".
