@@ -96,7 +96,12 @@ class Form extends \yii\db\ActiveRecord
         preg_match('#(\w+?)(?:Form)?$#iu', $this::className(), $matches);
         $this->type = lcfirst($matches[1]);
 
-        if (Yii::$app->request->isPost && $this->load(Yii::$app->request->post()) && $this->validate()) {
+        if (Yii::$app->request->isPost && $this->load(Yii::$app->request->post()) && $this->save()) {
+            if (empty(Yii::$app->params['adminEmail']))
+                Yii::$app->params['adminEmail'] = 'info@' . preg_replace('#.*//|.*www.#', '', Yii::$app->request->hostInfo);
+            if (empty(Yii::$app->params['fromEmail']))
+                Yii::$app->params['fromEmail'] = 'noreply@' . preg_replace('#.*//|.*www.#', '', Yii::$app->request->hostInfo);
+
             $mail = Yii::$app->mailer->compose();
             $mail->setTo(explode(',', $email ?: Yii::$app->params['adminEmail']));
             $mail->setFrom([Yii::$app->params['fromEmail'] => Yii::$app->name]);
