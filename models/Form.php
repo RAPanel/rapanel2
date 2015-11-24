@@ -133,4 +133,23 @@ class Form extends \yii\db\ActiveRecord
     {
         Yii::$app->session->setFlash('success', 'Сообщение успешно отправлено');
     }
+
+    public function uploadFiles($fileName, $dir)
+    {
+        $this->{$fileName} = UploadedFile::getInstances($this, $fileName);
+        /** @var UploadedFile $file */
+        foreach ($this->{$fileName} as $file) {
+            $dir = Yii::getAlias($dir);
+            if (!file_exists($dir)) mkdir($dir, 0777, true);
+            $path = $dir . $file->baseName . '.' . $file->extension;
+            if (file_exists($path) && filesize($path) && $file->size && md5_file($path) != md5_file($file->tempName))
+                $path = str_replace('/' . $file->baseName, '/' . uniqid($file->baseName . '-'), $path);
+            if ($file->size) {
+                $file->saveAs($path);
+                $file->tempName = $path;
+            } else {
+                $file->tempName = false;
+            }
+        }
+    }
 }
