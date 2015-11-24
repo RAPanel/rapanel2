@@ -18,6 +18,7 @@ use yii\web\UploadedFile;
 class Form extends \yii\db\ActiveRecord
 {
     use SerializeAttribute;
+
     public $serializeAttributes = ['name', 'phone', 'email', 'text', 'fromUrl'];
 
     /**
@@ -26,17 +27,6 @@ class Form extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return '{{%form}}';
-    }
-
-    public function init()
-    {
-        parent::init();
-
-        if (empty($this->fromUrl)) {
-            $this->fromUrl = Yii::$app->request->hostInfo . Yii::$app->request->url;
-            if (Yii::$app->request->referrer && Yii::$app->request->url == \yii\helpers\Url::to(['/site/contact']))
-                $this->fromUrl = Yii::$app->request->referrer;
-        }
     }
 
     /**
@@ -48,8 +38,18 @@ class Form extends \yii\db\ActiveRecord
             [['type'], 'required'],
             [['data'], 'string'],
             [['updated_at', 'created_at'], 'safe'],
-            [['type'], 'string', 'max' => 32]
+            [['type'], 'string', 'max' => 32],
+            ['fromUrl', 'default', 'value' => $this->defaultFromUrl()]
         ];
+    }
+
+    public function defaultFromUrl()
+    {
+
+        $fromUrl = Yii::$app->request->hostInfo . Yii::$app->request->url;
+        if (Yii::$app->request->referrer && Yii::$app->request->url == \yii\helpers\Url::to(['/site/contact']))
+            $fromUrl = Yii::$app->request->referrer;
+        return $fromUrl;
     }
 
     /**
