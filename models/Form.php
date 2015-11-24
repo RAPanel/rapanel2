@@ -17,7 +17,7 @@ use Yii;
 class Form extends \yii\db\ActiveRecord
 {
     use SerializeAttribute;
-    public $serializeAttributes = ['name', 'phone', 'email', 'text'];
+    public $serializeAttributes = ['name', 'phone', 'email', 'text', 'fromUrl'];
 
     /**
      * @inheritdoc
@@ -25,6 +25,17 @@ class Form extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return '{{%form}}';
+    }
+
+    public function init()
+    {
+        parent::init();
+
+        if (empty($this->fromUrl)) {
+            $this->fromUrl = Yii::$app->request->hostInfo . Yii::$app->request->url;
+            if (Yii::$app->request->referrer && Yii::$app->request->url == \yii\helpers\Url::to(['/site/contact']))
+                $this->fromUrl = Yii::$app->request->referrer;
+        }
     }
 
     /**
@@ -68,22 +79,34 @@ class Form extends \yii\db\ActiveRecord
      * @param  string $email the target email address
      * @return boolean whether the model passes validation
      */
-    public function contact($email = null)
+    public function contact($email = null, $cc = null)
     {
         preg_match('#(\w+?)(?:Form)?$#iu', $this::className(), $matches);
         $this->type = lcfirst($matches[1]);
-        if ($this->save()) {
+
+        if (Yii::$app->request->isPost && $this->load(Yii::$app->request->post()) && $this->validate()) {
             $mail = Yii::$app->mailer->compose();
             $mail->setTo(explode(',', $email ?: Yii::$app->params['adminEmail']));
             $mail->setFrom([Yii::$app->params['fromEmail'] => Yii::$app->name]);
-            $mail->setSubject('Сообщение с сайта ' . Yii::$app->name);
+            $mail->setSubject((Yii::$app->request->post($this->spamAttribute) ? '[SPAM] ' : '') . 'Сообщение с сайта ' . Yii::$app->name);
             $mail->setTextBody($this->body);
 
-            if (!empty($this->email)) $mail->setReplyTo([$this->email]);
+            if (!empty($this->email))
+                $mail->setReplyTo($this->name ? [$this->email => $this->name] : $this->email);
 
-            $mail->send();
+            if ($this->file) foreach ($this->file as $file)
+                $mail->attach($file->tempName, [
+                    'fileName' => $file->name,
+                    'contentType' => $file->type,
+                ]);
 
-            return true;
+            if ($cc && !Yii::$app->request->post($this->spamAttribute))
+                $mail->setCc(explode(',', $cc));
+
+            if ($mail->send() || YII_ENV_DEV) {
+                Yii::$app->session->setFlash('success', 'Сообщение успешно отправлено');
+                return true;
+            }
         }
         return false;
     }
