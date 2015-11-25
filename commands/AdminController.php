@@ -32,8 +32,6 @@ class AdminController extends \yii\console\Controller
 
     public function actionInstall($force = true)
     {
-//        $this->command('require rere/yii2-admin "dev-master"');
-
         $this->mkDir([
             "../assets" => "0777",
             "../image" => "0777",

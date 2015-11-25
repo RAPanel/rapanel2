@@ -230,6 +230,11 @@ class Page extends \yii\db\ActiveRecord
         return $this->data ? $this->data->content : null;
     }
 
+    public function getTags()
+    {
+        return $this->data ? array_diff(array_map('trim', explode(',', $this->data->tags)), ['']) : [];
+    }
+
     public function getLabel()
     {
         return $this->name;
