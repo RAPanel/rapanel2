@@ -100,7 +100,7 @@ trait PageEdit
     public function save($runValidation = true, $attributeNames = null)
     {
         if (!$this instanceof ActiveRecord) return false;
-        if ($this->isNewRecord || $this->is_category || RA::moduleSetting($this->module_id, 'hasChild'))
+        if ($this->is_category || ($this->isNewRecord && RA::moduleSetting($this->module_id, 'hasCategory')) || RA::moduleSetting($this->module_id, 'hasChild'))
             $this->addBehavior('tree');
 
         $this->addBehavior('sluggable');
@@ -111,7 +111,7 @@ trait PageEdit
         if ($this->_save !== true && $this->getBehavior('tree') && ($this->isNewRecord || $this->isAttributeChanged('parent_id', false))) {
             $this->_save = true;
             $parent = $this->parent_id ? Page::findOne($this->parent_id) : $this->root;
-            if ($this->id != $this->root->id) {
+            if (empty($this->root) || $this->id != $this->root->id) {
                 if (!$this->parent_id)
                     $this->parent_id = $this->root->id;
                 return $this->appendTo($parent, $runValidation, $attributeNames);

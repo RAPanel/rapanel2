@@ -13,21 +13,24 @@ use yii\helpers\FileHelper;
  */
 class AdminController extends \yii\console\Controller
 {
+    public $composerLocal = false;
 
     public function actionUpdate()
     {
         $this->command('self-update');
         $this->command('update -o');
+        $this->actionInstall(false);
     }
 
     public function command($command)
     {
         $dir = \Yii::getAlias('@app');
         $php = PHP_BINDIR . '/php';
-        echo `{$php} {$dir}/composer.phar {$command} --working-dir={$dir}/`;
+        $composer = $this->composerLocal ? "{$php} {$dir}/composer.phar" : 'composer';
+        echo `{$composer} {$command} --working-dir={$dir}/`;
     }
 
-    public function actionInstall()
+    public function actionInstall($force = true)
     {
 //        $this->command('require rere/yii2-admin "dev-master"');
 
@@ -47,7 +50,8 @@ class AdminController extends \yii\console\Controller
 
         $transaction = Yii::$app->db->beginTransaction();
 
-        $this->runSqlFile(Yii::getAlias('@ra/admin/data/ra.sql'));
+        if ($force)
+            $this->runSqlFile(Yii::getAlias('@ra/admin/data/ra.sql'));
 
         $this->actionInsert();
 

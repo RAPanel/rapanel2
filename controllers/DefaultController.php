@@ -23,7 +23,7 @@ class DefaultController extends AdminController
                         'roles' => ['?'],
                     ],
                 ],
-            ],]);
+            ]]);
     }
 
     public function actions()
@@ -32,6 +32,10 @@ class DefaultController extends AdminController
             'auth' => [
                 'class' => 'yii\authclient\AuthAction',
                 'successCallback' => [$this, 'onAuthSuccess'],
+            ],
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+
             ],
         ];
     }

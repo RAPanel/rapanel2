@@ -155,7 +155,7 @@ class TableController extends AdminController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($url, $parent_id = 0, $is_category = 0)
+    public function actionCreate($url, $parent_id = null, $is_category = 0)
     {
         $module = $this->getModule($url);
 
