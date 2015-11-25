@@ -253,7 +253,7 @@ class Page extends \yii\db\ActiveRecord
             } elseif ($this->parent && $this->parent->is_category) {
                 $additional['parent'] = $this->parent->url;
             }
-        } elseif($category)
+        } elseif($parent)
             $additional['parent'] = $parent;
         if (RA::module($this->url)) $url = ["/{$this->url}/index"];
         else $url = ["/{$module}/{$action}", 'url' => $this->url] + $additional;
