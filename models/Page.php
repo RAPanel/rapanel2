@@ -240,7 +240,7 @@ class Page extends \yii\db\ActiveRecord
         return $this->getHref() == \Yii::$app->request->pathInfo ?: null;
     }
 
-    public function getHref($normalizeUrl = true, $scheme = false)
+    public function getHref($normalizeUrl = true, $scheme = false, $parent = false)
     {
         if (strpos($this->url, '/') !== false) return $this->url;
         $module = RA::module($this->module_id);
@@ -253,7 +253,8 @@ class Page extends \yii\db\ActiveRecord
             } elseif ($this->parent && $this->parent->is_category) {
                 $additional['parent'] = $this->parent->url;
             }
-        }
+        } elseif($category)
+            $additional['parent'] = $parent;
         if (RA::module($this->url)) $url = ["/{$this->url}/index"];
         else $url = ["/{$module}/{$action}", 'url' => $this->url] + $additional;
         return $normalizeUrl ? Url::to($url, $scheme) : $url;
