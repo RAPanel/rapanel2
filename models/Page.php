@@ -290,7 +290,7 @@ class Page extends \yii\db\ActiveRecord
         /** @var Photo $photo */
         $relation = isset($options['relation']) ? $options['relation'] : 'photo';
         $photo = $this->{$relation};
-        if (empty($options['alt'])) $options['alt'] = $photo ? $photo->about : $this->name;
+        if (empty($options['alt'])) $options['alt'] = $photo && trim($photo->about) ? $photo->about : $this->name;
         return Html::img($this->getPhotoHref($size, !empty($options['absoluteUrl']), $relation), $options);
     }
 
