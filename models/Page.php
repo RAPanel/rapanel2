@@ -217,7 +217,7 @@ class Page extends \yii\db\ActiveRecord
 
     public function getData()
     {
-        return $this->pageData;
+        return $this->pageData?:(new PageData());
     }
 
     public function getHeader()
@@ -232,7 +232,7 @@ class Page extends \yii\db\ActiveRecord
 
     public function getTags()
     {
-        return $this->data ? array_diff(array_map('trim', explode(',', $this->data->tags)), ['']) : [];
+        return $this->data ? array_diff(array_map('trim', explode(',', $this->data->tags)), ['', null, false, 0]) : [];
     }
 
     public function getLabel()

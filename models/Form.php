@@ -38,6 +38,7 @@ class Form extends \yii\db\ActiveRecord
             [['type'], 'required'],
             [['data'], 'string'],
             [['updated_at', 'created_at'], 'safe'],
+            [$this->serializeAttributes, 'safe'],
             [['type'], 'string', 'max' => 32],
             ['fromUrl', 'default', 'value' => $this->defaultFromUrl()]
         ];
@@ -45,7 +46,6 @@ class Form extends \yii\db\ActiveRecord
 
     public function defaultFromUrl()
     {
-
         $fromUrl = Yii::$app->request->hostInfo . Yii::$app->request->url;
         if (Yii::$app->request->referrer && Yii::$app->request->url == \yii\helpers\Url::to(['/site/contact']))
             $fromUrl = Yii::$app->request->referrer;

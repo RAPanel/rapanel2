@@ -71,9 +71,9 @@ class PageData extends \yii\db\ActiveRecord
         if (empty($this->title) && $this->page->name)
             $this->title = $this->page->name;
         if (empty($this->description) && $this->page->about) {
-            $this->description = preg_replace('#[\r\n\s]*#', '\s', trim($this->page->about));
+            $this->description = preg_replace('#[\r\n\s]+#', ' ', trim($this->page->about));
             if (mb_strlen($this->description) > 255)
-                $this->description = mb_substr($this->description, 0, strrpos(mb_substr($this->description, 0, 255, 'UTF-8'), ' '), 'UTF-8');
+                $this->description = mb_substr($this->description, 0, mb_strrpos(mb_substr($this->description, 0, 255, 'UTF-8'), ' ', 0, 'UTF-8'), 'UTF-8');
         }
 
         if (empty($this->keywords) && $this->tags)
