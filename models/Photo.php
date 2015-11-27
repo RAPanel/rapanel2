@@ -154,9 +154,24 @@ class Photo extends \yii\db\ActiveRecord
         return Yii::getAlias(($global ? '@app/..' : '@web') . '/' . self::$tmpPath . '/' . $this->name);
     }
 
-    public function getHref($type, $scheme = false)
+    public function getHref($size, $scheme = false)
     {
-        return Url::to(['/image/index', 'type' => $type, 'name' => $this->name], $scheme);
+        return Url::to(['/image/index', 'type' => $size, 'name' => $this->name], $scheme);
+    }
+
+    public function getImg($size, $options = [])
+    {
+        if (empty($options['alt'])) $options['alt'] = $this->about;
+        $options = array_merge($options, $this->getSizes($size));
+        return Html::img($this->getHref($size), $options);
+    }
+
+    public function getSizes($size){
+        list($width, $height) = explode('x', $size);
+        return [
+            'width'=>$this->width,
+            'height'=>$this->height,
+        ];
     }
 
     public function beforeDelete()
