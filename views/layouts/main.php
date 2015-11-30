@@ -28,6 +28,24 @@ if (!in_array($this->context->module->id, ['rapanel']))
     .header {
         z-index: 100;
     }
+    .siteBack{
+        position: relative;
+        margin-left: -15px;
+        float: left;
+        width: 25px;
+        height: 60px;
+    }
+    .siteBack a{
+        top: 0;
+        left: 0;
+        border: solid transparent;
+        height: 0;
+        width: 0;
+        position: absolute;
+        border-top-color: white;
+        border-left-color: white;
+        border-width: 15px;
+    }
 </style>
 <?php $this->beginBody() ?>
 

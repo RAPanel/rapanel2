@@ -11,6 +11,7 @@ namespace ra\admin\components;
 use ra\admin\helpers\RA;
 use ra\admin\models\arrays\Modules;
 use ra\admin\models\Settings;
+use ra\admin\widgets\siteWidget\SiteAsset;
 use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
@@ -30,6 +31,8 @@ class RAComponent extends Component implements BootstrapInterface
         $this->configure($app, 'default', false);
         foreach ($this->configList as $config)
             $this->configure($app, $config);
+        if(Yii::$app->request->cookies->getValue('canAdmin'))
+            SiteAsset::register(Yii::$app->view);
 
         // Import params
         $app->params = $this->getParams();

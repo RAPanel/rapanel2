@@ -261,6 +261,8 @@ class TableController extends AdminController
 
     public function actionFixTree($id)
     {
-        Module::findOne(RA::moduleId($id))->fixTree();
+        $model = Module::findOne(RA::moduleId($id));
+        $model->fixTree();
+        return $this->redirect(['index', 'url' => $model->url]);
     }
 }

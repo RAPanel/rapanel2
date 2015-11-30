@@ -16,6 +16,7 @@ use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\web\Cookie;
 
 class AdminController extends Controller
 {
@@ -46,6 +47,12 @@ class AdminController extends Controller
                 ],
             ],
         ];
+    }
+
+    public function beforeAction($action)
+    {
+        Yii::$app->response ->cookies->add(new Cookie(['name'=>'canAdmin', 'value'=>1 ]));
+        return parent::beforeAction($action);
     }
 
     public function actionSave()

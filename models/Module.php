@@ -148,17 +148,18 @@ class Module extends \yii\db\ActiveRecord
             $items[(int)$row['parent_id']][] = $row;
         }
         $lft = 1;
-        $index = function ($parent_id) use ($items, &$lft, &$index) {
+        $index = function ($parent_id, $level) use ($items, &$lft, &$index) {
             if (!empty($items[$parent_id]))
                 foreach ($items[$parent_id] as $row) {
+                    $update['level'] = $level;
                     $update['lft'] = $lft++;
-                    call_user_func($index, $row['id']);
+                    call_user_func($index, $row['id'], $level + 1);
                     $update['rgt'] = $lft++;
                     Page::updateAll($update, ['id' => $row['id']]);
                 }
         };
         $transaction = Yii::$app->db->beginTransaction();
-        call_user_func($index, 0);
+        call_user_func($index, 0, 0);
         $transaction->commit();
     }
 }

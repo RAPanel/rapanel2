@@ -121,4 +121,18 @@ class DefaultController extends AdminController
         if (!file_exists($dir)) mkdir($dir);
         return $this->render('fileManager');
     }
+
+    public function actionGoSite()
+    {
+        $url = Yii::$app->session->get('siteToAdminUrl', '/');
+        Yii::$app->session->set('adminToSiteUrl', Yii::$app->request->referrer);
+        return $this->redirect($url);
+    }
+
+    public function actionGoAdmin()
+    {
+        $url = Yii::$app->session->get('adminToSiteUrl', '/rapanel');
+        Yii::$app->session->set('siteToAdminUrl', Yii::$app->request->referrer);
+        return $this->redirect($url);
+    }
 }
