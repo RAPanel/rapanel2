@@ -62,7 +62,8 @@ class Page extends \yii\db\ActiveRecord
     public static function findActive($module = null, $condition = [], $withRoot = false, $allStatuses = false)
     {
         $sort = RA::moduleSetting($module, 'sort') == 0 ? SORT_ASC : SORT_DESC;
-        $query = self::find()->from(['t' => self::tableName()])->orderBy(['t.lft' => $sort, 't.id' => $sort]);
+        $order = RA::moduleSetting($module, 'hasCategory') ? ['t.is_category' => SORT_DESC] : [];
+        $query = self::find()->from(['t' => self::tableName()])->orderBy($order + ['t.lft' => $sort, 't.id' => $sort]);
         if (!$allStatuses) $query->where(['t.status' => 1]);
         if (!empty($module))
             if (is_array($module)) {
@@ -217,7 +218,7 @@ class Page extends \yii\db\ActiveRecord
 
     public function getData()
     {
-        return $this->pageData?:(new PageData());
+        return $this->pageData ?: (new PageData());
     }
 
     public function getHeader()
@@ -258,7 +259,7 @@ class Page extends \yii\db\ActiveRecord
             } elseif ($this->parent && $this->parent->is_category) {
                 $additional['parent'] = $this->parent->url;
             }
-        } elseif($parent)
+        } elseif ($parent)
             $additional['parent'] = $parent;
         if (RA::module($this->url)) $url = ["/{$this->url}/index"];
         else $url = ["/{$module}/{$action}", 'url' => $this->url] + $additional;
