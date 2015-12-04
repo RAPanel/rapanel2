@@ -3,6 +3,7 @@
 namespace ra\admin\models;
 
 use Yii;
+use yii\db\Transaction;
 
 /**
  * This is the model class for table "{{%page_data}}".
@@ -80,6 +81,38 @@ class PageData extends \yii\db\ActiveRecord
             $this->keywords = $this->tags;
 
         return parent::beforeValidate();
+    }
+
+    public function beforeSave()
+    {
+        if ($this->isAttributeChanged('tags')) {
+            $transaction = Yii::$app->db->beginTransaction(Transaction::READ_COMMITTED);
+            $tags = array_map('trim', explode(',', $this->getAttribute('tags')));
+            $oldTags = array_map('trim', explode(',', $this->getOldAttribute('tags')));
+
+            $addTags = array_diff($tags, $oldTags, ['']);
+            $deleteTags = array_diff($oldTags, $tags, ['']);
+
+            $properties = ['type' => 'tags', 'owner_id' => $this->page_id, 'model' => 'Page'];
+
+            if (!empty($addTags)) {
+                foreach ($addTags as $row) {
+                    $model = new Index();
+                    $model->data = $row;
+                    $model->setAttributes($properties);
+                    $model->save(false);
+                }
+            }
+
+            if (!empty($deleteTags)) {
+                $delete = [];
+                foreach ($this->indexes as $row) {
+                    if (in_array($row->data->value, $deleteTags)) $delete[] = $row->data->value;
+                }
+                Index::deleteAll(['data_id' => $delete] + $properties);
+            }
+            $transaction->commit();
+        }
     }
 
     public function afterFind()

@@ -56,4 +56,15 @@ class Index extends \yii\db\ActiveRecord
     {
         return $this->hasOne(IndexData::className(), ['id' => 'data_id']);
     }
+
+    public function setData($value)
+    {
+        $this->data_id = IndexData::find()->select('id')->where(['value' => $value])->scalar();
+        if (!$this->data_id) {
+            $model = new IndexData();
+            $model->value = $value;
+            $model->save(false);
+            $this->data_id = $model->id;
+        }
+    }
 }
