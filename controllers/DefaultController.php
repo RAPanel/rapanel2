@@ -4,8 +4,11 @@ namespace ra\admin\controllers;
 
 use ra\admin\helpers\RA;
 use ra\admin\models\forms\LoginForm;
+use ra\admin\models\Index;
+use ra\admin\models\PageData;
 use ra\admin\models\UserAuth;
 use Yii;
+use yii\db\Transaction;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 
@@ -134,5 +137,27 @@ class DefaultController extends AdminController
         $url = Yii::$app->session->get('adminToSiteUrl', '/rapanel');
         Yii::$app->session->set('siteToAdminUrl', Yii::$app->request->referrer);
         return $this->redirect($url);
+    }
+
+    public function actionIndexUpdate()
+    {
+        $transaction = Yii::$app->db->beginTransaction(Transaction::READ_UNCOMMITTED);
+
+        $list = PageData::find()->select(['page_id', 'tags'])->where(['!=', 'tags', ''])->asArray()->all();
+        $properties = ['type' => 'tags', 'model' => 'Page'];
+        Index::deleteAll($properties);
+        foreach ($list as $row) foreach(array_map('trim', explode(',', $row['tags'])) as $tag){
+            $model = new Index();
+            $model->data = $tag;
+            $model->owner_id = $row['page_id'];
+            $model->setAttributes($properties, false);
+            $model->save(false);
+        }
+
+        Yii::$app->db->createCommand('DELETE `i` FROM `ra_index_data` `i` LEFT OUTER JOIN `ra_index` ON id=data_id WHERE ISNULL(owner_id)')->execute();
+
+        $transaction->commit();
+
+        return $this->goBack();
     }
 }

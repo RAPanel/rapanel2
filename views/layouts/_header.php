@@ -34,6 +34,7 @@ use yii\helpers\Html;
                     <li><?= Html::a('Кэш', ['clear/cache']) ?></li>
                     <li><?= Html::a('Ассеты', ['clear/assets']) ?></li>
                     <li><?= Html::a('Изображения', ['clear/images']) ?></li>
+                    <li><?= Html::a('Обновить индексы', ['default/index-update']) ?></li>
                     <li class="external"><?= Html::a('Очистить все', ['clear/index'], ['class' => 'info']) ?></li>
                 </ul>
             </li>

@@ -3,6 +3,7 @@
 namespace ra\admin\models;
 
 use Yii;
+use yii\db\Exception;
 use yii\db\Transaction;
 
 /**
@@ -65,6 +66,14 @@ class PageData extends \yii\db\ActiveRecord
         return $this->hasOne(Page::className(), ['id' => 'page_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIndexes()
+    {
+        return $this->hasMany(Index::className(), ['owner_id' => 'page_id'])->andOnCondition([Index::tableName() . '.model' => 'Page'])->joinWith('data');
+    }
+
     public function beforeValidate()
     {
         if (empty($this->header) && $this->page->name)
@@ -86,7 +95,7 @@ class PageData extends \yii\db\ActiveRecord
     public function beforeSave($insert)
     {
         if ($this->isAttributeChanged('tags')) {
-            $transaction = Yii::$app->db->beginTransaction(Transaction::READ_COMMITTED);
+            $transaction = Yii::$app->db->beginTransaction(Transaction::READ_UNCOMMITTED);
             $tags = array_map('trim', explode(',', $this->getAttribute('tags')));
             $oldTags = array_map('trim', explode(',', $this->getOldAttribute('tags')));
 
@@ -95,25 +104,28 @@ class PageData extends \yii\db\ActiveRecord
 
             $properties = ['type' => 'tags', 'owner_id' => $this->page_id, 'model' => 'Page'];
 
-            if (!empty($addTags)) {
-                foreach ($addTags as $row) {
+            try {
+                if (!empty($deleteTags)) {
+                    $delete = [];
+                    foreach ($this->indexes as $row) {
+                        if (in_array($row->data->value, $deleteTags)) $delete[] = $row->data->id;
+                        if (in_array($row->data->value, $addTags)) unset($addTags[array_search($row->data->value, $addTags)]);
+                    }
+                    Index::deleteAll(['data_id' => $delete] + $properties);
+                }
+
+                if (!empty($addTags)) foreach ($addTags as $row) {
                     $model = new Index();
                     $model->data = $row;
                     $model->setAttributes($properties);
                     $model->save(false);
                 }
+                $transaction->commit();
+            } catch (Exception $e) {
+                $this->addError('tags', Yii::t('app', 'Can`t save tags!'));
             }
-
-            if (!empty($deleteTags)) {
-                $delete = [];
-                foreach ($this->indexes as $row) {
-                    if (in_array($row->data->value, $deleteTags)) $delete[] = $row->data->value;
-                }
-                Index::deleteAll(['data_id' => $delete] + $properties);
-            }
-            $transaction->commit();
         }
-        parent::beforeSave($insert);
+        return parent::beforeSave($insert);
     }
 
     public function afterFind()
