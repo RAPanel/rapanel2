@@ -38,8 +38,8 @@ class Order extends \yii\db\ActiveRecord
 
             Yii::$app->mailer->compose()
                 ->setTo(explode(',', Yii::$app->params['adminEmail']))
-                ->setFrom([Yii::$app->params['fromEmail'] => Yii::$app->name])
-                ->setSubject('Заказ на АвтоКом')
+                ->setFrom([Yii::$app->params['fromEmail'] ?: 'no-reply@' . Yii::$app->request->hostInfo => Yii::$app->name])
+                ->setSubject("Новый заказ №{$this->id}")
                 ->setHtmlBody($event->sender->getBody())
                 ->send();
         });
