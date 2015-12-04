@@ -256,7 +256,7 @@ class Page extends \yii\db\ActiveRecord
         if (!empty($moduleSettings['hasCategory'])) {
             if ($this->is_category) {
                 $action = 'category';
-            } elseif ($this->parent && $this->parent->is_category) {
+            } elseif ($this->parent && $this->parent->is_category && $this->parent->level) {
                 $additional['parent'] = $this->parent->url;
             }
         } elseif ($parent)
