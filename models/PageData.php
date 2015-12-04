@@ -83,7 +83,7 @@ class PageData extends \yii\db\ActiveRecord
         return parent::beforeValidate();
     }
 
-    public function beforeSave()
+    public function beforeSave($insert)
     {
         if ($this->isAttributeChanged('tags')) {
             $transaction = Yii::$app->db->beginTransaction(Transaction::READ_COMMITTED);
@@ -113,6 +113,7 @@ class PageData extends \yii\db\ActiveRecord
             }
             $transaction->commit();
         }
+        parent::beforeSave($insert);
     }
 
     public function afterFind()
