@@ -15,7 +15,7 @@ class Controller extends \yii\web\Controller
 {
     public function render($view, $params = [])
     {
-        $type = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
+        $type = Yii::$app->request->isAjax || Yii::$app->request->get('ajax') ? 'renderAjax' : 'render';
         return parent::$type($view, $params);
     }
 }
