@@ -132,4 +132,5 @@ return [
     'Disable Sort Mode' => 'Выключить сортировку',
     'Logout' => 'Выйти',
     'Go Site' => 'Перейти на сайт',
+    'Download' => 'Скачать',
 ];

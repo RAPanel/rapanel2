@@ -26,12 +26,14 @@ class SqlController extends AdminController
             $dataProvider = new SqlDataProvider([
                 'sql' => $model->value,
                 'totalCount' => Yii::$app->db->createCommand('SELECT COUNT(*) FROM ' . $request)->queryScalar(),
+                'pagination' => ['defaultPageSize'=>15],
             ]);
         } elseif ($table) {
             $query = (new Query())->from("{{%$table}}");
             $model->value = $query->createCommand()->sql;
             $dataProvider = new ActiveDataProvider([
                 'query' => $query,
+                'pagination' => ['defaultPageSize'=>15],
             ]);
         } else
             $dataProvider = null;
@@ -50,15 +52,17 @@ class SqlController extends AdminController
      * Lists all Form models.
      * @return mixed
      */
-    public function actionQuery($table = null)
+    public function actionDownload($id)
     {
-        $this->title = $table ?: 'Выберите таблицу';
-        $dataProvider = $table ? new ActiveDataProvider([
-            'query' => (new Query())->from($table),
-        ]) : null;
+        $model = Sql::findOne($id);
+        list($select, $request) = preg_split('#\sfrom\s#iu', $model->value);
+        $dataProvider = new SqlDataProvider([
+            'sql' => $model->value,
+            'pagination' => false,
+        ]);
 
-        return $this->render('index', [
-            'table' => $table,
+        return $this->render('download', [
+            'model' => $model,
             'dataProvider' => $dataProvider,
         ]);
     }

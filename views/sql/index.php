@@ -18,6 +18,9 @@ $itemsPresent = [['label' => '--- новый ---', 'url' => ['index']]];
 foreach ($model::find()->all() as $row) {
     $itemsPresent[] = ['label' => $row->name, 'url' => ['index', 'id' => $row->id]];
 }
+
+$download = Html::a(Yii::t('ra', 'Download'), ['download'] + Yii::$app->request->get(), ['class'=>'btn btn-primary pull-right']);
+
 ?>
 <div class="settings-index">
 
@@ -59,11 +62,11 @@ foreach ($model::find()->all() as $row) {
         <? if ($dataProvider) echo GridView::widget([
             'options' => ['style' => 'overflow-x:auto;width: 100%;'],
             'dataProvider' => $dataProvider,
+            'layout' =>  "{summary}\n{items}\n<div class='col-lg-12'>{$download}\n{pager}</div>",
             'columns' => [
 
             ],
         ]); ?>
 
     </div>
-</div>
 </div>
