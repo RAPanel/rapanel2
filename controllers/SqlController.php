@@ -6,6 +6,7 @@ use ra\admin\models\Sql;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\data\SqlDataProvider;
+use yii\db\Exception;
 use yii\db\Query;
 
 class SqlController extends AdminController
@@ -23,9 +24,14 @@ class SqlController extends AdminController
 
         if ($model->value) {
             list($select, $request) = preg_split('#\sfrom\s#iu', $model->value);
+            try{
+                $total = Yii::$app->db->createCommand('SELECT COUNT(*) FROM ' . $request)->queryScalar();
+            } catch(Exception $e){
+                $total = null;
+            }
             $dataProvider = new SqlDataProvider([
                 'sql' => $model->value,
-                'totalCount' => Yii::$app->db->createCommand('SELECT COUNT(*) FROM ' . $request)->queryScalar(),
+                'totalCount' => $total,
                 'pagination' => ['defaultPageSize'=>15],
             ]);
         } elseif ($table) {

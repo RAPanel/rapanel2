@@ -3,6 +3,7 @@
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 use yii\grid\GridView;
+use yii\helpers\VarDumper;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -59,14 +60,17 @@ $download = Html::a(Yii::t('ra', 'Download'), ['download'] + Yii::$app->request-
 
             <?php ActiveForm::end(); ?>
         </div>
-        <? if ($dataProvider) echo GridView::widget([
+        <?  try {
+            if ($dataProvider) echo GridView::widget([
             'options' => ['style' => 'overflow-x:auto;width: 100%;'],
             'dataProvider' => $dataProvider,
             'layout' =>  "{summary}\n{items}\n<div class='col-lg-12'>{$download}\n{pager}</div>",
             'columns' => [
 
             ],
-        ]); ?>
+        ]);} catch(\yii\db\Exception $e){
+            echo Html::tag('h3', $e->getMessage(), ['class'=>'col-lg-12']);
+        } ?>
 
     </div>
 </div>
