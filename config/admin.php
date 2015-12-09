@@ -39,10 +39,9 @@ return [
             'identityClass' => 'ra\admin\models\User',
             'loginUrl' => ['rapanel/default/login'],
             'enableAutoLogin' => true,
-            'cookieParams' => [
-                'lifetime' => 60 * 60 * 24,
-            ],
             'identityCookie' => [
+                'name' => '_identity',
+                'httpOnly' => true,
                 'expire' => 60 * 60 * 24,
             ],
         ],
