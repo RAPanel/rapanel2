@@ -9,6 +9,7 @@
 namespace ra\admin\components;
 
 use ra\admin\models\Cart;
+use Yii;
 use yii\base\Component;
 
 class ShoppingCart extends Component
@@ -57,7 +58,8 @@ class ShoppingCart extends Component
 
     public function getSessionId()
     {
-        return \Yii::$app->user->getId() ?: \Yii::$app->session->hasSessionId || !\Yii::$app->session->open() ? \Yii::$app->session->getId() : '';
+        if(isset($_COOKIE['PHPSESSID'])) return $_COOKIE['PHPSESSID'];
+        return Yii::$app->user->getId() ?: Yii::$app->session->hasSessionId || !Yii::$app->session->open() ? Yii::$app->session->getId() : '';
     }
 
     public function getQuantity()
