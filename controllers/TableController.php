@@ -34,7 +34,7 @@ class TableController extends AdminController
         if ($id) $model = $model::findOne($id);
 
         $sort = empty($module->settings['sort']) ? SORT_ASC : SORT_DESC;
-        $query = $model::find()->from(['t' => $model::tableName()])->orderBy(['t.lft' => $sort, 't.id' => $sort]);
+        $query = $model::find()->from(['t' => $model::tableName()])->andWhere(['!=', 't.id', $model->id])->orderBy(['t.lft' => $sort, 't.id' => $sort]);
 
         if ($model->hasAttribute('module_id')) {
             $query->andWhere(['t.module_id' => $module->id]);
@@ -46,7 +46,8 @@ class TableController extends AdminController
                     $this->redirect(['index', 'url' => $url, 'id' => $module->rootId]);
         }
         if ($model->hasAttribute('status')) $query->andWhere(['!=', 't.status', 9]);
-        if ($id) $query->andWhere(['t.parent_id' => $id]);
+        if ($model->id == $module->rootId) $query->andWhere(['or', ['t.parent_id' => $id], ['t.parent_id' => null]]);
+        elseif ($id) $query->andWhere(['t.parent_id' => $id]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
