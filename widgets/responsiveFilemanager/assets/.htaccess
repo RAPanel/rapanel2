@@ -1,0 +1,4 @@
+<Files "dialog.php|upload.php|execute.php|ajax_calls.php||force_download.php">
+    Order Allow,Deny
+    Allow from all
+</Files>

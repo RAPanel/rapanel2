@@ -1,5 +1,5 @@
 <?php
-ini_set('session.save_path', getcwd() . '/../../../../../');
+ini_set('session.save_path',getcwd(). '/');
 session_start();
 mb_internal_encoding('UTF-8');
 date_default_timezone_set('Europe/Moscow');
@@ -77,7 +77,7 @@ $config = array(
 	| with final /
 	|
 	*/
-	'current_path' => '../../../../../source/',
+	'current_path' => '../../source/',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -88,7 +88,7 @@ $config = array(
 	| DO NOT put inside upload folder
 	|
 	*/
-	'thumbs_base_path' => '../../../../../assets/thumbs/',
+	'thumbs_base_path' => '../thumbs/',
 
 	/*
 	|--------------------------------------------------------------------------
