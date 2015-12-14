@@ -33,7 +33,7 @@ if ($data['type'] == 'boolean') {
     $filter = [];
     foreach ($data['filter'] as $key => $row)
         if ($row) $filter[$key] = $row - 1;
-    echo \nex\chosen\Chosen::widget([
+    echo \ra\admin\widgets\chosen\Chosen::widget([
         'id' => $id,
         'model' => $model,
         'attribute' => $name,

@@ -13,9 +13,9 @@ use yii\web\AssetBundle;
 
 class ChosenSortableAsset extends AssetBundle
 {
-    public $sourcePath = '@ra/admin/widgets/assets';
+    public $sourcePath = '@ra/admin/widgets/chosen/assets';
 
     public $js = [
-        'jquery-chosen-sortable.js'
+        'js/jquery-chosen-sortable.js'
     ];
 }

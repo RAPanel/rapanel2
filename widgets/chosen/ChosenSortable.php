@@ -8,9 +8,6 @@
 
 namespace ra\admin\widgets\chosen;
 
-
-use nex\chosen\Chosen;
-use nex\chosen\ChosenAsset;
 use yii\helpers\Json;
 
 class ChosenSortable extends Chosen
