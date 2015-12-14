@@ -15,7 +15,6 @@
             "email": "semyonchick@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.0",
         "yiisoft/yii2": "*",
@@ -27,8 +26,6 @@
         "2amigos/yii2-tinymce-widget": "*",
         "imagine/imagine": "*",
         "creocoder/yii2-nested-sets": "^0.9.0"
-    },
-    "require-dev": {
     },
     "autoload": {
         "psr-4": {
