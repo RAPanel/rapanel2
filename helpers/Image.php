@@ -73,6 +73,8 @@ class Image
         $resize = max($width / $image->getSize()->getWidth(), $height / $image->getSize()->getHeight());
         if ($resize < 1) $resize = 1;
 
+        $box = new Box($width, $height);
+
         // Запрещаем увеличение
         $newWidth = $width = $width / $resize;
         $newHeight = $height = $height / $resize;
@@ -102,7 +104,6 @@ class Image
         $image->resize(new Box($newWidth, $newHeight), ImageInterface::FILTER_LANCZOS);
 
         if ($crop) {
-            $box = new Box($width, $height);
 
             // Обрезаем лишнее
             $startX = 0;
@@ -125,11 +126,11 @@ class Image
 
                 $startX = 0;
                 $startY = 0;
-                if ($size->getWidth() < $width) {
-                    $startX = ceil($width - $size->getWidth()) / 2;
+                if ($size->getWidth() < $box->getWidth()) {
+                    $startX = ceil($box->getWidth() - $size->getWidth()) / 2;
                 }
-                if ($size->getHeight() < $height) {
-                    $startY = ceil($height - $size->getHeight()) / 2;
+                if ($size->getHeight() < $box->getHeight()) {
+                    $startY = ceil($box->getHeight() - $size->getHeight()) / 2;
                 }
                 $thumb->paste($image, new Point($startX, $startY));
             } else
