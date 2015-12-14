@@ -81,14 +81,14 @@ class DefaultController extends AdminController
     public function onAuthSuccess($client)
     {
         $data = [
-            'source' => $client->getId(),
-            'source_id' => $client->userAttributes['id'],
+            'provider' => $client->getId(),
+            'provider_id' => $client->userAttributes['id'],
         ];
         $auth = UserAuth::findOne($data);
         if (!$auth) $auth = new UserAuth($data);
         $auth->setAttributes([
             'user_id' => Yii::$app->user->id ?: ($auth->user_id ? $auth->user_id : 1),
-            'source_attributes' => serialize($client->accessToken->params),
+            'provider_attributes' => serialize($client->accessToken->params),
         ]);
         $auth->save(false);
 

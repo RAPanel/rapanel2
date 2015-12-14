@@ -9,9 +9,9 @@ use Yii;
  *
  * @property integer $id
  * @property integer $user_id
- * @property string $source
- * @property string $source_id
- * @property string $source_attributes
+ * @property string $provider
+ * @property string $provider_id
+ * @property string $provider_attributes
  * @property string $updated_at
  * @property string $created_at
  *
@@ -33,11 +33,11 @@ class UserAuth extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'source', 'source_id', 'source_attributes'], 'required'],
+            [['user_id', 'provider', 'provider_id', 'provider_attributes'], 'required'],
             [['user_id'], 'integer'],
-            [['source_attributes'], 'string'],
+            [['provider_attributes'], 'string'],
             [['updated_at', 'created_at'], 'safe'],
-            [['source', 'source_id'], 'string', 'max' => 255]
+            [['provider', 'provider_id'], 'string', 'max' => 255]
         ];
     }
 
@@ -49,9 +49,9 @@ class UserAuth extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('ra', 'ID'),
             'user_id' => Yii::t('ra', 'User ID'),
-            'source' => Yii::t('ra', 'source'),
-            'source_id' => Yii::t('ra', 'source ID'),
-            'source_attributes' => Yii::t('ra', 'source Attributes'),
+            'provider' => Yii::t('ra', 'provider'),
+            'provider_id' => Yii::t('ra', 'provider ID'),
+            'provider_attributes' => Yii::t('ra', 'provider Attributes'),
             'updated_at' => Yii::t('ra', 'Updated At'),
             'created_at' => Yii::t('ra', 'Created At'),
         ];
