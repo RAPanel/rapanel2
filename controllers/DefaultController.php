@@ -21,7 +21,7 @@ class DefaultController extends AdminController
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login'],
+                        'actions' => ['login', 'goAdmin'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -129,6 +129,7 @@ class DefaultController extends AdminController
     {
         $url = Yii::$app->session->get('siteToAdminUrl', '/');
         Yii::$app->session->set('adminToSiteUrl', Yii::$app->request->referrer);
+        if (stripos($url, '/rapanel/') !== false) $url = '/';
         return $this->redirect($url);
     }
 
@@ -136,6 +137,7 @@ class DefaultController extends AdminController
     {
         $url = Yii::$app->session->get('adminToSiteUrl', '/rapanel');
         Yii::$app->session->set('siteToAdminUrl', Yii::$app->request->referrer);
+        if (stripos($url, '/rapanel/') === false) $url = '/rapanel';
         return $this->redirect($url);
     }
 
@@ -146,7 +148,7 @@ class DefaultController extends AdminController
         $list = PageData::find()->select(['page_id', 'tags'])->where(['!=', 'tags', ''])->asArray()->all();
         $properties = ['type' => 'tags', 'model' => 'Page'];
         Index::deleteAll($properties);
-        foreach ($list as $row) foreach(array_map('trim', explode(',', $row['tags'])) as $tag){
+        foreach ($list as $row) foreach (array_map('trim', explode(',', $row['tags'])) as $tag) {
             $model = new Index();
             $model->data = $tag;
             $model->owner_id = $row['page_id'];
