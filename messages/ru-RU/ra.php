@@ -110,7 +110,7 @@ return [
     'Update {modelClass}: ' => 'Обновить {modelClass}: ',
     'Create Character' => 'Создать характеристику',
     'Create Replaces' => 'Создать замену',
-    'Create Settings' => 'Создать настроку',
+    'Create Settings' => 'Создать настройку',
     'Can has child`s' => 'Можно вкладывать страницы',
     'Create' => 'Создать',
     'Subscribes' => 'Подписчики',
