@@ -6,6 +6,7 @@ use Exception;
 use ra\admin\helpers\Image;
 use Yii;
 use yii\helpers\FileHelper;
+use yii\helpers\Html;
 use yii\helpers\Url;
 
 /**
