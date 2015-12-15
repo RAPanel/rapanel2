@@ -42,7 +42,7 @@ return [
             'identityCookie' => [
                 'name' => '_identity',
                 'httpOnly' => true,
-                'expire' => 60 * 60 * 24,
+                'expire' => time() + 60 * 60 * 24 * 30,
             ],
         ],
         'errorHandler' => [

@@ -9,6 +9,7 @@
 namespace ra\admin\widgets\responsiveFilemanager;
 
 
+use Yii;
 use yii\web\AssetBundle;
 
 class ResponsiveFilemanagerAsset extends AssetBundle
@@ -23,5 +24,13 @@ class ResponsiveFilemanagerAsset extends AssetBundle
 
     public $depends = [
     ];
+
+    public function publish($am)
+    {
+        parent::publish($am);
+        $filename = '/.htaccess';
+        if (!file_exists($this->basePath . $filename))
+            copy(Yii::getAlias($this->sourcePath) . $filename, $this->basePath . $filename);
+    }
 
 }

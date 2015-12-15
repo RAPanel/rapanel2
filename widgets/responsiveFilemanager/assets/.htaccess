@@ -1,4 +1,7 @@
-<Files "dialog.php|upload.php|execute.php|ajax_calls.php||force_download.php">
-    Order Allow,Deny
+php_flag engine On
+AddType application/x-httpd-php .php
+
+<FilesMatch "(dialog|upload|execute|ajax_calls|force_download).php">
     Allow from all
-</Files>
+    Satisfy Any
+</FilesMatch>

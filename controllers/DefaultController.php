@@ -21,7 +21,7 @@ class DefaultController extends AdminController
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login', 'goAdmin'],
+                        'actions' => ['login', 'goAdmin', 'auth'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
