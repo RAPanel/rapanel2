@@ -19,6 +19,10 @@ use yii\rbac\Rule;
 
 class AuthManager implements ManagerInterface
 {
+    public function getUserIdsByRole($roleName)
+    {
+
+    }
 
     /**
      * Checks if the user has the specified permission.
