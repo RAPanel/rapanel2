@@ -53,7 +53,13 @@ $tabs = ['main', 'data', 'seo', 'position', 'characters', 'photos'];
 
                                     <? if ($settings['hasChild']) echo $form->field($model, 'is_category')->checkbox(['label' => Yii::t('ra', 'Can has child`s')]) ?>
 
-                                    <?= $form->field($model, 'parent_id')->dropDownList(empty($model->parent_id) ? [null => Yii::t('ra', 'Select Parent')] : [$model->parent->id => $model->parent->name]) ?>
+                                    <? $categories = \yii\helpers\ArrayHelper::map($model::findActive($model->module_id, ['and', ['is_category' => 1], ['!=', 'id', $model->id]], true)->select(['id', 'name', 'level'])->all(), 'id', function ($data) {
+                                        $add = '';
+                                        for ($i = 0; $i < $data->level; $i++) $add .= '*';
+                                        return "{$add}#{$data->id} {$data->name}";
+                                    }) ?>
+
+                                    <?= $form->field($model, 'parent_id')->dropDownList(\yii\helpers\ArrayHelper::merge(empty($model->parent_id) ? [null => Yii::t('ra', 'Select Parent')] : [], $categories)) ?>
 
                                     <?= $form->field($model, 'user_id')->dropDownList(empty($model->user_id) ? [null => Yii::t('ra', 'Select User')] : [$model->user->id => $model->user->username]) ?>
 
