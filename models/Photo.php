@@ -155,11 +155,6 @@ class Photo extends \yii\db\ActiveRecord
         return Yii::getAlias(($global ? '@app/..' : '@web') . '/' . self::$tmpPath . '/' . $this->name);
     }
 
-    public function getHref($size, $scheme = false)
-    {
-        return Url::to(['/image/index', 'type' => $size, 'name' => $this->name], $scheme);
-    }
-
     public function getImg($size, $options = [])
     {
         if (empty($options['alt'])) $options['alt'] = $this->about;
@@ -167,12 +162,24 @@ class Photo extends \yii\db\ActiveRecord
         return Html::img($this->getHref($size), $options);
     }
 
-    public function getSizes($size){
-        list($width, $height) = explode('x', $size);
+    public function getSizes($size)
+    {
+        if (strpos($size, 'x') !== false)
+            list($width, $height) = explode('x', $size);
+        else $width = $height = (int)$size;
+        $k = $this->width / $this->height;
+        if ($k > 1) $height = $width / $k;
+        else $width = $height * $k;
+
         return [
-            'width'=>$this->width,
-            'height'=>$this->height,
+            'width' => $width,
+            'height' => $height,
         ];
+    }
+
+    public function getHref($size, $scheme = false)
+    {
+        return Url::to(['/image/index', 'type' => $size, 'name' => $this->name], $scheme);
     }
 
     public function beforeDelete()
