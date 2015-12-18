@@ -47,7 +47,7 @@ class TableController extends AdminController
                         'is_category' => !empty($module->settings['hasChild'])]) :
                     $this->redirect(['index', 'url' => $url, 'id' => $module->rootId]);
         }
-//        if ($model->hasAttribute('status')) $query->andWhere(['!=', 't.status', 9]);
+        if ($model->hasAttribute('status')) $query->andWhere(['!=', 't.status', 9]);
         if ($model->id == $module->rootId) $query->andWhere(['or', ['t.parent_id' => $id], ['t.parent_id' => null]]);
         elseif ($id) $query->andWhere(['t.parent_id' => $id]);
 
