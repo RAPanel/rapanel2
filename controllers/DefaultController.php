@@ -110,8 +110,9 @@ class DefaultController extends AdminController
         $dir = Yii::getAlias('@app');
 
         if (Yii::$app->request->isPost) {
-            echo `php-cli {$dir}/composer.phar self-update --working-dir={$dir}/ --no-progress`;
-            echo `php-cli {$dir}/composer.phar update -o --working-dir={$dir}/ --no-progress`;
+            ignore_user_abort();
+            set_time_limit(0);
+            exec(PHP_BINDIR . "/php {$dir}/yii admin/update &");
             return $this->refresh();
         }
 

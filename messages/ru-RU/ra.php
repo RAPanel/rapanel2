@@ -133,4 +133,5 @@ return [
     'Logout' => 'Выйти',
     'Go Site' => 'Перейти на сайт',
     'Download' => 'Скачать',
+    'Update System' => 'Обновить панель',
 ];

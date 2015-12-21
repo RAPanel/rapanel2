@@ -15,7 +15,7 @@ class AdminController extends \yii\console\Controller
 {
     public $composerLocal = false;
 
-    public function actionUpdate()
+    public function actionUpdate($install = false)
     {
         $this->command('self-update');
         $this->command('update -o');
@@ -26,8 +26,12 @@ class AdminController extends \yii\console\Controller
     {
         $dir = \Yii::getAlias('@app');
         $php = PHP_BINDIR . '/php';
-        $composer = $this->composerLocal ? "{$php} {$dir}/composer.phar" : 'composer';
-        echo `{$composer} {$command} --working-dir={$dir}/`;
+        $composer = "{$dir}/composer.phar";
+        if(!file_exists($composer)) {
+            exec('curl -sS https://getcomposer.org/installer | php');
+            exec("{$php} {$composer}");
+        }
+        echo `{$php} {$composer} {$command} --working-dir={$dir}/`;
     }
 
     public function actionInstall($force = true)
@@ -54,6 +58,8 @@ class AdminController extends \yii\console\Controller
         $this->actionInsert();
 
         $transaction->commit();
+
+        $this->actionUpdate();
     }
 
     /**
