@@ -58,6 +58,16 @@ if ($data['type'] == 'boolean') {
         $params['value'] = '1';
     }
     echo Html::label($label, $id);
-    echo Html::activeInput($data['type'], $model, $name, ['id' => $id, 'class' => 'form-control'] + $params);
+    if ($data['multi']) {
+        if (Html::getAttributeValue($model, $name))
+            foreach (Html::getAttributeValue($model, $name) as $i => $row) if ($row) {
+                echo Html::activeInput($data['type'], $model, $name . "[{$i}]", ['id' => $id, 'class' => 'form-control'] + $params);
+            }
+        $name .= '[]';
+    }
+    echo Html::activeInput($data['type'], $model, $name, ['id' => $id, 'value' => $data['multi'] ? '' : null, 'class' => 'form-control'] + $params);
+    if ($data['multi']) {
+        echo Html::button('add', ['onclick' => '$(this).prev(":input").clone().val("").insertBefore(this);']);
+    }
 }
 echo Html::endTag('div');

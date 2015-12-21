@@ -27,7 +27,7 @@ class AdminController extends \yii\console\Controller
         $dir = \Yii::getAlias('@app');
         $php = PHP_BINDIR . '/php';
         $composer = "{$dir}/composer.phar";
-        if(!file_exists($composer)) {
+        if (!file_exists($composer)) {
             exec('curl -sS https://getcomposer.org/installer | php');
             exec("{$php} {$composer}");
         }
