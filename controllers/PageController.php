@@ -32,19 +32,29 @@ class PageController extends Controller
     {
         /** @var $base Page */
         if (isset($params['model'])) {
-            if (method_exists($params['model'], 'getData') && ($data = $params['model']->data)) {
+            $model = $params['model'];
+            if (method_exists($model, 'getData') && ($data = $model->data)) {
                 if (!empty($data['title'])) $this->getView()->title = $data['title'];
+                // Registry meta data
                 if (!empty($data['description'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $data['description']]);
                 if (!empty($data['keywords'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['keywords']]);
+                // Registry og data
+                $this->getView()->registerMetaTag(['property' => 'og:og:type', 'content' => 'website']);
+                if (!empty($data['h1'])) $this->getView()->registerMetaTag(['property' => 'og:title', 'content' => $data['h1']]);
+                if (method_exists($model, 'getHref')) $this->getView()->registerMetaTag(['property' => 'og:url', 'content' => $model->getHref(1, 1)]);
+                if (method_exists($model, 'getPhoto') && $model->photo) {
+                    $this->getView()->registerMetaTag(['property' => 'og:image', 'content' => $model->photo->getHref('1000', true)]);
+                    $this->getView()->registerMetaTag(['property' => 'og:image:width', 'content' => $model->photo->getSize('1000')['width']]);
+                    $this->getView()->registerMetaTag(['property' => 'og:image:height', 'content' => $model->photo->getSize('1000')['height']]);
+                }
             }
-            $this->getView()->params['model'] = $params['base'] = $params['model'];
-            $this->getView()->params['pageTitle'] = $params['model']->name;
-            $this->getView()->params['breadcrumbs'] = function () {
-                $model = $this->getView()->params['model'];
+            $this->getView()->params['model'] = $params['base'] = $model;
+            $this->getView()->params['pageTitle'] = $model->name;
+            $this->getView()->params['breadcrumbs'] = function () use ($model) {
                 $result = [];
                 if ($model->parent_id) {
                     if (!$model->level) {
-                        $parent = $model::findOne($model->parent_id);
+                        $parent = $model->parent;
                     }
                     /** @var Page $get */
                     $get = isset($parent) ? $parent : $model;
