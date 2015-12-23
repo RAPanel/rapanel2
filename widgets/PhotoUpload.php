@@ -28,11 +28,18 @@ JS;
         $this->clientEvents['success'] = new JsExpression($event);
         $deleteAction = Url::to(['delete', 'type' => 'photo', 'id' => '']);
         $js = <<<JS
-$('.photoWrapper').on('click', '.close', function(){
+$('.photoWrapper').on('click', '.remove', function(){
     var block = $(this).parents('.image');
     $.post('{$deleteAction}'+block.attr('id').replace('photo', ''));
-    $(this).parents('.image').remove();
+    block.remove();
     return false;
+});
+$( ".photoWrapper" ).sortable();
+$( ".photoWrapper" ).disableSelection();
+$( ".photoWrapper" ).on( "sortstop", function( event, ui ) {
+$('.photoWrapper .image').each(function(key, el){
+    $('input[name$="[sort_id]"]', el).val(key);
+});
 });
 JS;
         $this->getView()->registerJs($js);
@@ -50,8 +57,9 @@ JS;
         if (is_null($this->value))
             $this->value = $this->model->{$this->attribute};
 
+        ini_set('memory_limit', '256M');
         foreach ($this->value as $index => $data)
-            $result .= $this->render('/table/_image', compact('data', 'index'));
+            $result .= preg_replace('#[\r\n\s]+#', ' ', $this->render('/table/_image', compact('data', 'index')));
 
         $result .= Html::endTag('div');
 

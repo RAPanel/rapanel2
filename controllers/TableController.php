@@ -113,15 +113,15 @@ class TableController extends AdminController
 //        Yii::$app->response->format = Response::FORMAT_JSON;
 
         if ($file = UploadedFile::getInstanceByName('file')) {
-            $temp = uniqid() . '.' . pathinfo($file->name, PATHINFO_EXTENSION);
             $dir = Yii::getAlias('@runtime/uploadedFiles/');
             if (Yii::$app->session->id) $dir .= Yii::$app->session->id . '/';
             FileHelper::createDirectory($dir);
-            $result = $file->saveAs($dir . $temp);
-            if ($result) {
-                $model = Photo::add($dir . $temp, pathinfo($file->name, PATHINFO_BASENAME), $id, $table);
+            if ($file->saveAs($dir . $file->name)) {
+                $about = mb_substr($file->name, 0, mb_strrpos($file->name, '.', 0, 'utf-8'), 'utf-8');
+                $model = Photo::add($dir . $file->name, $about, $id, $table);
                 return $this->renderAjax('_image', ['data' => $model, 'index' => Photo::find()->where(['owner_id' => $id, 'model' => $table])->count()]);
-            } else return new HttpException(400, 'Не могу сохранить');
+            } else
+                return new HttpException(400, $file->error);
         }
 
         return new HttpException(404);

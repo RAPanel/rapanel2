@@ -28,14 +28,16 @@ if (!in_array($this->context->module->id, ['rapanel']))
     .header {
         z-index: 100;
     }
-    .siteBack{
+
+    .siteBack {
         position: relative;
         margin-left: -15px;
         float: left;
         width: 25px;
         height: 60px;
     }
-    .siteBack a{
+
+    .siteBack a {
         top: 0;
         left: 0;
         border: solid transparent;
@@ -45,6 +47,29 @@ if (!in_array($this->context->module->id, ['rapanel']))
         border-top-color: white;
         border-left-color: white;
         border-width: 15px;
+    }
+
+    img {
+        max-height: 100%;
+    }
+
+    .photoWrapper{
+        padding: 0 10px;
+    }
+
+    .photoWrapper .image{
+        float: left;
+        display: block;
+    }
+
+    .photoWrapper [data-toggle="modal"] {
+        display: block;
+        padding: 0;
+        margin: 5px;
+        border: 0;
+        height: 150px;
+        max-width: 300px;
+        cursor: pointer;
     }
 </style>
 <?php $this->beginBody() ?>

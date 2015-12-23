@@ -4,9 +4,11 @@ namespace ra\admin\models;
 
 use Exception;
 use ra\admin\helpers\Image;
+use ra\admin\helpers\Text;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
+use yii\helpers\Inflector;
 use yii\helpers\Url;
 
 /**
@@ -41,7 +43,7 @@ class Photo extends \yii\db\ActiveRecord
 
     public static function add($file, $about, $owner_id, $options)
     {
-        $newFile = Yii::getAlias('@app/../' . self::$tmpPath . '/') . basename($file);
+        $newFile = Yii::getAlias('@app/../' . self::$tmpPath . '/') . strtolower(Inflector::slug( basename($file)));
 
         if (file_exists($newFile)) {
             $existFile = $newFile;

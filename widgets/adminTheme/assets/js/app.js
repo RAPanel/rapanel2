@@ -41,6 +41,10 @@ $(function () {
             return false;
         });
 
+    $('#main-content a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        $("html").getNiceScroll().resize();
+    });
+
     $("[data-sort] tbody").sortable({
         helper: function (e, tr) {
             var $originals = tr.children();
