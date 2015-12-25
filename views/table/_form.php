@@ -49,9 +49,9 @@ $tabs = ['main', 'data', 'seo', 'position', 'characters', 'photos'];
 
                                     <?= $form->field($model, 'about')->textarea(['maxlength' => true, 'rows' => 5]) ?>
 
-                                <? elseif ($key == 'position' && $settings[$key]): ?>
+                                <? elseif ($key == 'position' && !empty($settings[$key])): ?>
 
-                                    <? if ($settings['hasChild']) echo $form->field($model, 'is_category')->checkbox(['label' => Yii::t('ra', 'Can has child`s')]) ?>
+                                    <? if (!empty($settings['hasChild'])) echo $form->field($model, 'is_category')->checkbox(['label' => Yii::t('ra', 'Can has child`s')]) ?>
 
                                     <? $categories = \yii\helpers\ArrayHelper::map($model::findActive($model->module_id, ['and', ['is_category' => 1], ['!=', 'id', $model->id]], true)->select(['id', 'name', 'level'])->all(), 'id', function ($data) {
                                         $add = '';
@@ -63,7 +63,7 @@ $tabs = ['main', 'data', 'seo', 'position', 'characters', 'photos'];
 
                                     <?= $form->field($model, 'user_id')->dropDownList(empty($model->user_id) ? [null => Yii::t('ra', 'Select User')] : [$model->user->id => $model->user->username]) ?>
 
-                                <? elseif ($key == 'seo' && $settings[$key]): ?>
+                                <? elseif ($key == 'seo' && !empty($settings[$key])): ?>
 
                                     <?= $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
 
@@ -75,17 +75,17 @@ $tabs = ['main', 'data', 'seo', 'position', 'characters', 'photos'];
 
                                     <?= $form->field($model, 'pageData[keywords]')->textarea(['maxlength' => true])->label(Yii::t('ra', 'Keywords')) ?>
 
-                                <? elseif ($key == 'characters' && $settings[$key]): ?>
+                                <? elseif ($key == 'characters' && !empty($settings[$key])): ?>
 
                                     <?= $form->field($model, 'pageCharacters')->widget(ra\admin\widgets\Characters::className())->label(false) ?>
 
-                                <? elseif ($key == 'photos' && $settings[$key]): ?>
+                                <? elseif ($key == 'photos' && !empty($settings[$key])): ?>
 
                                     <?= $form->field($model, 'photos')->widget(ra\admin\widgets\PhotoUpload::className(), [
                                         'url' => ['upload', 'id' => $model->id, 'table' => $model->tableName()],
                                     ])->label(false) ?>
 
-                                <? elseif ($key == 'data' && $settings[$key]): ?>
+                                <? elseif ($key == 'data' && !empty($settings[$key])): ?>
 
                                     <?= $form->field($model, 'pageData[content]')->widget(ra\admin\widgets\TinyMce::className())->label(Yii::t('ra', 'Content')) ?>
 

@@ -309,7 +309,7 @@ class Page extends \yii\db\ActiveRecord
     {
         return $this->hasMany(self::className(), ['parent_id' => 'id'])->viaTable(self::tableName(), ['module_id' => 'module_id'],
             function ($query) {
-                $query->select('id')->onCondition(['between', 'lft', $this->lft, $this->rgt]);
+                $query->select('id')->onCondition(['and', ['>', 'rgt', 0], ['between', 'lft', $this->lft, $this->rgt]]);
             })->where(['is_category' => 0, 'status' => '1', 'module_id' => $this->module_id]);
     }
 

@@ -2,7 +2,6 @@
 
 namespace ra\admin\models;
 
-use ra\admin\behaviors\SettingsBehavior;
 use ra\admin\traits\AutoSet;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -85,17 +84,6 @@ class Module extends \yii\db\ActiveRecord
         return $this->hasMany(Page::className(), ['module_id' => 'id']);
     }
 
-    public function behaviors()
-    {
-        return [
-            'settings' => [
-                'class' => SettingsBehavior::className(),
-                'relationName' => 'moduleSettings',
-
-            ],
-        ];
-    }
-
     public function getRootId()
     {
         /** @var \yii\db\ActiveRecord $model */
@@ -133,6 +121,15 @@ class Module extends \yii\db\ActiveRecord
     public function getSettings()
     {
         return ArrayHelper::map($this->moduleSettings, 'url', 'value');
+    }
+
+    public function setSettings($values)
+    {
+        $data = [];
+        if (!empty($values)) foreach ($values as $url => $list)
+            foreach ((array)$list as $sort => $value)
+                $data[] = compact('sort', 'url', 'value');
+        $this->setRelation('moduleSettings', $data, ['pk' => 'module_id']);
     }
 
     public function fixTree()

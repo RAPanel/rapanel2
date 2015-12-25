@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = Yii::t('ra', 'Settings');
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <? if ($model->settings['hasCategory'] || $model->settings['hasChild']): ?>
+    <? if (!empty($model->settings['hasCategory']) || !empty($model->settings['hasChild'])): ?>
         <div><?= Html::a(Yii::t('ra', 'Fix Tree'), ['table/fix-tree', 'id' => $model->id], ['class' => 'btn btn-danger pull-right']) ?></div>
         <div class="clearfix"></div>
     <? endif ?>
