@@ -44,8 +44,8 @@ class PageController extends Controller
                 if (method_exists($model, 'getHref')) $this->getView()->registerMetaTag(['property' => 'og:url', 'content' => $model->getHref(1, 1)]);
                 if (method_exists($model, 'getPhoto') && $model->photo) {
                     $this->getView()->registerMetaTag(['property' => 'og:image', 'content' => $model->photo->getHref('1000', true)]);
-                    $this->getView()->registerMetaTag(['property' => 'og:image:width', 'content' => $model->photo->getSize('1000')['width']]);
-                    $this->getView()->registerMetaTag(['property' => 'og:image:height', 'content' => $model->photo->getSize('1000')['height']]);
+                    $this->getView()->registerMetaTag(['property' => 'og:image:width', 'content' => $model->photo->getSizes('1000')['width']]);
+                    $this->getView()->registerMetaTag(['property' => 'og:image:height', 'content' => $model->photo->getSizes('1000')['height']]);
                 }
             }
             $this->getView()->params['model'] = $params['base'] = $model;
