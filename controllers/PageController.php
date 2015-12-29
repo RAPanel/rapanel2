@@ -8,9 +8,11 @@
 
 namespace ra\admin\controllers;
 
+use creocoder\nestedsets\NestedSetsBehavior;
 use ra\admin\helpers\RA;
 use ra\admin\models\Page;
 use Yii;
+use yii\helpers\VarDumper;
 use yii\web\HttpException;
 
 class PageController extends Controller
@@ -56,11 +58,15 @@ class PageController extends Controller
                     if (!$model->level) {
                         $parent = $model->parent;
                     }
-                    /** @var Page $get */
+                    /** @var Page|NestedSetsBehavior $get */
                     $get = isset($parent) ? $parent : $model;
-                    $query = $get::findActive($get->module_id, ['and', ['<', 'lft', $get->lft], ['>', 'rgt', $get->rgt]], true, true);
+                    try{
+                        $query = $get->parents();
+                    } catch(\Exception $e){
+                        $query = $get::findActive($get->module_id, ['and', ['<', 'lft', $get->lft], ['>', 'rgt', $get->rgt]], true, true);
+                    }
                     if (!RA::moduleSetting($model->module_id, 'controller'))
-                        $query->andWhere(['<>', 'parent_id', null]);
+                        $query->andWhere(['>', 'parent_id', 0]);
                     $rows = $query->all();
                     if (isset($parent)) $rows[] = $parent;
                     foreach ($rows as $row)
