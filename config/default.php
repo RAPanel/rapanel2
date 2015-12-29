@@ -16,7 +16,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                '<c_:image>/_<type>/<name>' => '<c_>/index',
+                'image/_<type>/<name>' => 'image/index',
                 '<m_:rapanel>' => '<m_>/default/index',
             ],
         ],

@@ -10,16 +10,12 @@
 
     $this->params['breadcrumbs'][] = 'Обновление системы';
 
-    if (!file_exists("{$dir}/composer.phar")) {
-        chdir(Yii::getAlias('@app'));
-        $output = `curl -sS https://getcomposer.org/installer | php`;
-        echo "<pre>$output</pre>";
-    }
-
-    $output = `php-cli {$dir}/composer.phar --version --working-dir={$dir}/`;
+    $output = `{$commands['version']}`;
     echo "<pre>$output</pre>";
 
-    $output = `php-cli {$dir}/composer.phar show -i --working-dir={$dir}/`;
+    $output = `{$commands['info']}`;
     echo "<pre>$output</pre>";
+
+    echo Yii::$app->formatter->asDatetime(filemtime($dir .'/composer.lock'), 'full');
 
     echo Html::beginForm() . Html::submitButton('Обновить систему', ['class' => 'btn pull-right']) . Html::endForm();

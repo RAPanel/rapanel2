@@ -109,14 +109,24 @@ class DefaultController extends AdminController
     {
         $dir = Yii::getAlias('@app');
 
+        $commands = [
+            'update' => PHP_BINDIR . "/php {$dir}/yii admin/update &> /dev/null &",
+            'composer' => 'curl -sS https://getcomposer.org/installer | php',
+            'version' => PHP_BINDIR . "/php {$dir}/composer.phar --version --working-dir={$dir}/",
+            'info' => PHP_BINDIR . "/php {$dir}/composer.phar show -i --working-dir={$dir}/",
+        ];
+
         if (Yii::$app->request->isPost) {
             ignore_user_abort();
             set_time_limit(0);
-            exec(PHP_BINDIR . "/php {$dir}/yii admin/update &");
+            exec($commands['update']);
             return $this->refresh();
+        } elseif (!file_exists("{$dir}/composer.phar")) {
+            chdir(Yii::getAlias('@app'));
+            exec($commands['composer']);
         }
 
-        return $this->render('update', compact('dir'));
+        return $this->render('update', compact('dir', 'commands'));
     }
 
     public function actionFileManager()
