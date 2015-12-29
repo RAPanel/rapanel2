@@ -4,7 +4,7 @@ namespace ra\admin\models;
 
 use ra\admin\traits\SerializeAttribute;
 use Yii;
-use yii\helpers\VarDumper;
+use yii\mail\MessageInterface;
 use yii\web\UploadedFile;
 
 /**
@@ -131,11 +131,17 @@ class Form extends \yii\db\ActiveRecord
         return Yii::$app->request->post($this->spamAttribute);
     }
 
+    /**
+     * @param $mail MessageInterface
+     */
     public function beforeSend($mail)
     {
 
     }
 
+    /**
+     * @param $mail MessageInterface
+     */
     public function afterSend($mail)
     {
         Yii::$app->session->setFlash('success', 'Сообщение успешно отправлено');

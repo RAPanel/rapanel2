@@ -53,40 +53,6 @@ class Page extends \yii\db\ActiveRecord
     }
 
     /**
-     * @param $module string|int
-     * @param array $condition
-     * @param bool $withRoot
-     * @param bool $allStatuses
-     * @return \yii\db\ActiveQuery the newly created [[ActiveQuery]] instance.
-     */
-    public static function findActive($module = null, $condition = [], $withRoot = false, $allStatuses = false)
-    {
-        $sort = RA::moduleSetting($module, 'sort') == 0 ? SORT_ASC : SORT_DESC;
-        $order = RA::moduleSetting($module, 'hasCategory') ? ['t.is_category' => SORT_DESC] : [];
-        $query = self::find()->from(['t' => self::tableName()])->orderBy($order + ['t.lft' => $sort, 't.id' => $sort]);
-        if (!$allStatuses) $query->where(['t.status' => 1]);
-        if (!empty($module))
-            if (is_array($module)) {
-                $subQuery = Module::find()->select('id')->where(['or', ['id' => $module], ['url' => $module]]);
-                if (!$withRoot) $query->andWhere(['not', ['t.id' => $subQuery]]);
-                $query->andWhere(['t.module_id' => $subQuery]);
-            } else {
-                if (!$withRoot) $query->andWhere(['!=', 't.id', RA::moduleId($module)]);
-                $query->andWhere(['t.module_id' => RA::moduleId($module)]);
-            }
-        if (!empty($condition)) $query->andWhere($condition);
-        return $query;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return '{{%page}}';
-    }
-
-    /**
      * @inheritdoc
      */
     public function rules()
@@ -187,6 +153,14 @@ class Page extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Photo::className(), ['owner_id' => 'id'])
             ->where(['model' => self::tableName()])->orderBy(['sort_id' => SORT_ASC]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return '{{%page}}';
     }
 
     /**
@@ -307,10 +281,34 @@ class Page extends \yii\db\ActiveRecord
      */
     public function getItems()
     {
-        return $this->hasMany(self::className(), ['parent_id' => 'id'])->viaTable(self::tableName(), ['module_id' => 'module_id'],
-            function ($query) {
-                $query->select('id')->onCondition(['and', ['>', 'rgt', 0], ['between', 'lft', $this->lft, $this->rgt]]);
-            })->where(['is_category' => 0, 'status' => '1', 'module_id' => $this->module_id]);
+        return $this->hasMany(self::className(), ['module_id' => 'module_id'])->where(['is_category' => 0, 'status' => 1,
+            'parent_id' => Page::findActive($this->module_id, ['is_category' => 1], true)->select('id')->andWhere(['beetwen', 'lft', $this->lft, $this->rgt])]);
+    }
+
+    /**
+     * @param $module string|int
+     * @param array $condition
+     * @param bool $withRoot
+     * @param bool $allStatuses
+     * @return \yii\db\ActiveQuery the newly created [[ActiveQuery]] instance.
+     */
+    public static function findActive($module = null, $condition = [], $withRoot = false, $allStatuses = false)
+    {
+        $sort = RA::moduleSetting($module, 'sort') == 0 ? SORT_ASC : SORT_DESC;
+        $order = RA::moduleSetting($module, 'hasCategory') ? ['t.is_category' => SORT_DESC] : [];
+        $query = self::find()->from(['t' => self::tableName()])->orderBy($order + ['t.lft' => $sort, 't.id' => $sort]);
+        if (!$allStatuses) $query->where(['t.status' => 1]);
+        if (!empty($module))
+            if (is_array($module)) {
+                $subQuery = Module::find()->select('id')->where(['or', ['id' => $module], ['url' => $module]]);
+                if (!$withRoot) $query->andWhere(['not', ['t.id' => $subQuery]]);
+                $query->andWhere(['t.module_id' => $subQuery]);
+            } else {
+                if (!$withRoot) $query->andWhere(['!=', 't.id', RA::moduleId($module)]);
+                $query->andWhere(['t.module_id' => RA::moduleId($module)]);
+            }
+        if (!empty($condition)) $query->andWhere($condition);
+        return $query;
     }
 
     public function getModuleUrl()
