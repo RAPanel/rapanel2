@@ -282,7 +282,7 @@ class Page extends \yii\db\ActiveRecord
     public function getItems()
     {
         return $this->hasMany(self::className(), ['module_id' => 'module_id'])->where(['is_category' => 0, 'status' => 1,
-            'parent_id' => Page::findActive($this->module_id, ['is_category' => 1], true)->select('id')->andWhere(['beetwen', 'lft', $this->lft, $this->rgt])]);
+            'parent_id' => Page::findActive($this->module_id, ['is_category' => 1], true)->select('id')->andWhere(['between', 'lft', $this->lft, $this->rgt])]);
     }
 
     /**
