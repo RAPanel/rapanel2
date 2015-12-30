@@ -115,7 +115,7 @@ class Module extends \yii\db\ActiveRecord
         $data = [];
         if (!empty($values)) foreach ($values as $value)
             $data[] = ['character_id' => $value];
-        $this->setRelation('characterShows', $data, ['pk' => 'character_id']);
+        $this->setRelation('characterShows', $data, ['pk' => 'character_id', 'validation'=>false]);
     }
 
     public function getSettings()
@@ -129,7 +129,7 @@ class Module extends \yii\db\ActiveRecord
         if (!empty($values)) foreach ($values as $url => $list)
             foreach ((array)$list as $sort => $value)
                 $data[] = compact('sort', 'url', 'value');
-        $this->setRelation('moduleSettings', $data, ['pk' => 'module_id']);
+        $this->setRelation('moduleSettings', $data, ['pk' => 'url', 'validation'=>false]);
     }
 
     public function fixTree()

@@ -29,7 +29,7 @@ $config = [
                     '@app/views' => '@webroot/theme/views',
                     '@app/widgets/views' => '@webroot/theme/views/widgets',
                 ],
-                'baseUrl' => '@web/themes',
+                'baseUrl' => '@web/theme',
             ],
         ],
         'mailer' => [
