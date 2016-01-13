@@ -38,4 +38,10 @@ trait SerializeAttribute
         parent::__set($name, $value);
     }
 
+    public function __isset($name)
+    {
+        if (in_array($name, $this->serializeAttributes)) return true;
+        return parent::__get($name);
+    }
+
 }
