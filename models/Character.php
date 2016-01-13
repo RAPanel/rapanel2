@@ -3,6 +3,7 @@
 namespace ra\admin\models;
 
 use ra\admin\behaviors\RelationSaveBehavior;
+use ra\admin\helpers\Text;
 use ra\admin\traits\SerializeAttribute;
 use Yii;
 use yii\helpers\Inflector;
@@ -66,6 +67,22 @@ class Character extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getCharacterReferences()
+    {
+        return $this->hasMany(CharacterReference::className(), ['character_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReferences()
+    {
+        return $this->hasMany(Reference::className(), ['id' => 'reference_id'])->viaTable('{{%character_reference}}', ['character_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCharacterShows()
     {
         return $this->hasMany(CharacterShow::className(), ['character_id' => 'id']);
@@ -94,32 +111,23 @@ class Character extends \yii\db\ActiveRecord
     public function getName()
     {
         if (!$this->_name)
-            $this->_name = $this->url ? Yii::t('app\character', Inflector::camel2words($this->url)) : $this->url;
+            $this->_name = $this->url ? Yii::t('app\character', Inflector::camel2words($this->url)) : Inflector::camel2words($this->url);
         return $this->_name;
     }
 
     public function setName($value)
     {
         if (!$value) return;
-        if (!$this->url) {
-            $translate = Yii::$app->translation->translate(Yii::$app->language, Yii::$app->sourceLanguage, $value);
-            if (isset($translate['code']) && $translate['code'] == 200) {
-                $translation = current($translate['text']);
-                $translation = preg_replace('#[^\w\d]#', ' ', strtolower($translation));
-                $translation = preg_split('#\s+#', trim($translation));
-                $translation = array_diff($translation, ['the', 'a', 'an']);
-                $this->url = '';
-                foreach ($translation as $word)
-                    $this->url .= $word == reset($translation) ? $word : ucfirst($word);
-            }
-        }
-        if ($this->url)
-            Message::add('app\character', Inflector::camel2words($this->url), Yii::$app->language, $value);
+        $this->on(self::EVENT_AFTER_INSERT, function ($event) {
+            Message::add('app\character', Inflector::camel2words($event->sender->url), Yii::$app->language, $event->data);
+        }, $value);
         $this->_name = $value;
     }
 
     public function save($runValidation = true, $attributeNames = null)
     {
+        if (!$this->url) $this->url = Text::translate($this->_name);
+
         if ($this->isNewRecord && ($model = self::findOne(['url' => $this->url]))) {
             $this->setAttributes($model->attributes, false);
             $this->setIsNewRecord(false);

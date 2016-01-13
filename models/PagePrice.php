@@ -34,7 +34,7 @@ class PagePrice extends \yii\db\ActiveRecord
             [['page_id', 'type_id', 'unit', 'value', 'count'], 'required'],
             [['page_id', 'type_id', 'count'], 'integer'],
             [['value'], 'number'],
-            [['lastmod'], 'safe'],
+            [['updated_at'], 'safe'],
             [['unit'], 'string', 'max' => 30]
         ];
     }
