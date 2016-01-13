@@ -103,6 +103,8 @@ trait PageEdit
         if ($this->is_category || ($this->isNewRecord && RA::moduleSetting($this->module_id, 'hasCategory')) || RA::moduleSetting($this->module_id, 'hasChild'))
             $this->addBehavior('tree');
 
+        if(!$this->about) $this->about = '';
+
         $this->addBehavior('sluggable');
         $this->addBehavior('timestamp');
         $this->addBehavior('statusChange');
