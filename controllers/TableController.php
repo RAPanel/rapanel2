@@ -121,7 +121,7 @@ class TableController extends AdminController
                 $model = Photo::add($dir . $file->name, $about, $id, $table);
                 return $this->renderAjax('_image', ['data' => $model, 'index' => Photo::find()->where(['owner_id' => $id, 'model' => $table])->count()]);
             } else
-                return new HttpException(400, $file->error);
+                return new HttpException(400, 'Can not move uploaded file');
         }
 
         return new HttpException(404);
