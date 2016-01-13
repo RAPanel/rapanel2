@@ -42,7 +42,9 @@ class Photo extends \yii\db\ActiveRecord
 
     public static function add($file, $about, $owner_id, $options)
     {
-        $newFile = Yii::getAlias('@app/../' . self::$tmpPath . '/') . strtolower(Inflector::slug(basename($file)));
+        preg_match('#.\w{1,4}$#', basename($file), $ext);
+        $filename = preg_replace('#.\w{1,4}$#', '', basename($file));
+        $newFile = Yii::getAlias('@app/../' . self::$tmpPath . '/') . strtolower(Inflector::slug($filename) . $ext[0]);
 
         if (file_exists($newFile)) {
             $existFile = $newFile;
