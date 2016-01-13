@@ -20,7 +20,7 @@ class Text
         $text = mb_substr($text, 0, 64, 'utf-8');
         $text = preg_replace('/[^\w\x7F-\xFF\s]/', ' ', $text);
         $text = str_replace(array('+', '_'), ' ', $text);
-        $text = trim(preg_replace('/\s(\S{1,'.($minLength-1).'})\s/', ' ', $text), '-');
+        $text = trim(preg_replace('/\s(\S{1,' . ($minLength - 1) . '})\s/', ' ', $text), '-');
         $text = preg_replace('/\s+/', ' ', $text);
         $text = explode(' ', $text);
         foreach ($text as $key => $row) foreach (explode('|', 'у|ы|а|о|я|е|и|ь|ие|ия|ем|им|ию|ий|ии|ой|ов|ам|их|ый|ых|ая|ай|ае|ую|ым|ое') as $s)
@@ -37,5 +37,21 @@ class Text
     {
         $cases = array(2, 0, 1, 1, 1, 2);
         return sprintf($titles[($number % 100 > 4 && $number % 100 < 20) ? 2 : $cases[min($number % 10, 5)]], $number);
+    }
+
+    public static function translate($text, $type = 1)
+    {
+        $url = '';
+        $translate = \Yii::$app->translation->translate(\Yii::$app->language, \Yii::$app->sourceLanguage, $text);
+        if (isset($translate['code']) && $translate['code'] == 200) {
+            $translation = current($translate['text']);
+            $translation = preg_replace('#[^\w\d]#', ' ', strtolower($translation));
+            $translation = preg_split('#\s+#', trim($translation));
+            $translation = array_diff($translation, ['the', 'a', 'an']);
+            if ($type) foreach ($translation as $word)
+                $url .= $word == reset($translation) ? $word : ucfirst($word);
+            else $url = implode('-', $translation);
+        }
+        return $url;
     }
 }
