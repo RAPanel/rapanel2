@@ -124,7 +124,7 @@ class Photo extends \yii\db\ActiveRecord
             if (is_null($event->sender->type))
                 $event->sender->type = 'main';
             if (is_null($event->sender->sort_id))
-                $event->sender->sort_id = 0;
+                $event->sender->sort_id = 999;
             if (is_null($event->sender->cropParams))
                 $event->sender->cropParams = serialize([]);
             if (!$event->sender->about)

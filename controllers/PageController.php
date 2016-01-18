@@ -37,17 +37,19 @@ class PageController extends Controller
             $model = $params['model'];
             if (method_exists($model, 'getData') && ($data = $model->data)) {
                 if (!empty($data['title'])) $this->getView()->title = $data['title'];
-                // Registry meta data
-                if (!empty($data['description'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $data['description']]);
-                if (!empty($data['keywords'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['keywords']]);
-                // Registry og data
-                $this->getView()->registerMetaTag(['property' => 'og:og:type', 'content' => 'website']);
-                if (!empty($data['h1'])) $this->getView()->registerMetaTag(['property' => 'og:title', 'content' => $data['h1']]);
-                if (method_exists($model, 'getHref')) $this->getView()->registerMetaTag(['property' => 'og:url', 'content' => $model->getHref(1, 1)]);
-                if (method_exists($model, 'getPhoto') && $model->photo) {
-                    $this->getView()->registerMetaTag(['property' => 'og:image', 'content' => $model->photo->getHref('1000', true)]);
-                    $this->getView()->registerMetaTag(['property' => 'og:image:width', 'content' => $model->photo->getSizes('1000')['width']]);
-                    $this->getView()->registerMetaTag(['property' => 'og:image:height', 'content' => $model->photo->getSizes('1000')['height']]);
+                if(!Yii::$app->request->isAjax){
+                    // Registry meta data
+                    if (!empty($data['description'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $data['description']]);
+                    if (!empty($data['keywords'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['keywords']]);
+                    // Registry og data
+                    $this->getView()->registerMetaTag(['property' => 'og:og:type', 'content' => 'website']);
+                    if (!empty($data['h1'])) $this->getView()->registerMetaTag(['property' => 'og:title', 'content' => $data['h1']]);
+                    if (method_exists($model, 'getHref')) $this->getView()->registerMetaTag(['property' => 'og:url', 'content' => $model->getHref(1, 1)]);
+                    if (method_exists($model, 'getPhoto') && $model->photo) {
+                        $this->getView()->registerMetaTag(['property' => 'og:image', 'content' => $model->photo->getHref('1000', true)]);
+                        $this->getView()->registerMetaTag(['property' => 'og:image:width', 'content' => $model->photo->getSizes('1000')['width']]);
+                        $this->getView()->registerMetaTag(['property' => 'og:image:height', 'content' => $model->photo->getSizes('1000')['height']]);
+                    }
                 }
             }
             $this->getView()->params['model'] = $params['base'] = $model;

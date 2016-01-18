@@ -10,7 +10,7 @@ use yii\helpers\Html;
 ?>
 
 <header class="header black-bg">
-    <div class="siteBack"><?= Html::a('', ['default/go-site'], ['title'=>Yii::t('ra', 'Go Site')]) ?></div>
+    <div class="siteBack"><?= Html::a('', ['default/go-site'], ['title' => Yii::t('ra', 'Go Site')]) ?></div>
     <div class="sidebar-toggle-box">
         <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
     </div>
@@ -188,8 +188,9 @@ use yii\helpers\Html;
 
     <div class="top-menu">
         <ul class="nav pull-right top-menu">
-            <li><a class="logout"
-                   href="<?= \yii\helpers\Url::to(['default/logout']) ?>"><?= Yii::t('ra', 'Logout') ?></a></li>
+            <li><?= \yii\bootstrap\Html::beginForm(['default/logout'], 'post', ['class' => 'logout']) ?>
+                <button class="btn btn-info" type="submit"><?= Yii::t('ra', 'Logout') ?></button>
+                <?= Html::endForm() ?></li>
         </ul>
     </div>
 </header>

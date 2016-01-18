@@ -88,7 +88,7 @@ class Module extends \yii\db\ActiveRecord
     {
         /** @var \yii\db\ActiveRecord $model */
         $model = $this->class;
-        if (!$rootId = $model::find()->select('id')->where(['module_id' => $this->id, 'lft' => 1, 'level' => 0])->andWhere('rgt>lft')->scalar()) {
+        if (!$rootId = $model::find()->select('id')->where(['module_id' => $this->id, 'level' => 0])->andWhere('rgt>lft')->orderBy('lft')->scalar()) {
             /** @var $root \ra\admin\models\Page */
             \Yii::$app->db->createCommand()->insert($model::tableName(), [
                 'id' => $this->id,

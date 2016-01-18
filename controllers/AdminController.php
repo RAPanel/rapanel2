@@ -39,6 +39,10 @@ class AdminController extends Controller
                         'roles' => ['admin'],
                     ],
                 ],
+                'denyCallback' => function () {
+                    Yii::$app->getUser()->setReturnUrl(Yii::$app->request->url);
+                    return Yii::$app->controller->redirect(['default/login']);
+                }
             ],
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -51,7 +55,7 @@ class AdminController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->response->cookies->add(new Cookie(['name' => 'canAdmin', 'value' => 1, 'expire' => time() + 60 * 60 * 24 * 30]));
+        Yii::$app->response->cookies->add(new Cookie(['name' => 'canAdmin', 'value' => 1, 'expire' => time() + 60 * 60 * 24 * 365]));
         return parent::beforeAction($action);
     }
 

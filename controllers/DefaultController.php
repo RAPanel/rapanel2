@@ -10,6 +10,7 @@ use ra\admin\models\UserAuth;
 use Yii;
 use yii\db\Transaction;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 
 class DefaultController extends AdminController
@@ -26,7 +27,14 @@ class DefaultController extends AdminController
                         'roles' => ['?'],
                     ],
                 ],
-            ]]);
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'logout' => ['post'],
+                ],
+            ],
+        ]);
     }
 
     public function actions()

@@ -22,19 +22,44 @@ class PhotoUpload extends DropZone
     {
         $event = <<<JS
 function(file, response) {
-    $(response).appendTo('.photoWrapper');
+    var list = {};
+    var img = $(response);
+    var select = img.find('select[name$="[type]"] option').each(function(){
+       list[this.value] = 0;
+    }).parent('select');
+    $('.photoWrapper select[name$="[type]"]').each(function(){
+        list[this.value] = 1;
+    });
+    var value, n=0;
+    for(var i in list){
+        if(!list[i] && !value ||  Object.keys(list).length - 1 == n++)
+            value = i;
+    }
+    if(select.val()!=value) select.val(value).trigger('change');
+    img.appendTo('.photoWrapper');
 }
 JS;
         $this->clientEvents['success'] = new JsExpression($event);
         $deleteAction = Url::to(['delete', 'type' => 'photo', 'id' => '']);
         $js = <<<JS
 $('.photoWrapper').on('click', '.remove', function(){
-    var block = $(this).parents('.image');
+    var block = $(this).parents('.modal').modal('hide').on('hidden.bs.modal', function (e) {
+        block.remove();
+    }).parents('.image').hide();
     $.post('{$deleteAction}'+block.attr('id').replace('photo', ''));
-    block.remove();
     return false;
 });
-$( ".photoWrapper" ).sortable();
+$('.modal').on('show.bs.modal', function (e) {
+    var block = $('.dataSerialized', this);
+    if(!block.length) return;
+    var modal = $('.imageTemplate').html();
+    var data = JSON.parse(block.text());
+    for(var i in data){
+        modal = modal.replace(new RegExp('{{' + i + '}}', 'g'), data[i]);
+    }
+    block.after(modal).remove();
+});
+$( ".photoWrapper" ).sortable({handle: 'a'});
 $( ".photoWrapper" ).disableSelection();
 $( ".photoWrapper" ).on( "sortstop", function( event, ui ) {
 $('.photoWrapper .image').each(function(key, el){
@@ -52,7 +77,10 @@ JS;
      */
     public function run()
     {
-        $result = Html::beginTag('div', ['class' => 'row photoWrapper']);
+        $result = Html::tag('div', $this->render('/table/_imageTemplate', ['model' => $this->model]), ['class' => 'hide imageTemplate']);
+
+        $result .= Html::beginTag('div', ['class' => 'row photoWrapper']);
+
 
         if (is_null($this->value))
             $this->value = $this->model->{$this->attribute};

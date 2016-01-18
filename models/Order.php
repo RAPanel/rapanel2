@@ -10,7 +10,7 @@ use Yii;
  *
  * @property string $id
  * @property integer $status_id
- * @property integer $is_paied
+ * @property integer $is_payed
  * @property string $session_id
  * @property string $delivery_id
  * @property string $pay_id
