@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'status_id')->textInput() ?>
 
-    <?= $form->field($model, 'is_paied')->textInput() ?>
+    <?= $form->field($model, 'is_payed')->textInput() ?>
 
     <?= $form->field($model, 'session_id')->textInput(['maxlength' => true]) ?>
 

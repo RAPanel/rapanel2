@@ -86,7 +86,7 @@ class Order extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'phone', 'delivery_id'], 'required'],
-            [['status_id', 'is_paied', 'delivery_id', 'pay_id'], 'integer'],
+            [['status_id', 'is_payed', 'delivery_id', 'pay_id'], 'integer'],
             [['data'], 'string'],
             [['updated_at', 'created_at'], 'safe'],
             [['session_id'], 'string', 'max' => 32],
@@ -105,7 +105,7 @@ class Order extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('ra', 'ID'),
             'status_id' => Yii::t('ra', 'Status ID'),
-            'is_paied' => Yii::t('ra', 'Is Paied'),
+            'is_payed' => Yii::t('ra', 'Is Paied'),
             'session_id' => Yii::t('ra', 'Session ID'),
             'delivery_id' => Yii::t('ra', 'Delivery ID'),
             'delivery' => Yii::t('ra', 'Delivery ID'),

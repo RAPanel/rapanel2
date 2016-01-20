@@ -193,7 +193,7 @@ DROP TABLE IF EXISTS `ra_order`;
 CREATE TABLE `ra_order` (
   `id`          INT(11) UNSIGNED    NOT NULL AUTO_INCREMENT,
   `status_id`   TINYINT(3) UNSIGNED NOT NULL,
-  `is_paied`    TINYINT(1) UNSIGNED NOT NULL,
+  `is_payed`    TINYINT(1) UNSIGNED NOT NULL,
   `session_id`  CHAR(32)            NOT NULL,
   `delivery_id` INT(11) UNSIGNED    NOT NULL,
   `pay_id`      INT(11) UNSIGNED    NOT NULL,

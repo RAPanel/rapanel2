@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'status_id',
-            'is_paied:boolean',
+            'is_payed:boolean',
             'delivery',
              'pay',
              'name',

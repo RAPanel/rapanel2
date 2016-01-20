@@ -29,7 +29,7 @@ class AdminController extends \yii\console\Controller
         $composer = "{$dir}/composer.phar";
         if (!file_exists($composer)) {
             exec('curl -sS https://getcomposer.org/installer | php');
-            exec("{$php} {$composer}");
+            exec("{$php} {$composer} global require \"fxp/composer-asset-plugin:~1.1.1\"");
         }
         echo `{$php} {$composer} {$command} --working-dir={$dir}/`;
     }

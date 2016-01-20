@@ -120,6 +120,7 @@ class DefaultController extends AdminController
         $commands = [
             'update' => PHP_BINDIR . "/php {$dir}/yii admin/update &> /dev/null &",
             'composer' => 'curl -sS https://getcomposer.org/installer | php',
+            'fxp' => 'PHP_BINDIR . "/php {$dir}/composer.phar global require "fxp/composer-asset-plugin:~1.1.1"',
             'version' => PHP_BINDIR . "/php {$dir}/composer.phar --version --working-dir={$dir}/",
             'info' => PHP_BINDIR . "/php {$dir}/composer.phar show -i --working-dir={$dir}/",
         ];
@@ -132,6 +133,7 @@ class DefaultController extends AdminController
         } elseif (!file_exists("{$dir}/composer.phar")) {
             chdir(Yii::getAlias('@app'));
             exec($commands['composer']);
+            exec($commands['fxp']);
         }
 
         return $this->render('update', compact('dir', 'commands'));
