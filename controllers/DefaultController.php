@@ -121,8 +121,8 @@ class DefaultController extends AdminController
             'update' => PHP_BINDIR . "/php {$dir}/yii admin/update &> /dev/null &",
             'composer' => 'curl -sS https://getcomposer.org/installer | php',
             'fxp' => 'PHP_BINDIR . "/php {$dir}/composer.phar global require "fxp/composer-asset-plugin:~1.1.1"',
-            'version' => PHP_BINDIR . "/php {$dir}/composer.phar --version --working-dir={$dir}/",
-            'info' => PHP_BINDIR . "/php {$dir}/composer.phar show -i --working-dir={$dir}/",
+            'version' => PHP_BINDIR . "/php {$dir}/composer.phar --version --working-dir={$dir}",
+            'info' => PHP_BINDIR . "/php {$dir}/composer.phar show -i --working-dir={$dir}",
         ];
 
         if (Yii::$app->request->isPost) {
