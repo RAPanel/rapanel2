@@ -75,7 +75,10 @@ class AdminController extends Controller
      */
     public function actionSearch($url = null, $q = null)
     {
-        if (!$q) return $this->redirect(['index'], $_GET);
+        if (!$q){
+            if(isset($_GET['q'])) unset($_GET['q']);
+            return $this->redirect(['index'], $_GET);
+        }
 
         $class = '\\ra\\admin\\models\\' . ucfirst($this->id);
 
