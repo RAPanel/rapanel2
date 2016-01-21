@@ -171,12 +171,15 @@ class Photo extends \yii\db\ActiveRecord
             list($width, $height) = explode('x', $size);
         else $width = $height = (int)$size;
         $k = $this->width / $this->height;
-        if ($k > 1) $height = $width / $k;
-        else $width = $height * $k;
+        if (!$width || !$height || $width == $height)
+            if ($k > 1) $height = $width / $k;
+            else $width = $height * $k;
+        if ($width > $this->width) $width = $this->width;
+        if ($height > $this->height) $height = $this->width;
 
         return [
-            'width' => $width,
-            'height' => $height,
+            'width' => round($width),
+            'height' => round($height),
         ];
     }
 
