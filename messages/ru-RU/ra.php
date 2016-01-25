@@ -98,7 +98,7 @@ return [
     'Settings' => 'Настройки',
     'Messages' => 'Сообщения',
     'Replaces' => 'Замены',
-    'File Manager' => 'Менеджер фалов',
+    'File Manager' => 'Менеджер файлов',
     'Home' => 'Главная',
     'Add File' => 'Добавить элемент',
     'Add Folder' => 'Добавить категорию',
