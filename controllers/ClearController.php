@@ -52,9 +52,19 @@ class ClearController extends AdminController
 
     public function actionImages($back = true)
     {
-        $dir = Yii::getAlias('@webroot/' . Photo::$path);
+        // Delete image upload cache
+        FileHelper::removeDirectory('@runtime/uploadedFiles');
+
+        // Delete not existing in base files
+        $dir = Yii::getAlias('@webroot/' . Photo::$tmpPath . '/');
+        foreach (scandir($dir) as $name) if (is_file($dir . $name))
+            if (!Photo::find()->where(['name' => scandir($dir)])->exists())
+                unlink($dir . $name);
+
+        // Remove resize dirs
+        $dir = Yii::getAlias('@webroot/' . Photo::$path . '/');
         foreach (scandir($dir) as $name)
-            if (is_dir($dir . '/' . $name) && strpos($name, '_') === 0)
+            if (is_dir($dir . $name) && strpos($name, '_') === 0)
                 FileHelper::removeDirectory($dir . '/' . $name);
         if ($back && !Yii::$app->request->isAjax)
             return $this->back($back);
