@@ -36,15 +36,6 @@ $config = [
         'authManager' => [
             'class' => 'ra\admin\components\AuthManager',
         ],
-        'view' => [
-            'theme' => [
-                'pathMap' => [
-                    '@app/views' => '@webroot/theme/views',
-                    '@app/widgets/views' => '@webroot/theme/views/widgets',
-                ],
-                'baseUrl' => '@web/themes',
-            ],
-        ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             'useFileTransport' => false,

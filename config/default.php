@@ -25,11 +25,12 @@ $config = [
         ],
         'view' => [
             'theme' => [
+                'basePath' => '@webroot/theme',
+                'baseUrl' => '/theme',
                 'pathMap' => [
                     '@app/views' => '@webroot/theme/views',
                     '@app/widgets/views' => '@webroot/theme/views/widgets',
                 ],
-                'baseUrl' => '@web/theme',
             ],
         ],
         'mailer' => [
