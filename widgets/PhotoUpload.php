@@ -48,8 +48,8 @@ $('.photoWrapper').on('click', '.remove', function(){
     }).parents('.image').hide();
     $.post('{$deleteAction}'+block.attr('id').replace('photo', ''));
     return false;
-});
-$('.modal').on('show.bs.modal', function (e) {
+})
+.on('show.bs.modal', '.modal', function (e) {
     var block = $('.dataSerialized', this);
     if(!block.length) return;
     var modal = $('.imageTemplate').html();
@@ -58,10 +58,10 @@ $('.modal').on('show.bs.modal', function (e) {
         modal = modal.replace(new RegExp('{{' + i + '}}', 'g'), data[i]);
     }
     block.after(modal).remove();
-});
-$( ".photoWrapper" ).sortable({handle: 'a'});
-$( ".photoWrapper" ).disableSelection();
-$( ".photoWrapper" ).on( "sortstop", function( event, ui ) {
+})
+.sortable({handle: 'a'})
+.disableSelection()
+.on( "sortstop", function( event, ui ) {
 $('.photoWrapper .image').each(function(key, el){
     $('input[name$="[sort_id]"]', el).val(key);
 });
@@ -85,7 +85,6 @@ JS;
         if (is_null($this->value))
             $this->value = $this->model->{$this->attribute};
 
-        ini_set('memory_limit', '256M');
         foreach ($this->value as $index => $data)
             $result .= preg_replace('#[\r\n\s]+#', ' ', $this->render('/table/_image', compact('data', 'index')));
 
