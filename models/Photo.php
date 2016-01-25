@@ -57,6 +57,7 @@ class Photo extends \yii\db\ActiveRecord
             'png_compression_level' => 9,
         ])
         ) {
+            unlink($file);
             if (isset($existFile) && md5_file($existFile) == md5_file($newFile)) {
                 $file = $existFile;
                 unlink($existFile);
