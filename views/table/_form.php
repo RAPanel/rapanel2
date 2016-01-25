@@ -25,7 +25,7 @@ $tabs = ['main', 'data', 'seo', 'position', 'characters', 'photos'];
     <div class="content-panel">
 
         <div class="row">
-            <?php $form = ActiveForm::begin(); ?>
+            <?php $form = ActiveForm::begin([ 'enableClientScript'=>false]); ?>
             <div class="col-lg-12">
                 <div class="col-lg-12">
 
