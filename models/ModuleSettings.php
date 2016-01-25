@@ -75,9 +75,7 @@ class ModuleSettings extends \yii\db\ActiveRecord
                 try{
                     $value = @unserialize($event->sender->value);
                     if ($value) $event->sender->value = $value;
-                } catch(Exception $e){
-                    return;
-                }
+                } catch(Exception $e){}
             }
         });
     }
