@@ -55,7 +55,7 @@ class ClearController extends AdminController
         // Delete image upload cache
         FileHelper::removeDirectory('@runtime/uploadedFiles');
 
-        // Delete not existing in base files
+        // Delete not existing files in data base
         $dir = Yii::getAlias('@webroot/' . Photo::$tmpPath . '/');
         foreach (scandir($dir) as $name) if (is_file($dir . $name))
             if (!Photo::find()->where(['name' => $name])->exists())
