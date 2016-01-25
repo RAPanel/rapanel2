@@ -58,7 +58,7 @@ class ClearController extends AdminController
         // Delete not existing in base files
         $dir = Yii::getAlias('@webroot/' . Photo::$tmpPath . '/');
         foreach (scandir($dir) as $name) if (is_file($dir . $name))
-            if (!Photo::find()->where(['name' => scandir($dir)])->exists())
+            if (!Photo::find()->where(['name' => $name])->exists())
                 unlink($dir . $name);
 
         // Remove resize dirs
