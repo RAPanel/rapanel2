@@ -97,19 +97,28 @@ trait PageEdit
         $this->setRelation('photos', $value);
     }
 
+    /**
+     * @param $this $this NestedSetsBehavior|self|Page
+     * @param bool $runValidation
+     * @param null $attributeNames
+     * @return bool
+     */
     public function save($runValidation = true, $attributeNames = null)
     {
+        /** @var $this NestedSetsBehavior|self|Page */
         if (!$this instanceof ActiveRecord) return false;
         if ($this->is_category || ($this->isNewRecord && RA::moduleSetting($this->module_id, 'hasCategory')) || RA::moduleSetting($this->module_id, 'hasChild'))
             $this->addBehavior('tree');
+        elseif ($this->isNewRecord && !$this->lft && RA::moduleSetting($this->module_id, 'sort')) {
+            $this->lft = $this::find()->where(['module_id' => $this->module_id])->select('MAX(lft)')->scalar();
+        }
 
-        if(!$this->about) $this->about = '';
+        if (!$this->about) $this->about = '';
 
         $this->addBehavior('sluggable');
         $this->addBehavior('timestamp');
         $this->addBehavior('statusChange');
 
-        /** @var $this NestedSetsBehavior|self|Page */
         if ($this->_save !== true && $this->getBehavior('tree') && ($this->isNewRecord || $this->isAttributeChanged('parent_id', false))) {
             $this->_save = true;
             $parent = $this->parent_id ? Page::findOne($this->parent_id) : $this->root;
