@@ -55,7 +55,7 @@ class SettingsBehavior extends Behavior
             $module_id = $event->sender->id;
             foreach ($event->data as $url => $value) {
                 $model = clone $moduleClass;
-                if(is_array($value)) $value = serialize($value);
+                if (is_array($value)) $value = serialize($value);
                 $model->setAttributes(compact('module_id', 'url', 'value'), false);
                 $model->save(false);
             }

@@ -19,7 +19,7 @@ class AdminController extends \yii\console\Controller
     {
         $this->command('self-update');
         $this->command('update -o --prefer-source --no-dev');
-        if($install) $this->actionInstall(false);
+        if ($install) $this->actionInstall(false);
     }
 
     public function command($command)

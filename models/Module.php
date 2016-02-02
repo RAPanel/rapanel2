@@ -2,6 +2,7 @@
 
 namespace ra\admin\models;
 
+use ra\admin\helpers\RA;
 use ra\admin\traits\AutoSet;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -115,7 +116,7 @@ class Module extends \yii\db\ActiveRecord
         $data = [];
         if (!empty($values)) foreach ($values as $value)
             $data[] = ['character_id' => $value];
-        $this->setRelation('characterShows', $data, ['pk' => 'character_id', 'validation'=>false]);
+        $this->setRelation('characterShows', $data, ['pk' => 'character_id', 'validation' => false]);
     }
 
     public function getSettings()
@@ -129,15 +130,16 @@ class Module extends \yii\db\ActiveRecord
         if (!empty($values)) foreach ($values as $url => $list)
             foreach ((array)$list as $sort => $value)
                 $data[] = compact('sort', 'url', 'value');
-        $this->setRelation('moduleSettings', $data, ['pk' => 'url', 'validation'=>false]);
+        $this->setRelation('moduleSettings', $data, ['pk' => 'url', 'validation' => false]);
     }
 
     public function fixTree()
     {
         Page::deleteAll(['module_id' => $this->id, 'status' => 9]);
+        $hasChild = RA::moduleSetting($this->id, 'hasChild');
         $data = Page::find()
             ->where(['and', ['module_id' => $this->id], ['>', 'lft', 0], ['>', 'rgt', 0]])
-            ->select(['id', 'parent_id', 'lft', 'rgt', 'level'])
+            ->select(['id', 'parent_id', 'lft', 'rgt', 'level', 'is_category'])
             ->orderBy('lft, id DESC')
             ->asArray()->all();
         $items = array();
@@ -145,13 +147,16 @@ class Module extends \yii\db\ActiveRecord
             $items[(int)$row['parent_id']][] = $row;
         }
         $lft = 1;
-        $index = function ($parent_id, $level) use ($items, &$lft, &$index) {
+        $index = function ($parent_id, $level) use ($items, &$lft, &$index, $hasChild) {
             if (!empty($items[$parent_id]))
                 foreach ($items[$parent_id] as $row) {
                     $update['level'] = $level;
                     $update['lft'] = $lft++;
                     call_user_func($index, $row['id'], $level + 1);
                     $update['rgt'] = $lft++;
+                    if (!$hasChild && $row['is_category'] == 0) {
+                        $update['rgt'] = 0;
+                    }
                     Page::updateAll($update, ['id' => $row['id']]);
                 }
         };

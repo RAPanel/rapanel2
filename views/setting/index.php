@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'contentOptions' => ['style' => 'width:50%', 'class' => 'editable'],
                         'format' => 'raw',
                         'value' => function ($model) {
-                            return Html::tag('div', $model->value, ['data-id' => $model->id, 'data-name'=>'value']);
+                            return Html::tag('div', $model->value, ['data-id' => $model->id, 'data-name' => 'value']);
                         },
                     ],
                     // 'update_at',

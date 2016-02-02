@@ -13,7 +13,10 @@ use Yii;
  * @property string $unit
  * @property double $value
  * @property string $count
- * @property string $lastmod
+ * @property string $updated_at
+ *
+ * @property Page $page
+ * @property PriceType $type
  */
 class PagePrice extends \yii\db\ActiveRecord
 {
@@ -51,7 +54,23 @@ class PagePrice extends \yii\db\ActiveRecord
             'unit' => Yii::t('ra', 'Unit'),
             'value' => Yii::t('ra', 'Value'),
             'count' => Yii::t('ra', 'Count'),
-            'lastmod' => Yii::t('ra', 'Lastmod'),
+            'updated_at' => Yii::t('ra', 'Updated At'),
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPage()
+    {
+        return $this->hasOne(Page::className(), ['id' => 'page_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getType()
+    {
+        return $this->hasOne(PriceType::className(), ['id' => 'type_id']);
     }
 }

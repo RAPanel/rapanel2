@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 
     <?= GridView::widget([
-        'id'=>'orderTable',
+        'id' => 'orderTable',
         'dataProvider' => $dataProvider,
         /*'rowOptions'=> function($model, $key, $index, $grid){
             return ['data-id'=>$model->id];
@@ -30,11 +30,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'status_id',
             'is_payed:boolean',
             'delivery',
-             'pay',
-             'name',
-             'email',
-             'phone',
-             'created_at:date',
+            'pay',
+            'name',
+            'email',
+            'phone',
+            'created_at:date',
 //             'address',
 //             'comment',
             ['class' => 'yii\grid\ActionColumn'],

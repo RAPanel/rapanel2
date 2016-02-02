@@ -25,7 +25,7 @@ $tabs = ['main', 'data', 'seo', 'position', 'characters', 'photos'];
     <div class="content-panel">
 
         <div class="row">
-            <?php $form = ActiveForm::begin([ 'enableClientScript'=>false]); ?>
+            <?php $form = ActiveForm::begin(['enableClientScript' => false]); ?>
             <div class="col-lg-12">
                 <div class="col-lg-12">
 
@@ -53,7 +53,7 @@ $tabs = ['main', 'data', 'seo', 'position', 'characters', 'photos'];
 
                                     <? if (!empty($settings['hasChild'])) echo $form->field($model, 'is_category')->checkbox(['label' => Yii::t('ra', 'Can has child`s')]) ?>
 
-                                    <? $categories = \yii\helpers\ArrayHelper::map($model::findActive($model->module_id, ['and', ['is_category' => 1], ['!=', 'id', $model->id]], true)->select(['id', 'name', 'level'])->all(), 'id', function ($data) {
+                                    <? $categories = \yii\helpers\ArrayHelper::map($model::findActive($model->module_id, ['and', ['is_category' => 1], ['!=', 'id', $model->id]], true)->orWhere(['id' => [$model->module_id, $model->parent_id]])->select(['id', 'name', 'level'])->all(), 'id', function ($data) {
                                         $add = '';
                                         for ($i = 0; $i < $data->level; $i++) $add .= '*';
                                         return "{$add}#{$data->id} {$data->name}";

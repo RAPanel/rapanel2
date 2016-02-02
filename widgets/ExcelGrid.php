@@ -8,8 +8,8 @@
 
 namespace ra\admin\widgets;
 
-use \PHPExcel;
-use \PHPExcel_IOFactory;
+use PHPExcel;
+use PHPExcel_IOFactory;
 use Yii;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;

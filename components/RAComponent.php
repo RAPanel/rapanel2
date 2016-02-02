@@ -10,6 +10,7 @@ namespace ra\admin\components;
 
 use ra\admin\helpers\RA;
 use ra\admin\models\arrays\Modules;
+use ra\admin\models\Character;
 use ra\admin\models\Settings;
 use ra\admin\widgets\siteWidget\SiteAsset;
 use Yii;
@@ -24,6 +25,7 @@ class RAComponent extends Component implements BootstrapInterface
 
     private $_modules;
     private $_params;
+    private $_cache;
 
     public function bootstrap($app)
     {
@@ -31,7 +33,7 @@ class RAComponent extends Component implements BootstrapInterface
         $this->configure($app, 'default', false);
         foreach ($this->configList as $config)
             $this->configure($app, $config);
-        if(Yii::$app->request->cookies->getValue('canAdmin'))
+        if (Yii::$app->request->cookies->getValue('canAdmin'))
             SiteAsset::register(Yii::$app->view);
 
         // Import params
@@ -87,5 +89,35 @@ class RAComponent extends Component implements BootstrapInterface
         if (!$this->_modules)
             $this->_modules = new Modules;
         return $this->_modules;
+    }
+
+    public function getCharacterId($url)
+    {
+        if (is_numeric($url)) return $url;
+        return isset($this->getCharacters(true)[$url]) ? $this->getCharacters(true)[$url] : null;
+    }
+
+    public function getCharacters($byUrl = false)
+    {
+        $characters = $this->cache(__METHOD__, function () {
+            $query = Character::find()->select(['id', 'url'])->asArray();
+            return ArrayHelper::map($query->all(), 'id', 'url');
+        });
+        if ($byUrl) return array_flip($characters);
+        return $characters;
+    }
+
+    protected function cache($method, $function, $data = false)
+    {
+        if (!isset($this->_cache[$method])) {
+            $this->_cache[$method] = call_user_func($function, $data);
+        }
+        return $this->_cache[$method];
+    }
+
+    public function getCharacterUrl($id)
+    {
+        if (!is_numeric($id)) return $id;
+        return isset($this->getCharacters(false)[$id]) ? $this->getCharacters(true)[$id] : null;
     }
 }

@@ -24,22 +24,22 @@ class SqlController extends AdminController
 
         if ($model->value) {
             list($select, $request) = preg_split('#\sfrom\s#iu', $model->value);
-            try{
+            try {
                 $total = Yii::$app->db->createCommand('SELECT COUNT(*) FROM ' . $request)->queryScalar();
-            } catch(Exception $e){
+            } catch (Exception $e) {
                 $total = null;
             }
             $dataProvider = new SqlDataProvider([
                 'sql' => $model->value,
                 'totalCount' => $total,
-                'pagination' => ['defaultPageSize'=>15],
+                'pagination' => ['defaultPageSize' => 15],
             ]);
         } elseif ($table) {
             $query = (new Query())->from("{{%$table}}");
             $model->value = $query->createCommand()->sql;
             $dataProvider = new ActiveDataProvider([
                 'query' => $query,
-                'pagination' => ['defaultPageSize'=>15],
+                'pagination' => ['defaultPageSize' => 15],
             ]);
         } else
             $dataProvider = null;

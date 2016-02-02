@@ -19,7 +19,8 @@ $name = "photos[{$index}]";
 <div class="image" id="photo<?= $data->id ?>">
 
     <a data-toggle="modal" data-target="#pm<?= $data->id ?>" data-sort="<?= $index ?>">
-        <img class="img-responsive" src="<?= $data->getHref('150x150') ?>"><span class="label label-info"><?= $data->type ?></span></a>
+        <img class="img-responsive" src="<?= $data->getHref('150x150') ?>"><span
+            class="label label-info"><?= $data->type ?></span></a>
 
     <div id="pm<?= $data->id ?>" class="fade modal" role="dialog" tabindex="-1">
         <?= Html::activeHiddenInput($model, "{$name}[id]", ['value' => $data->id]) ?>

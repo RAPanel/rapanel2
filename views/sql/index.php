@@ -3,7 +3,6 @@
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 use yii\grid\GridView;
-use yii\helpers\VarDumper;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -20,7 +19,7 @@ foreach ($model::find()->all() as $row) {
     $itemsPresent[] = ['label' => $row->name, 'url' => ['index', 'id' => $row->id]];
 }
 
-$download = Html::a(Yii::t('ra', 'Download'), ['download'] + Yii::$app->request->get(), ['class'=>'btn btn-primary pull-right']);
+$download = Html::a(Yii::t('ra', 'Download'), ['download'] + Yii::$app->request->get(), ['class' => 'btn btn-primary pull-right']);
 
 ?>
 <div class="settings-index">
@@ -60,16 +59,17 @@ $download = Html::a(Yii::t('ra', 'Download'), ['download'] + Yii::$app->request-
 
             <?php ActiveForm::end(); ?>
         </div>
-        <?  try {
+        <? try {
             if ($dataProvider) echo GridView::widget([
-            'options' => ['style' => 'overflow-x:auto;width: 100%;'],
-            'dataProvider' => $dataProvider,
-            'layout' =>  "{summary}\n{items}\n<div class='col-lg-12'>{$download}\n{pager}</div>",
-            'columns' => [
+                'options' => ['style' => 'overflow-x:auto;width: 100%;'],
+                'dataProvider' => $dataProvider,
+                'layout' => "{summary}\n{items}\n<div class='col-lg-12'>{$download}\n{pager}</div>",
+                'columns' => [
 
-            ],
-        ]);} catch(\yii\db\Exception $e){
-            echo Html::tag('h3', $e->getMessage(), ['class'=>'col-lg-12']);
+                ],
+            ]);
+        } catch (\yii\db\Exception $e) {
+            echo Html::tag('h3', $e->getMessage(), ['class' => 'col-lg-12']);
         } ?>
 
     </div>

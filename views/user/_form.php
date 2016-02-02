@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'status')->checkbox(['label'=>'Активен', 'checked' => $model->status == 1 || $model->isNewRecord]) ?>
+    <?= $form->field($model, 'status')->checkbox(['label' => 'Активен', 'checked' => $model->status == 1 || $model->isNewRecord]) ?>
 
     <?= $form->field($model, 'role_id')->dropDownList(\yii\helpers\ArrayHelper::map(\ra\admin\models\UserRole::find()->orderBy(['id' => SORT_DESC])->select(['id', 'name'])->asArray()->all(), 'id', 'name')) ?>
 

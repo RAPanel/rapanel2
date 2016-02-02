@@ -4,6 +4,7 @@ namespace ra\admin\models;
 
 use ra\admin\helpers\RA;
 use Yii;
+use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
 use yii\helpers\Url;
@@ -41,6 +42,7 @@ class Page extends \yii\db\ActiveRecord
 {
     use \ra\admin\traits\PageEdit;
 
+    public $defaultPrice = 1;
     private $_characters = [];
 
     public static function instantiate($row)
@@ -152,7 +154,7 @@ class Page extends \yii\db\ActiveRecord
     public function getPhotos()
     {
         return $this->hasMany(Photo::className(), ['owner_id' => 'id'])
-            ->where(['model' => self::tableName()])->orderBy(['sort_id' => SORT_ASC]);
+            ->andOnCondition(['model' => self::tableName()])->orderBy(['sort_id' => SORT_ASC]);
     }
 
     /**
@@ -169,7 +171,7 @@ class Page extends \yii\db\ActiveRecord
     public function getPhoto()
     {
         return $this->hasOne(Photo::className(), ['owner_id' => 'id'])
-            ->where(['model' => self::tableName(), 'type' => 'main'])->orderBy(['sort_id' => SORT_ASC]);
+            ->andOnCondition(['model' => self::tableName(), 'type' => 'main'])->orderBy(['sort_id' => SORT_ASC]);
     }
 
     public function getExistCharacters()
@@ -187,7 +189,7 @@ class Page extends \yii\db\ActiveRecord
 
     public function getRoot()
     {
-        return $this->hasOne($this, ['module_id' => 'module_id'])->where(['is_category' => 1, 'level' => 0, 'parent_id' => null])->andWhere('rgt>lft');
+        return $this->hasOne($this, ['module_id' => 'module_id'])->andOnCondition(['is_category' => 1, 'level' => 0, 'parent_id' => null])->andOnCondition('rgt>lft');
     }
 
     public function getData()
@@ -197,17 +199,17 @@ class Page extends \yii\db\ActiveRecord
 
     public function getHeader()
     {
-        return $this->data ? $this->data->header : $this->name;
+        return $this->data && $this->data->header ? $this->data->header : $this->name;
     }
 
     public function getContent()
     {
-        return $this->data ? $this->data->content : null;
+        return $this->data && $this->data->content ? $this->data->content : null;
     }
 
     public function getTags()
     {
-        return $this->data ? array_diff(array_map('trim', explode(',', $this->data->tags)), ['', null, false, 0]) : [];
+        return $this->data && $this->data->tags ? array_diff(array_map('trim', explode(',', $this->data->tags)), ['', null, false, 0]) : [];
     }
 
     public function getLabel()
@@ -236,7 +238,8 @@ class Page extends \yii\db\ActiveRecord
         } elseif ($parent)
             $additional['parent'] = $parent;
         if (RA::module($this->url)) $url = ["/{$this->url}/index"];
-        else $url = ["/{$module}/{$action}", 'url' => $this->url] + $additional;
+        elseif($this->url) $url = ["/{$module}/{$action}", 'url' => $this->url] + $additional;
+        else $url = ["/{$module}/{$action}", 'id' => $this->id] + $additional;
         return $normalizeUrl ? Url::to($url, $scheme) : $url;
     }
 
@@ -281,7 +284,7 @@ class Page extends \yii\db\ActiveRecord
      */
     public function getItems()
     {
-        return $this->hasMany(self::className(), ['module_id' => 'module_id'])->where(['is_category' => 0, 'status' => 1,
+        return $this->hasMany(self::className(), ['module_id' => 'module_id'])->andOnCondition(['is_category' => 0, 'status' => 1,
             'parent_id' => Page::findActive($this->module_id, ['is_category' => 1], true)->select('id')->andWhere(['between', 'lft', $this->lft, $this->rgt])]);
     }
 
@@ -297,7 +300,7 @@ class Page extends \yii\db\ActiveRecord
         $sort = RA::moduleSetting($module, 'sort') == 0 ? SORT_ASC : SORT_DESC;
         $order = RA::moduleSetting($module, 'hasCategory') ? ['t.is_category' => SORT_DESC] : [];
         $query = self::find()->from(['t' => self::tableName()])->orderBy($order + ['t.lft' => $sort, 't.id' => $sort]);
-        if (!$allStatuses) $query->where(['t.status' => 1]);
+        if (!$allStatuses) $query->where(['t.status' => [1, 9]]);
         if (!empty($module))
             if (is_array($module)) {
                 $subQuery = Module::find()->select('id')->where(['or', ['id' => $module], ['url' => $module]]);
@@ -314,5 +317,33 @@ class Page extends \yii\db\ActiveRecord
     public function getModuleUrl()
     {
         return RA::module($this->module_id);
+    }
+
+    public function getPagePrices()
+    {
+        return $this->hasMany(PagePrice::className(), ['page_id' => 'id']);
+    }
+
+    public function getPagePrice()
+    {
+        return $this->hasOne(PagePrice::className(), ['page_id' => 'id'])->andOnCondition(['type_id' => $this->defaultPrice]);
+    }
+
+    public function getLastLevel()
+    {
+        return !$this->is_category || $this->rgt - $this->lft == 1;
+    }
+
+    public function getRelation($name, $throwException = true)
+    {
+        if (preg_match('#^character([\w\d]+)$#', $name, $match) && ($id = Yii::$app->ra->getCharacterId(lcfirst($match[1])))) {
+            $relation = $this->hasOne(PageCharacters::className(), ['page_id' => 'id'])
+                ->andOnCondition(['character_id' => $id]);
+        } else
+            $relation = parent::getRelation($name, $throwException);
+
+        /** @var ActiveRecord $model */
+        $model = $relation->modelClass;
+        return $relation->from([$name => $model::tableName()]);
     }
 }

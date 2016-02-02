@@ -101,7 +101,7 @@ class ModuleController extends AdminController
         $model = $this->getModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect($back?:['index']);
+            return $this->redirect($back ?: ['index']);
         } else {
             return $this->render('update', [
                 'model' => $model,

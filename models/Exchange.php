@@ -30,7 +30,7 @@ class Exchange extends \yii\db\ActiveRecord
             [['id', 'type', 'value'], 'required'],
             [['value'], 'integer'],
             [['id'], 'string', 'max' => 36],
-            [['type'], 'string', 'max' => 8],
+            [['type'], 'string', 'max' => 12]
         ];
     }
 

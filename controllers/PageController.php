@@ -12,7 +12,6 @@ use creocoder\nestedsets\NestedSetsBehavior;
 use ra\admin\helpers\RA;
 use ra\admin\models\Page;
 use Yii;
-use yii\helpers\VarDumper;
 use yii\web\HttpException;
 
 class PageController extends Controller
@@ -37,7 +36,7 @@ class PageController extends Controller
             $model = $params['model'];
             if (method_exists($model, 'getData') && ($data = $model->data)) {
                 if (!empty($data['title'])) $this->getView()->title = $data['title'];
-                if(!Yii::$app->request->isAjax){
+                if (!Yii::$app->request->isAjax) {
                     // Registry meta data
                     if (!empty($data['description'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $data['description']]);
                     if (!empty($data['keywords'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['keywords']]);
@@ -62,9 +61,9 @@ class PageController extends Controller
                     }
                     /** @var Page|NestedSetsBehavior $get */
                     $get = isset($parent) ? $parent : $model;
-                    try{
+                    try {
                         $query = $get->parents();
-                    } catch(\Exception $e){
+                    } catch (\Exception $e) {
                         $query = $get::findActive($get->module_id, ['and', ['<', 'lft', $get->lft], ['>', 'rgt', $get->rgt]], true, true);
                     }
                     if (!RA::moduleSetting($model->module_id, 'controller'))
@@ -84,7 +83,7 @@ class PageController extends Controller
     public function page($condition)
     {
         /** @var Page $class */
-        $page = Page::find()->where($condition)->with('pageData')->one();
+        $page = Page::find()->joinWith(['pageData', 'photo'])->where($condition)->with('pageData')->one();
         if (!$condition || !$page) throw new HttpException(404, Yii::t('ra', 'Can`t find page'));
         return $page;
     }

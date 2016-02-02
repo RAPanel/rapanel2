@@ -53,12 +53,12 @@ class ShoppingCart extends Component
     {
         if ($this->_items === false)
             $this->_items = Cart::findAll(['session_id' => $this->getSessionId(), 'status' => 0, 'order_id' => 0]);
-        return $this->_items?:[];
+        return $this->_items ?: [];
     }
 
     public function getSessionId()
     {
-        if(isset($_COOKIE['PHPSESSID'])) return $_COOKIE['PHPSESSID'];
+        if (isset($_COOKIE['PHPSESSID'])) return $_COOKIE['PHPSESSID'];
         return Yii::$app->user->getId() ?: Yii::$app->session->hasSessionId || !Yii::$app->session->open() ? Yii::$app->session->getId() : '';
     }
 

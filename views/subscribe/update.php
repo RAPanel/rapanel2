@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $model ra\admin\models\Subscribe */
 
 $this->title = Yii::t('ra', 'Update {modelClass}: ', [
-    'modelClass' => 'Subscribe',
-]) . ' ' . $model->name;
+        'modelClass' => 'Subscribe',
+    ]) . ' ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('ra', 'Subscribes'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = Yii::t('ra', 'Update');

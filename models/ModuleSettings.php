@@ -72,10 +72,11 @@ class ModuleSettings extends \yii\db\ActiveRecord
         $this->on($this::EVENT_BEFORE_UPDATE, $serialize);
         $this->on($this::EVENT_AFTER_FIND, function ($event) {
             if ($event->sender->value) {
-                try{
+                try {
                     $value = @unserialize($event->sender->value);
                     if ($value) $event->sender->value = $value;
-                } catch(Exception $e){}
+                } catch (Exception $e) {
+                }
             }
         });
     }

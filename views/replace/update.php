@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $model ra\admin\models\Replaces */
 
 $this->title = Yii::t('ra', 'Update {modelClass}: ', [
-    'modelClass' => 'Replaces',
-]) . ' ' . $model->name;
+        'modelClass' => 'Replaces',
+    ]) . ' ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('ra', 'Replaces'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->name]];
 $this->params['breadcrumbs'][] = Yii::t('ra', 'Update');

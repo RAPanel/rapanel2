@@ -10,6 +10,8 @@ use Yii;
  * @property string $id
  * @property string $name
  * @property string $currency
+ *
+ * @property PagePrice[] $pagePrices
  */
 class PriceType extends \yii\db\ActiveRecord
 {
@@ -29,7 +31,7 @@ class PriceType extends \yii\db\ActiveRecord
         return [
             [['name', 'currency'], 'required'],
             [['name'], 'string', 'max' => 255],
-            [['currency'], 'string', 'max' => 8],
+            [['currency'], 'string', 'max' => 8]
         ];
     }
 
@@ -43,5 +45,13 @@ class PriceType extends \yii\db\ActiveRecord
             'name' => Yii::t('ra', 'Name'),
             'currency' => Yii::t('ra', 'Currency'),
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPagePrices()
+    {
+        return $this->hasMany(PagePrice::className(), ['type_id' => 'id']);
     }
 }

@@ -75,12 +75,12 @@ class Shop extends Page
 
     public function getQuantity()
     {
-        return $this->getCharacters('quantity');
+        return $this->pagePrice ? $this->pagePrice->quantity : 0;
     }
 
-    public function getPrice()
+    public function getPrice($format = true)
     {
-        return $this->getCharacters('price');
+        return $this->pagePrice ? ($format ? Yii::$app->formatter->asCurrency($this->pagePrice->value) : $this->pagePrice->value) : 0;
     }
 
     public function getUnit()
@@ -100,7 +100,7 @@ class Shop extends Page
 
     public function getExist()
     {
-        return null;
+        return $this->pagePrice ? (bool)$this->pagePrice->count : false;
     }
 
 }

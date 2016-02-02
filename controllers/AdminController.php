@@ -75,8 +75,8 @@ class AdminController extends Controller
      */
     public function actionSearch($url = null, $q = null)
     {
-        if (!$q){
-            if(isset($_GET['q'])) unset($_GET['q']);
+        if (!$q) {
+            if (isset($_GET['q'])) unset($_GET['q']);
             return $this->redirect(['index'], $_GET);
         }
 

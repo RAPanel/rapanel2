@@ -34,7 +34,7 @@ array_unique($types);
                 <div class="col-md-5 form-horizontal">
                     <div class="form-group">
                         <div class="col-sm-7"><?=
-                            Html::activeDropDownList($model, "{$name}[type]", RA::dropDownList($types), ['class' => 'form-control col-sm-7', 'value' => '{{type}}', 'onchange'=>'$(this).parents(".image").find(".label").text(this.value)']) ?></div>
+                            Html::activeDropDownList($model, "{$name}[type]", RA::dropDownList($types), ['class' => 'form-control col-sm-7', 'value' => '{{type}}', 'onchange' => '$(this).parents(".image").find(".label").text(this.value)']) ?></div>
                         <div class="col-sm-5" style="line-height: 2.4">
                             <span class="width">{{width}}</span>x<span
                                 class="height">{{height}}</span>

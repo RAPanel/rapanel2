@@ -44,7 +44,7 @@ class ReadExcel extends Component
 
     public function getRow()
     {
-        if($this->currentRow > $this->maxRow) return false;
+        if ($this->currentRow > $this->maxRow) return false;
         $data = $this->_sheet->rangeToArray('A' . $this->currentRow . ':' . $this->maxColumn . $this->currentRow, null, true, false);
         $this->currentRow++;
         return reset($data);

@@ -20,7 +20,7 @@ class OrderController extends AdminController
     {
         $dataProvider = new ActiveDataProvider([
             'query' => Order::find(),
-            'sort' => ['defaultOrder'=>['id'=>SORT_DESC]],
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
         ]);
 
         return $this->render('index', [

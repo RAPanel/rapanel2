@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $model ra\admin\models\Form */
 
 $this->title = Yii::t('ra', 'Update {modelClass}: ', [
-    'modelClass' => 'Form',
-]) . ' ' . $model->id;
+        'modelClass' => 'Form',
+    ]) . ' ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('ra', 'Forms'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = Yii::t('ra', 'Update');

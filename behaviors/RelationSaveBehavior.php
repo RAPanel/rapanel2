@@ -56,7 +56,7 @@ class RelationSaveBehavior extends Behavior
 
         foreach ($this->relations as $relationName => $params) {
             if (is_numeric($relationName)) $relationName = $params;
-            if(!isset($this->_values[$relationName])) continue;
+            if (!isset($this->_values[$relationName])) continue;
 
             $relationGetter = 'get' . ucfirst($relationName);
 
@@ -85,7 +85,7 @@ class RelationSaveBehavior extends Behavior
                 try {
                     /** @var ActiveRecord $row */
                     foreach ($owner->$relationName as $row) $row->delete();
-                    if(count($values))
+                    if (count($values))
                         $relationClass::getDb()->createCommand()->batchInsert($relationClass::tableName(), $keys, $values)->execute();
 
                     $transaction->commit();

@@ -147,11 +147,23 @@ class RA
         return false;
     }
 
+    public static function moduleCharacters($module, $url = false)
+    {
+        $module_id = self::moduleId($module);
+        var_dump(self::moduleId($module), $module);
+        $data = self::cache(serialize([__METHOD__]), function () use ($module_id) {
+            $query = Character::find()->joinWith('characterShows')->where(['module_id' => $module_id])->select(['id', 'character_id', 'url'])->asArray();
+            var_dump($query->createCommand()->sql);
+            return ArrayHelper::map($query->all(), 'character_id', 'url');
+        });
+        return $url ? array_search($url, $data) : $data;
+    }
+
     /**
      * @param $query \yii\db\ActiveQuery
      * @return array
      */
-    public static function pageItems($query, $order = ['is_category' => SORT_ASC, 'level' => SORT_DESC, 'lft' => SORT_ASC, 'id' => SORT_ASC])
+    public static function pageItems($query, $order = ['is_category' => SORT_ASC, 'level' => SORT_DESC, 'lft' => SORT_ASC, 'id' => SORT_ASC], $levels = true)
     {
         if (is_array($query->orderBy) && is_array($order)) $query->orderBy(array_merge_recursive($order, $query->orderBy));
         if (empty($query->orderBy)) $query->orderBy($order);
@@ -159,7 +171,7 @@ class RA
         $items = [];
         /** @var \ra\admin\models\Page $row */
         foreach ($query->all() as $row) {
-            $items[$row->parent_id][] = [
+            $items[$levels ? $row->parent_id : 0][] = [
                 'label' => $row->name,
                 'url' => $row->getHref(0),
                 'options' => ['class' => $row->url],

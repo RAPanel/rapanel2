@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
 <script>
     function characterGetter(e) {
         $('.dataField').hide().find(':input').prop('disabled', 1);
-        if($(e).val())
+        if ($(e).val())
             $('.dataField.' + $(e).val()).show().find(':input').prop('disabled', 0);
     }
 </script>

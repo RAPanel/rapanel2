@@ -107,11 +107,16 @@ trait PageEdit
     {
         /** @var $this NestedSetsBehavior|self|Page */
         if (!$this instanceof ActiveRecord) return false;
-        if ($this->is_category || ($this->isNewRecord && RA::moduleSetting($this->module_id, 'hasCategory')) || RA::moduleSetting($this->module_id, 'hasChild'))
+        if ($this->is_category || /*($this->isNewRecord && RA::moduleSetting($this->module_id, 'hasCategory')) ||*/
+            RA::moduleSetting($this->module_id, 'hasChild')
+        )
             $this->addBehavior('tree');
         elseif ($this->isNewRecord && !$this->lft && RA::moduleSetting($this->module_id, 'sort')) {
             $this->lft = $this::find()->where(['module_id' => $this->module_id])->select('MAX(lft)')->scalar();
         }
+
+        if ($this->isNewRecord && $this->parent_id && $this->parent)
+            $this->level = $this->parent->level + 1;
 
         if (!$this->about) $this->about = '';
 

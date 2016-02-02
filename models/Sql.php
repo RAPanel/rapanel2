@@ -5,7 +5,7 @@ namespace ra\admin\models;
 use Yii;
 
 /**
- * This is the model class for table "ra_sql".
+ * This is the model class for table "{{%sql}}".
  *
  * @property string $id
  * @property string $name
@@ -18,7 +18,7 @@ class Sql extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'ra_sql';
+        return '{{%sql}}';
     }
 
     /**
@@ -29,7 +29,7 @@ class Sql extends \yii\db\ActiveRecord
         return [
             [['name', 'value'], 'required'],
             [['value'], 'string'],
-            [['name'], 'string', 'max' => 128],
+            [['name'], 'string', 'max' => 128]
         ];
     }
 

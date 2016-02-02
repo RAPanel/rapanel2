@@ -49,9 +49,9 @@ class UserAuth extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('ra', 'ID'),
             'user_id' => Yii::t('ra', 'User ID'),
-            'provider' => Yii::t('ra', 'provider'),
-            'provider_id' => Yii::t('ra', 'provider ID'),
-            'provider_attributes' => Yii::t('ra', 'provider Attributes'),
+            'provider' => Yii::t('ra', 'Provider'),
+            'provider_id' => Yii::t('ra', 'Provider ID'),
+            'provider_attributes' => Yii::t('ra', 'Provider Attributes'),
             'updated_at' => Yii::t('ra', 'Updated At'),
             'created_at' => Yii::t('ra', 'Created At'),
         ];

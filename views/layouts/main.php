@@ -53,11 +53,11 @@ if (!in_array($this->context->module->id, ['rapanel']))
         max-height: 100%;
     }
 
-    .photoWrapper{
+    .photoWrapper {
         padding: 0 10px;
     }
 
-    .photoWrapper .image{
+    .photoWrapper .image {
         float: left;
         display: block;
     }
