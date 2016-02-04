@@ -160,6 +160,18 @@ class Module extends \yii\db\ActiveRecord
                     Page::updateAll($update, ['id' => $row['id']]);
                 }
         };
+
+        $query = Page::find()
+            ->where(['and', ['module_id' => $this->id], ['rgt' => 0]])
+            ->with(['parent' => function ($query) {
+                $query->select(['id', 'level']);
+            }])
+            ->select(['id', 'parent_id'])
+            ->orderBy('lft, id DESC')
+            ->asArray();
+        foreach ($query->all() as $row)
+            Page::updateAll(['level' => $row['parent']['level'] + 1], ['id' => $row['id']]);
+
         $transaction = Yii::$app->db->beginTransaction();
         call_user_func($index, 0, 0);
         $transaction->commit();

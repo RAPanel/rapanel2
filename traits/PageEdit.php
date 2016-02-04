@@ -115,7 +115,7 @@ trait PageEdit
             $this->lft = $this::find()->where(['module_id' => $this->module_id])->select('MAX(lft)')->scalar();
         }
 
-        if ($this->isNewRecord && $this->parent_id && $this->parent)
+        if (($this->isNewRecord || $this->isAttributeChanged('parent_id', false)) && $this->parent_id && $this->parent)
             $this->level = $this->parent->level + 1;
 
         if (!$this->about) $this->about = '';
