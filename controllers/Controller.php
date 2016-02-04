@@ -13,9 +13,11 @@ use Yii;
 
 class Controller extends \yii\web\Controller
 {
+    public $includePjaxLayout = true;
+
     public function render($view, $params = [])
     {
-        $type = Yii::$app->request->isAjax || Yii::$app->request->get('ajax') ? 'renderAjax' : 'render';
+        $type = (Yii::$app->request->isAjax || Yii::$app->request->get('ajax')) && (!$this->includePjaxLayout || !Yii::$app->request->isPjax) ? 'renderAjax' : 'render';
         return parent::$type($view, $params);
     }
 }

@@ -120,6 +120,9 @@ trait PageEdit
 
         if (!$this->about) $this->about = '';
 
+        foreach (['about' => 2560, 'name' => 255, 'url' => 255] as $attribute => $length)
+            if (mb_strlen($this->{$attribute}, 'utf8')) $this->{$attribute} = mb_substr($this->{$attribute}, 0, $length, 'utf8');
+
         $this->addBehavior('sluggable');
         $this->addBehavior('timestamp');
         $this->addBehavior('statusChange');

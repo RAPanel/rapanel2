@@ -43,7 +43,6 @@ class Character extends \yii\db\ActiveRecord
             [['name', 'type', 'multi'], 'required'],
             [['type', 'url'], 'string'],
             [['multi'], 'integer'],
-            [['name'], 'string', 'max' => 25],
             [['characterShows'], 'safe'],
             [$this->serializeAttributes, 'safe'],
         ];
@@ -126,7 +125,9 @@ class Character extends \yii\db\ActiveRecord
 
     public function save($runValidation = true, $attributeNames = null)
     {
-        if (!$this->url) $this->url = Text::translate($this->_name);
+        if (!$this->url && $this->_name) $this->url = Text::translate($this->_name);
+
+        if (strlen($this->url) > 32) $this->url = substr($this->url, 0, 30);
 
         if ($this->isNewRecord && ($model = self::findOne(['url' => $this->url]))) {
             $this->setAttributes($model->attributes, false);
