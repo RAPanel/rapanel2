@@ -113,7 +113,7 @@ class Page extends \yii\db\ActiveRecord
      */
     public function getPages()
     {
-        return $this->hasMany(Page::className(), ['parent_id' => 'id'])->andOnCondition(['status' => 1]);
+        return $this->hasMany(Page::className(), ['parent_id' => 'id']);
     }
 
     /**

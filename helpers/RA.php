@@ -150,10 +150,8 @@ class RA
     public static function moduleCharacters($module, $url = false)
     {
         $module_id = self::moduleId($module);
-        var_dump(self::moduleId($module), $module);
         $data = self::cache(serialize([__METHOD__]), function () use ($module_id) {
             $query = Character::find()->joinWith('characterShows')->where(['module_id' => $module_id])->select(['id', 'character_id', 'url'])->asArray();
-            var_dump($query->createCommand()->sql);
             return ArrayHelper::map($query->all(), 'character_id', 'url');
         });
         return $url ? array_search($url, $data) : $data;
