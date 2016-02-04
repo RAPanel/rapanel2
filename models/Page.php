@@ -113,7 +113,7 @@ class Page extends \yii\db\ActiveRecord
      */
     public function getPages()
     {
-        return $this->hasMany(Page::className(), ['parent_id' => 'id']);
+        return $this->hasMany(Page::className(), ['parent_id' => 'id'])->andOnCondition(['status' => 1]);
     }
 
     /**
@@ -238,7 +238,7 @@ class Page extends \yii\db\ActiveRecord
         } elseif ($parent)
             $additional['parent'] = $parent;
         if (RA::module($this->url)) $url = ["/{$this->url}/index"];
-        elseif($this->url) $url = ["/{$module}/{$action}", 'url' => $this->url] + $additional;
+        elseif ($this->url) $url = ["/{$module}/{$action}", 'url' => $this->url] + $additional;
         else $url = ["/{$module}/{$action}", 'id' => $this->id] + $additional;
         return $normalizeUrl ? Url::to($url, $scheme) : $url;
     }
