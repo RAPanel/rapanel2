@@ -123,7 +123,7 @@ class RA
                 $name = reset($name);
             } else
                 $tableName = $name;
-            $query->from([$tableName => $class::tableName()])->where([$tableName . '.character_id' => RA::character($name)]);
+            $query->from([$tableName => $class::tableName()])->andWhere([$tableName . '.character_id' => RA::character($name)]);
             if (!is_null($value)) $query->andWhere($type ? [$type, $tableName . '.value', $value] : [$tableName . '.value' => $value]);
         }];
     }
