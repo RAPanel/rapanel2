@@ -300,7 +300,7 @@ class Page extends \yii\db\ActiveRecord
         $sort = RA::moduleSetting($module, 'sort') == 0 ? SORT_ASC : SORT_DESC;
         $order = RA::moduleSetting($module, 'hasCategory') ? ['t.is_category' => SORT_DESC] : [];
         $query = self::find()->from(['t' => self::tableName()])->orderBy($order + ['t.lft' => $sort, 't.id' => $sort]);
-        if (!$allStatuses) $query->where(['t.status' => [1, 9]]);
+        if (!$allStatuses) $query->where(['t.status' => [1, 2]]);
         if (!empty($module))
             if (is_array($module)) {
                 $subQuery = Module::find()->select('id')->where(['or', ['id' => $module], ['url' => $module]]);
