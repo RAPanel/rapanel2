@@ -248,19 +248,29 @@ class Page extends \yii\db\ActiveRecord
         return Yii::t('app\character', Inflector::camel2words($url));
     }
 
-    public function getCharacter($url = null)
+    /**
+     * @param string $url
+     * @return string|array|null
+     */
+    public function getCharacter($url)
     {
+        if ($this->isRelationPopulated($relation = 'character' . ucfirst($url)))
+            return $this->{$relation}->value;
         $characters = $this->getCharacters();
         return isset($characters[$url]) ? $characters[$url] : null;
     }
 
-    public function getCharacters($url = null, $refresh = false)
+    /**
+     * @param bool $refresh
+     * @return array
+     */
+    public function getCharacters($refresh = false)
     {
         if (empty($this->_characters) || $refresh) {
             foreach ($this->pageCharacters as $row)
                 $this->_characters[RA::character($row->character_id)] = $row->value;
         }
-        return is_null($url) ? $this->_characters : (isset($this->_characters[$url]) ? $this->_characters[$url] : null);
+        return $this->_characters;
     }
 
     public function getPhotoImg($size, $options = [])
