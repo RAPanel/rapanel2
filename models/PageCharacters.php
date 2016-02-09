@@ -68,6 +68,14 @@ class PageCharacters extends \yii\db\ActiveRecord
         return $this->hasOne(Character::className(), ['id' => 'character_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReference()
+    {
+        return $this->hasOne(Reference::className(), ['id' => 'value']);
+    }
+
     public function save($runValidation = true, $attributeNames = null)
     {
         if (RA::character($this->character_id, 'multi') && is_array($this->value)) $this->value = implode(',', $this->value);

@@ -17,6 +17,7 @@ use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Inflector;
 use yii\web\HttpException;
 
 class RAComponent extends Component implements BootstrapInterface
@@ -119,5 +120,10 @@ class RAComponent extends Component implements BootstrapInterface
     {
         if (!is_numeric($id)) return $id;
         return isset($this->getCharacters(false)[$id]) ? $this->getCharacters(true)[$id] : null;
+    }
+
+    public function getCharacterName($url)
+    {
+        return Yii::t('app\character', Inflector::camel2words($url));
     }
 }
