@@ -56,7 +56,7 @@ class PageController extends Controller
             $this->getView()->params['breadcrumbs'] = function () use ($model) {
                 $result = [];
                 if ($model->parent_id) {
-                    if (!$model->level) {
+                    if (!$model->rgt) {
                         $parent = $model->parent;
                     }
                     /** @var Page|NestedSetsBehavior $get */
