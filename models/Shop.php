@@ -90,7 +90,7 @@ class Shop extends Page
 
     public function getOldPrice()
     {
-        return $this->getCharacters('old-price');
+        return $this->getCharacter('old-price');
     }
 
     public function getDeliveryDate()

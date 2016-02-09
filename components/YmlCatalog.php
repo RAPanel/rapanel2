@@ -63,7 +63,7 @@ class YmlCatalog extends YmlGenerator
                 'delivery' => true,
                 'local_delivery_cost' => 0,
                 'typePrefix' => RA::module($row->module_id, 'name'),
-                'vendor' => $row->getCharacters('brand'),
+                'vendor' => $row->getCharacter('brand'),
 //                'vendorCode',
                 'model' => $row->name,
                 'description' => $row->about ?: $row->parent->about,
