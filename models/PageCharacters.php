@@ -86,7 +86,7 @@ class PageCharacters extends \yii\db\ActiveRecord
     public function afterFind()
     {
         if (RA::character($this->character_id, 'multi'))
-            $this->value = explode(',', $this->value);
+            $this->value = $this->value ? explode(',', $this->value) : [];
         parent::afterFind();
     }
 }
