@@ -281,7 +281,7 @@ class Page extends \yii\db\ActiveRecord
         if (empty($this->_characters) || $refresh) {
             foreach ($this->pageCharacters as $row)
                 $this->_characters[RA::character($row->character_id)] =
-                    RA::character($this->character_id, 'type') == 'dropdown' ?
+                    RA::character($row->character_id, 'type') == 'dropdown' ?
                         $this->reference->value :
                         $row->value;
         }
