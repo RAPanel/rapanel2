@@ -71,7 +71,7 @@ class PageData extends \yii\db\ActiveRecord
      */
     public function getIndexes()
     {
-        return $this->hasMany(Index::className(), ['owner_id' => 'page_id'])->andOnCondition([Index::tableName() . '.model' => 'Page'])->joinWith('data');
+        return $this->hasMany(Index::className(), ['owner_id' => 'page_id'])->andOnCondition(['indexes.model' => 'Page'])->joinWith('data');
     }
 
     public function beforeValidate()
