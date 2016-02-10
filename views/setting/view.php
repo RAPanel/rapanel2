@@ -33,8 +33,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'inputType',
             'name',
             'value:ntext',
-            'update_at',
-            'create_at',
+            'updated_at',
+            'created_at',
         ],
     ]) ?>
 

@@ -37,8 +37,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             return Html::tag('div', $model->value, ['data-id' => $model->id, 'data-name' => 'value']);
                         },
                     ],
-                    // 'update_at',
-                    // 'create_at',
+                    // 'updated_at',
+                    // 'created_at',
 
 //                    ['class' => 'yii\grid\ActionColumn'],
                 ],

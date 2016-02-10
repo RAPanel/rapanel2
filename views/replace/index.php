@@ -27,8 +27,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     'name',
                     'value:ntext',
-//                    'update_at',
-                    'create_at',
+//                    'updated_at',
+                    'created_at',
 
                     ['class' => 'yii\grid\ActionColumn'],
                 ],
