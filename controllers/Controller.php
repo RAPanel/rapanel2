@@ -13,7 +13,7 @@ use Yii;
 
 class Controller extends \yii\web\Controller
 {
-    public $includePjaxLayout = true;
+    public $includePjaxLayout = false;
 
     public function render($view, $params = [])
     {
