@@ -57,7 +57,9 @@ $('.photoWrapper').on('click', '.remove', function(){
     for(var i in data){
         modal = modal.replace(new RegExp('{{' + i + '}}', 'g'), data[i]);
     }
+    console.log(data, data.index, data.type)
     block.after(modal).remove();
+    $('[name="Shop[photos]['+data.index+'][type]"]').val(data.type);
 })
 .sortable({handle: 'a'})
 .disableSelection()
