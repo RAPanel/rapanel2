@@ -80,6 +80,11 @@ class PageController extends Controller
         return parent::render($view, $params);
     }
 
+    /**
+     * @param $condition
+     * @return Page
+     * @throws HttpException
+     */
     public function page($condition)
     {
         /** @var Page $class */
