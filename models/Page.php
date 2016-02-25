@@ -206,15 +206,18 @@ class Page extends \yii\db\ActiveRecord
     public function getContent()
     {
         $data = $this->data && $this->data->content ? $this->data->content : null;
-        if ($data && preg_match_all('#{{([\w\s]+)}}#u', $data, $matches) && !empty($matches[1])) {
+        if ($data && preg_match_all('#\{{2,3}([\w\s]+)(\:{[^}]+})?\}{2,3}#u', $data, $matches) && !empty($matches[1])) {
             $list = Replaces::find()->where(['name' => $matches[1]])->asArray()->select(['name', 'value'])->all();
             foreach ($list as $row) {
-                if (strpos($row['value'], '$') !== false) {
+                $key = array_search($row['name'], $matches[1]);
+                if (strpos($row['value'], '$') !== false || strpos($row['value'], '<?') !== false) {
                     $tmp = tempnam('/tmp', $row['name']);
                     file_put_contents($tmp, $row['value']);
-                    $result = Yii::$app->view->renderPhpFile($tmp, ['model' => $this]);
+                    $params = ltrim($matches[2][$key], ':');
+                    if($params) $params = (array)json_decode($params);
+                    $result = Yii::$app->view->renderPhpFile($tmp, $params + ['model' => $this] );
                 } else $result = $row['value'];
-                $data = str_replace('{{' . $row['name'] . '}}', $result, $data);
+                $data = str_replace($matches[0][$key], $result, $data);
             }
         }
         return $data;
