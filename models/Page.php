@@ -8,6 +8,7 @@ use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
 use yii\helpers\Url;
+use yii\web\Request;
 
 /**
  * This is the model class for table "{{%page}}".
@@ -236,7 +237,13 @@ class Page extends \yii\db\ActiveRecord
 
     public function getHref($normalizeUrl = true, $scheme = false, $parent = false)
     {
-        if (strpos($this->url, '/') !== false) return $this->url;
+        if (strpos($this->url, '/') !== false) {
+            if ($normalizeUrl) return Url::to($this->url, $scheme);
+            $parse = Yii::$app->urlManager->parseRequest(new Request(['url' => $this->url]));
+            return array_filter($parse, function ($el) {
+                return !empty($el);
+            });
+        }
         $module = RA::module($this->module_id);
         $moduleSettings = RA::moduleSetting($this->module_id);
         $action = 'show';
