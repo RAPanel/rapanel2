@@ -141,4 +141,28 @@ trait PageEdit
 
         return parent::save($runValidation, $attributeNames);
     }
+
+    public function __get($name)
+    {
+        if (strpos($name, '.')) {
+            $data = $this;
+            foreach (explode('.', $name) as $key)
+                $data = isset($data[$key]) ? $data[$key] : null;
+            return $data;
+        }
+        return parent::__get($name);
+    }
+
+    public function __set($name, $value)
+    {
+        if (strpos($name, '.')) {
+            $keys = explode('.', $name);
+            $data = array_shift($keys);
+            foreach (array_reverse($keys) as $key)
+                $value = [$key => $value];
+            $this->{$data} = $value;
+
+        } else
+            parent::__set($name, $value);
+    }
 }
