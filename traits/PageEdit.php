@@ -70,10 +70,12 @@ trait PageEdit
             $this->attachBehavior($name, $list[$name]);
     }
 
-    public function setCharacters($value)
+    public function setCharacters($values)
     {
+        foreach($values as $key => $value)
+            $this->_characters[$key] = $value;
         $data = [];
-        foreach ($value as $key => $val) {
+        foreach ($values as $key => $val) {
             $data[] = [
                 'character_id' => RA::character($key),
                 'value' => $val,
