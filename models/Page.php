@@ -381,4 +381,9 @@ class Page extends \yii\db\ActiveRecord
         $model = $relation->modelClass;
         return $relation->from([$name => $model::tableName()]);
     }
+
+    public function getCreated()
+    {
+        return Yii::$app->formatter->asDate($this->created_at);
+    }
 }
