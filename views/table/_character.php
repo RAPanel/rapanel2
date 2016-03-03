@@ -9,6 +9,7 @@
  */
 
 
+use ra\admin\helpers\RA;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
 
@@ -20,7 +21,7 @@ $value = Html::getAttributeValue($model, $name);
 
 echo Html::activeHiddenInput($model, "{$attribute}[{$key}][page_id]", ['value' => $model->id]);
 echo Html::activeHiddenInput($model, "{$attribute}[{$key}][character_id]", ['value' => $data->id]);
-echo Html::activeHiddenInput($model, $name, ['value' => is_array($value) ? implode(',', $value) : $value, 'id' => false]);
+echo Html::activeHiddenInput($model, $name, ['value' => is_array($value) ? RA::multiImplode(';;', $value) : $value, 'id' => false]);
 
 $label = Yii::t('app\character', Inflector::camel2words($data->url)) . ' /<span>' . $data->url . '</span>';
 if ($data['type'] == 'boolean') {
@@ -48,6 +49,31 @@ if ($data['type'] == 'boolean') {
         ],
         'multiple' => $data['multi'],
     ]);
+} elseif ($data['type'] == 'table') {
+    echo Html::label($label, $id);
+    echo Html::beginTag('table', ['style'=>'table-layout: fixed;width: 100%;']);
+    {
+        echo Html::beginTag('tr');
+        {
+            if ($data['filter']['firstColumn'])
+                echo Html::tag('th', $data['filter']['firstColumn']);
+            foreach ($data['filter']['column'] as $column) if($column)
+                echo Html::tag('th', $column);
+        }
+        echo Html::endTag('tr');
+
+        $i = 0;
+        echo Html::beginTag('tr');
+        {
+            $name = $name . "[{$i}]";
+            if ($data['filter']['firstColumn'])
+                echo Html::tag('td', $data['filter']['unit']?:Html::activeInput($data['type'], $model, $name . "[{$n}]", ['class' => 'form-control']));
+            foreach ($data['filter']['column'] as $n => $column) if($column)
+                echo Html::tag('td', Html::activeInput($data['type'], $model, $name . "[{$n}]", ['class' => 'form-control']));
+        }
+        echo Html::endTag('tr');
+    }
+    echo Html::endTag('table');
 } else {
     $params = [];
     if ($data['type'] == 'price') {
