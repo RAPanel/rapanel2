@@ -303,11 +303,6 @@ class Page extends \yii\db\ActiveRecord
         return $this->_characters;
     }
 
-    public function __toString()
-    {
-        return $this->id;
-    }
-
     public function getPhotoImg($size, $options = [])
     {
         /** @var Photo $photo */
