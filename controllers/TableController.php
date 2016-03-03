@@ -31,7 +31,8 @@ class TableController extends AdminController
 
         /** @var \yii\db\ActiveRecord $model */
         $model = new $module->class;
-        if ($id) $model = $model::findOne($id);
+        if (!$id) $id = $module->getRootId();
+        $model = $model::findOne($id);
 
         $sort = empty($module->settings['sort']) ? SORT_ASC : SORT_DESC;
         $query = $model::find()->from(['t' => $model::tableName()])->orderBy(['t.lft' => $sort, 't.id' => $sort]);
