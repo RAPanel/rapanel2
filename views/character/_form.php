@@ -55,6 +55,20 @@ use yii\widgets\ActiveForm;
         </div>
     </div>
 
+    <? $disable = !$model->type || $model->type != 'table' ?>
+    <div class="dataField table row" <? if ($model->type != 'table') echo 'style="display: none"' ?>>
+        <div class="col-md-4">
+            <?= $form->field($model, 'filter[firstColumn]')->textInput(['disabled' => $disable])->label('Первая колонка') ?>
+            <?= $form->field($model, 'filter[unit]')->textInput(['disabled' => $disable])->label('Еденица измерения') ?>
+        </div>
+        <div class="col-md-8">
+            <? if(!empty($model->filter['column'])) foreach($model->filter['column'] as $i => $column) if(trim($column))
+                echo Html::activeTextInput($model, 'filter[column]['.$i.']', ['class' => 'form-control', 'value'=>$column]); ?>
+            <?= Html::activeTextInput($model, 'filter[column][]', ['class' => 'form-control', 'value'=>'']); ?>
+            <?= Html::button('add', ['onclick' => '$(this).prev(":input").clone().val("").insertBefore(this);']); ?>
+        </div>
+    </div>
+
     <div class="dataField dropdown" style="display: none">
     </div>
 
