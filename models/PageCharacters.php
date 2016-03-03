@@ -78,7 +78,15 @@ class PageCharacters extends \yii\db\ActiveRecord
 
     public function save($runValidation = true, $attributeNames = null)
     {
-        if (RA::character($this->character_id, 'multi') && is_array($this->value)) $this->value = implode(',', $this->value);
+        $multi = RA::character($this->character_id, 'multi');
+        if (RA::character($this->character_id, 'type') == 'table' && is_array($this->value)) {
+            $list = [];
+            foreach($this->value as $row) $list[] = implode(';;', $row);
+            $this->value = $list;
+            if(!$multi) $this->value = current($list);
+        }
+
+        if ($multi && is_array($this->value)) $this->value = implode(';;', $this->value);
 
         return parent::save($runValidation, $attributeNames);
     }
@@ -86,7 +94,12 @@ class PageCharacters extends \yii\db\ActiveRecord
     public function afterFind()
     {
         if (RA::character($this->character_id, 'multi'))
-            $this->value = $this->value ? explode(',', $this->value) : [];
+            $this->value = $this->value ? explode(strpos($this->value, ';;') ? ';;' : ',', $this->value) : [];
+        if (RA::character($this->character_id, 'type') == 'table') {
+            $list = [];
+            foreach((array)$this->value as $row) $list[] = explode(';;', $row);
+            $this->value = $list;
+        }
         parent::afterFind();
     }
 }
