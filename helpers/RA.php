@@ -203,4 +203,11 @@ class RA
         ];
         return is_null($type) ? $data : $data[$type];
     }
+
+    public static function multiImplode($sep, $array) {
+        $_array = [];
+        foreach($array as $val)
+            $_array[] = is_array($val)? self::multiImplode($sep, $val) : $val;
+        return implode($sep, $_array);
+    }
 }
