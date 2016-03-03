@@ -5,6 +5,7 @@ namespace ra\admin\models;
 use ra\admin\helpers\RA;
 use Yii;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
 use yii\helpers\Url;
@@ -214,8 +215,9 @@ class Page extends \yii\db\ActiveRecord
                     $tmp = tempnam('/tmp', $row['name']);
                     file_put_contents($tmp, $row['value']);
                     $params = ltrim($matches[2][$key], ':');
-                    if($params) $params = (array)json_decode($params);
-                    $result = Yii::$app->view->renderPhpFile($tmp, $params + ['model' => $this] );
+                    if ($params) $params = (array)json_decode($params);
+                    $params = ArrayHelper::merge($params, ['model' => $this, 'this'=>Yii::$app->view]);
+                    $result = Yii::$app->view->renderPhpFile($tmp, $params);
                 } else $result = $row['value'];
                 $data = str_replace($matches[0][$key], $result, $data);
             }
@@ -272,7 +274,7 @@ class Page extends \yii\db\ActiveRecord
 
     /**
      * @param string $url
-     * @return string|array|null
+     * @return string|array|null|self
      */
     public function getCharacter($url)
     {
@@ -289,13 +291,21 @@ class Page extends \yii\db\ActiveRecord
     public function getCharacters($refresh = false)
     {
         if (empty($this->_characters) || $refresh) {
-            foreach ($this->pageCharacters as $row)
-                $this->_characters[RA::character($row->character_id)] =
-                    RA::character($row->character_id, 'type') == 'dropdown' && $row->reference ?
-                        $row->reference->value :
-                        $row->value;
+            foreach ($this->pageCharacters as $row) {
+                $result = $row->value;
+                if (RA::character($row->character_id, 'type') == 'dropdown' && $row->reference)
+                    $result = $row->reference->value;
+                elseif (RA::character($row->character_id, 'type') == 'extend')
+                    $result = is_array($result) ? $this::findAll($result) : $this::findOne($result);
+                $this->_characters[RA::character($row->character_id)] = $result;
+            }
         }
         return $this->_characters;
+    }
+
+    public function __toString()
+    {
+        return $this->id;
     }
 
     public function getPhotoImg($size, $options = [])
