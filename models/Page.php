@@ -216,7 +216,7 @@ class Page extends \yii\db\ActiveRecord
                     file_put_contents($tmp, $row['value']);
                     $params = ltrim($matches[2][$key], ':');
                     if ($params) $params = (array)json_decode($params);
-                    $params = ArrayHelper::merge($params, ['model' => $this, 'this'=>Yii::$app->view]);
+                    $params = ArrayHelper::merge($params, ['model' => $this, 'this' => Yii::$app->view]);
                     $result = Yii::$app->view->renderPhpFile($tmp, $params);
                 } else $result = $row['value'];
                 $data = str_replace($matches[0][$key], $result, $data);
@@ -317,6 +317,11 @@ class Page extends \yii\db\ActiveRecord
         /** @var Photo $photo */
         $photo = $this->{$relation};
         return $photo ? $photo->getHref($size, $scheme) : '/image/_' . $size . '/default.jpg';
+    }
+
+    public function __toString()
+    {
+        return (string)$this->id ?: '';
     }
 
     /**
