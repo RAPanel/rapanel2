@@ -33,7 +33,7 @@ if ($data['type'] == 'boolean') {
     echo Html::label($label, $id);
     $filter = [];
     foreach ($data['filter'] as $key => $row)
-        if ($row) $filter[$key] = $row - 1;
+        if ($row&& is_numeric($row) && in_array($key, $model->attributes)) $filter[$key] = $row - 1;
     echo \ra\admin\widgets\chosen\Chosen::widget([
         'id' => $id,
         'model' => $model,
@@ -51,13 +51,13 @@ if ($data['type'] == 'boolean') {
     ]);
 } elseif ($data['type'] == 'table') {
     echo Html::label($label, $id);
-    echo Html::beginTag('table', ['style'=>'table-layout: fixed;width: 100%;']);
+    echo Html::beginTag('table', ['style' => 'table-layout: fixed;width: 100%;']);
     {
         echo Html::beginTag('tr');
         {
             if ($data['filter']['firstColumn'])
                 echo Html::tag('th', $data['filter']['firstColumn']);
-            foreach ($data['filter']['column'] as $column) if($column)
+            foreach ($data['filter']['column'] as $column) if ($column)
                 echo Html::tag('th', $column);
         }
         echo Html::endTag('tr');
@@ -67,8 +67,8 @@ if ($data['type'] == 'boolean') {
         {
             $name = $name . "[{$i}]";
             if ($data['filter']['firstColumn'])
-                echo Html::tag('td', $data['filter']['unit']?:Html::activeInput($data['type'], $model, $name . "[{$n}]", ['class' => 'form-control']));
-            foreach ($data['filter']['column'] as $n => $column) if($column)
+                echo Html::tag('td', $data['filter']['unit'] ?: Html::activeInput($data['type'], $model, $name . "[{$n}]", ['class' => 'form-control']));
+            foreach ($data['filter']['column'] as $n => $column) if ($column)
                 echo Html::tag('td', Html::activeInput($data['type'], $model, $name . "[{$n}]", ['class' => 'form-control']));
         }
         echo Html::endTag('tr');
