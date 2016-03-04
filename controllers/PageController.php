@@ -41,7 +41,7 @@ class PageController extends Controller
                     if (!empty($data['description'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $data['description']]);
                     if (!empty($data['keywords'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['keywords']]);
                     // Registry og data
-                    $this->getView()->registerMetaTag(['property' => 'og:og:type', 'content' => 'website']);
+                    $this->getView()->registerMetaTag(['property' => 'og:type', 'content' => 'website']);
                     if (!empty($data['h1'])) $this->getView()->registerMetaTag(['property' => 'og:title', 'content' => $data['h1']]);
                     if (method_exists($model, 'getHref')) $this->getView()->registerMetaTag(['property' => 'og:url', 'content' => $model->getHref(1, 1)]);
                     if (method_exists($model, 'getPhoto') && $model->photo) {
