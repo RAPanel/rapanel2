@@ -253,6 +253,7 @@ class TableController extends AdminController
                         ['>', 'lft', $lft],
                         ['and', ['=', 'lft', $lft], ['>', 'id', $before ? $before->id : 0]],
                     ],
+                    ['!=', 'id', $model->module_id],
                 ]);
             }
             $model->lft = $lft + 1;
