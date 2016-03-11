@@ -20,7 +20,7 @@ class Form extends \yii\db\ActiveRecord
 {
     use SerializeAttribute;
 
-    public $serializeAttributes = ['name', 'phone', 'email', 'text', 'fromUrl'];
+    public $serializeAttributes = ['name', 'phone', 'email', 'text', 'fromUrl', 'ip'];
 
     /**
      * @inheritdoc
@@ -41,7 +41,8 @@ class Form extends \yii\db\ActiveRecord
             [['updated_at', 'created_at'], 'safe'],
             [$this->serializeAttributes, 'safe'],
             [['type'], 'string', 'max' => 32],
-            ['fromUrl', 'default', 'value' => $this->defaultFromUrl()]
+            ['fromUrl', 'default', 'value' => $this->defaultFromUrl()],
+            ['ip', 'default', 'value' => Yii::$app->request->userIP],
         ];
     }
 
@@ -81,7 +82,7 @@ class Form extends \yii\db\ActiveRecord
         return 'controlUserNameExist';
     }
 
-    /** for delete in futere */
+    /** for delete in future */
     public function contact($email = null)
     {
         return $this->send($email);
