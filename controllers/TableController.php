@@ -190,7 +190,8 @@ class TableController extends AdminController
         $_GET['url'] = RA::module($model->module_id);
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $model->status = !empty($model->module->settings['status']);
+            if($model->status == 9)
+                $model->status = (int)!empty($model->module->settings['status']);
             $model->save();
 
             switch (Yii::$app->request->post('submit')):

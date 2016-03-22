@@ -64,4 +64,19 @@ class UserAuth extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
+
+    public static function add($provider, $providerId, $data){
+
+        $data = [
+            'provider' => $provider,
+            'provider_id' => $providerId,
+        ];
+        $auth = UserAuth::findOne($data);
+        if (!$auth) $auth = new UserAuth($data);
+        $auth->setAttributes([
+            'user_id' => Yii::$app->user->id ?: ($auth->user_id ? $auth->user_id : 1),
+            'provider_attributes' => serialize($data),
+        ]);
+        $auth->save(false);
+    }
 }

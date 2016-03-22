@@ -33,6 +33,7 @@ use yii\web\IdentityInterface;
  * @property UserAuth[] $userAuths
  * @property UserKey[] $userKeys
  * @property UserProfile[] $userProfiles
+ * @property UserProfile $profile
  */
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
@@ -209,6 +210,14 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function getUserProfiles()
     {
         return $this->hasMany(UserProfile::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProfile()
+    {
+        return $this->hasOne(UserProfile::className(), ['user_id' => 'id']);
     }
 
     /**

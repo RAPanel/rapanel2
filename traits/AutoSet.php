@@ -79,7 +79,7 @@ trait AutoSet
             $transaction->commit();
         };
 
-        $this->on(ActiveRecord::EVENT_AFTER_UPDATE, $function, $value);
+        $this->on(ActiveRecord::EVENT_BEFORE_UPDATE, $function, $value);
         $this->on(ActiveRecord::EVENT_AFTER_INSERT, $function, $value);
     }
 }
