@@ -196,7 +196,7 @@ class RA
                 'loginUsername' => false,
                 'requireEmail' => true,
                 'requireUsername' => true,
-                'loginDuration' => 60 * 60 * 30,
+                'loginDuration' => 60 * 60 * 30 * 24,
                 'loginRedirect' => '/',
                 'logoutRedirect' => null,
             ],
