@@ -95,7 +95,6 @@ class PageData extends \yii\db\ActiveRecord
     public function beforeSave($insert)
     {
         if ($this->isAttributeChanged('tags')) {
-            $transaction = Yii::$app->db->beginTransaction(Transaction::READ_UNCOMMITTED);
             $tags = array_map('trim', explode(',', $this->getAttribute('tags')));
             $oldTags = array_map('trim', explode(',', $this->getOldAttribute('tags')));
 
@@ -104,6 +103,7 @@ class PageData extends \yii\db\ActiveRecord
 
             $properties = ['type' => 'tags', 'owner_id' => $this->page_id, 'model' => 'Page'];
 
+            $transaction = Yii::$app->db->beginTransaction(Transaction::SERIALIZABLE);
             try {
                 if (!empty($deleteTags)) {
                     $delete = [];
@@ -120,9 +120,11 @@ class PageData extends \yii\db\ActiveRecord
                     $model->setAttributes($properties);
                     $model->save(false);
                 }
+
                 $transaction->commit();
             } catch (Exception $e) {
-                $this->addError('tags', Yii::t('app', 'Can`t save tags!'));
+                $transaction->rollBack();
+                $this->addError('tags', Yii::t('ra', 'Can`t save tags!'));
             }
         }
         return parent::beforeSave($insert);
