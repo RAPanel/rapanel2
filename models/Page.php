@@ -208,17 +208,17 @@ class Page extends \yii\db\ActiveRecord
     {
         $data = $this->data && $this->data->content ? $this->data->content : null;
         if ($data && preg_match_all('#\{{2,3}([\w\s]+)(\:{[^}]+})?\}{2,3}#u', $data, $matches) && !empty($matches[1])) {
-            $list = Replaces::find()->where(['name' => $matches[1]])->asArray()->select(['name', 'value'])->all();
-            foreach ($list as $row) {
-                $key = array_search($row['name'], $matches[1]);
-                if (strpos($row['value'], '$') !== false || strpos($row['value'], '<?') !== false) {
-                    $tmp = tempnam('/tmp', $row['name']);
-                    file_put_contents($tmp, $row['value']);
+            $list = ArrayHelper::map(Replaces::find()->where(['name' => $matches[1]])->asArray()->select(['name', 'value'])->all(), 'name', 'value');
+            foreach ($matches[1] as $key => $name) {
+                $function = $list[$name];
+                if (strpos($function, '$') !== false || strpos($function, '<?') !== false) {
+                    $tmp = tempnam('/tmp', $function);
+                    file_put_contents($tmp, $function);
                     $params = ltrim($matches[2][$key], ':');
                     if ($params) $params = (array)json_decode($params);
                     $params = ArrayHelper::merge($params, ['model' => $this, 'this' => Yii::$app->view]);
                     $result = Yii::$app->view->renderPhpFile($tmp, $params);
-                } else $result = $row['value'];
+                } else $result = $function;
                 $data = str_replace($matches[0][$key], $result, $data);
             }
         }
@@ -295,8 +295,8 @@ class Page extends \yii\db\ActiveRecord
                 $result = $row->value;
                 if (RA::character($row->character_id, 'type') == 'dropdown' && $row->reference)
                     $result = $row->reference->value;
-                elseif (RA::character($row->character_id, 'type') == 'extend')
-                    $result = is_array($result) ? $this::findAll($result) : $this::findOne($result);
+                elseif (RA::character($row->character_id, 'type') == 'extend' )
+                    $result = is_array($result) ? $this::findAll(array_diff($result, ['', null, false])) : $this::findOne($result);
                 $this->_characters[RA::character($row->character_id)] = $result;
             }
         }
