@@ -86,6 +86,11 @@ class Order extends \yii\db\ActiveRecord
         return $this->hasMany(Cart::className(), ['order_id' => 'id']);
     }
 
+    public function getTotal()
+    {
+        return $this->getItems()->select('SUM(price*quantity)')->scalar();
+    }
+
     /**
      * @inheritdoc
      */
