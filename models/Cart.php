@@ -13,7 +13,7 @@ use Yii;
  * @property integer $order_id
  * @property double $price
  * @property double $quantity
- * @property resource $data
+ * @property resource|Shop $data
  * @property string $updated_at
  * @property string $created_at
  */
@@ -71,5 +71,10 @@ class Cart extends \yii\db\ActiveRecord
         if ($this->data && is_object($this->data))
             $this->data = serialize($this->data);
         return parent::beforeSave($insert);
+    }
+    
+    public function getTotal()
+    {
+        return $this->price * $this->quantity;
     }
 }
