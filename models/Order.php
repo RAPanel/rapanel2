@@ -40,13 +40,20 @@ class Order extends \yii\db\ActiveRecord
                 ->setTo(explode(',', Yii::$app->params['adminEmail']))
                 ->setFrom([Yii::$app->params['fromEmail'] ?: 'no-reply@' . Yii::$app->request->hostInfo => Yii::$app->name])
                 ->setSubject("Новый заказ №{$this->id}")
-                ->setHtmlBody($event->sender->getBody())
+                ->setHtmlBody($event->sender->getBody(true))
+                ->send();
+
+            if($event->sender->email) Yii::$app->mailer->compose()
+                ->setTo($event->sender->email)
+                ->setFrom([Yii::$app->params['fromEmail'] ?: 'no-reply@' . Yii::$app->request->hostInfo => Yii::$app->name])
+                ->setSubject("Заказ №{$this->id}")
+                ->setHtmlBody($event->sender->getBody(false))
                 ->send();
         });
         parent::init();
     }
 
-    public function getBody()
+    public function getBody($admin = false)
     {
         $result = ['Номер заказа: ' . $this->id];
         $result[] = 'Способ оплаты: ' . $this->getPay();
@@ -56,7 +63,7 @@ class Order extends \yii\db\ActiveRecord
             $result[] = $this->getAttributeLabel($key) . ": " . $row;
         }
         $result[] = '';
-        $result[] = Yii::$app->view->render('//cart/_table', ['query' => $this->getItems()]);
+        $result[] = Yii::$app->view->render('//cart/_table', ['query' => $this->getItems(), 'admin'=>$admin]);
 
         return implode('<br>', $result);
     }
