@@ -20,6 +20,8 @@ class Form extends \yii\db\ActiveRecord
 {
     use SerializeAttribute;
 
+    public $sendToUser = true;
+
     public $serializeAttributes = ['name', 'phone', 'email', 'text', 'fromUrl', 'ip'];
 
     /**
@@ -122,6 +124,20 @@ class Form extends \yii\db\ActiveRecord
 
             if ($mail->send() || YII_ENV_DEV) {
                 $this->afterSend($mail);
+                if ($this->sendToUser && !$this->getIsSpam() && !empty($this->email)) Yii::$app->mailer->compose()
+                    ->setTo($this->email)
+                    ->setFrom([Yii::$app->params['fromEmail'] => Yii::$app->name])
+                    ->setSubject('Ваше сообщение получено')
+                    ->setTextBody("Спасибо за обращение.\n\nМы ответим Вам как можно скорее.")
+                    ->send();
+
+                if ($this->getIsSpam() && !empty($this->email))
+                    Yii::$app->mailer->compose()
+                        ->setTo($this->email)
+                        ->setFrom([Yii::$app->params['fromEmail'] => Yii::$app->name])
+                        ->setSubject('Ваше сообщение отмечено как SPAM')
+                        ->setTextBody("Внимание, нам не удалось получить Ваше сообщение.\n\nСвяжитесь с нами любым другим способом.")
+                        ->send();
 
                 return true;
             }
