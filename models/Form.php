@@ -49,8 +49,10 @@ class Form extends \yii\db\ActiveRecord
     public function defaultFromUrl()
     {
         $fromUrl = Yii::$app->request->hostInfo . Yii::$app->request->url;
-        if (Yii::$app->request->referrer && Yii::$app->request->url == \yii\helpers\Url::to(['/site/contact']))
-            $fromUrl = Yii::$app->request->referrer;
+        if (Yii::$app->request->referrer &&
+            strpos(Yii::$app->request->referrer, Yii::$app->request->hostInfo) !== false &&
+            Yii::$app->request->isPost
+        ) $fromUrl = Yii::$app->request->referrer;
         return $fromUrl;
     }
 
