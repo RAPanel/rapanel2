@@ -22,7 +22,7 @@ class Form extends \yii\db\ActiveRecord
 
     public $sendToUser = true;
 
-    public $serializeAttributes = ['name', 'phone', 'email', 'text', 'fromUrl', 'ip'];
+    public $serializeAttributes = ['name', 'phone', 'email', 'text'];
 
     /**
      * @inheritdoc
@@ -30,6 +30,14 @@ class Form extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return '{{%form}}';
+    }
+
+    public function init()
+    {
+        $this->serializeAttributes[] = 'ip';
+        $this->serializeAttributes[] = 'fromUrl';
+        array_unique($this->serializeAttributes);
+        parent::init();
     }
 
     /**

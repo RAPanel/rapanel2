@@ -30,9 +30,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'type',
-            'data',
-            'updated_at',
-            'created_at',
+            [
+                'attribute'=>'data',
+                'format'=>'html',
+                'value'=>nl2br($model->getBody()),
+            ],
+            'updated_at:datetime',
+            'created_at:datetime',
         ],
     ]) ?>
 
