@@ -243,7 +243,7 @@ class Page extends \yii\db\ActiveRecord
     public function getHref($normalizeUrl = true, $scheme = false, $parent = false)
     {
         if (strpos($this->url, '/') !== false) {
-            if ($normalizeUrl) return Url::to($this->url, $scheme);
+            if ($normalizeUrl || strpos($this->url, '//') !== false) return Url::to($this->url, $scheme);
             $parse = Yii::$app->urlManager->parseRequest(new Request(['url' => $this->url]));
             return array_filter($parse, function ($el) {
                 return !empty($el);
