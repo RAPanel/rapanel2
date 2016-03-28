@@ -155,7 +155,7 @@ class Form extends \yii\db\ActiveRecord
 
     public function getIsSpam()
     {
-        return Yii::$app->request->post($this->spamAttribute);
+        return (bool)Yii::$app->request->post($this->getSpamAttribute());
     }
 
     /**

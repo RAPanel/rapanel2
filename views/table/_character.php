@@ -33,7 +33,7 @@ if ($data['type'] == 'boolean') {
     echo Html::label($label, $id);
     $filter = [];
     foreach ($data['filter'] as $key => $row)
-        if ($row&& is_numeric($row) && in_array($key, $model->attributes)) $filter[$key] = $row - 1;
+        if ($row && is_numeric($row) && in_array($key, $model->attributes)) $filter[$key] = $row - 1;
     echo \ra\admin\widgets\chosen\Chosen::widget([
         'id' => $id,
         'model' => $model,
@@ -62,18 +62,21 @@ if ($data['type'] == 'boolean') {
         }
         echo Html::endTag('tr');
 
-        $i = 0;
-        echo Html::beginTag('tr');
-        {
-            $name = $name . "[{$i}]";
-            if ($data['filter']['firstColumn'])
-                echo Html::tag('td', $data['filter']['unit'] ?: Html::activeInput($data['type'], $model, $name . "[{$n}]", ['class' => 'form-control']));
-            foreach ($data['filter']['column'] as $n => $column) if ($column)
-                echo Html::tag('td', Html::activeInput($data['type'], $model, $name . "[{$n}]", ['class' => 'form-control']));
+        foreach (Html::getAttributeValue($model, $name) ?: [['']] as $i => $row) if ($row) {
+            echo Html::beginTag('tr');
+            {
+                if ($data['filter']['firstColumn'] && $data['filter']['unit'])
+                    echo Html::tag('td', $data['filter']['unit'], ['class' => 'form-control']);
+                foreach ($data['filter']['column'] as $n => $column) if ($column)
+                    echo Html::tag('td', Html::activeInput($data['type'], $model, $name . "[{$i}]" . "[{$n}]", ['class' => 'form-control']));
+            }
         }
         echo Html::endTag('tr');
     }
     echo Html::endTag('table');
+    if ($data['multi']) {
+        echo Html::button(Yii::t('ra', 'Add value'), ['class'=>'btn btn-default pull-right', 'onclick' => 'var tr=$(this).prev("table").find("tr:last");tr.clone().insertAfter(tr).find(":input").val("").each(function(){var i=this.name.match(/\[value\]\[(\d+)\]/);this.name=this.name.replace("[value]["+i[1]+"]","[value]["+(parseInt(i[1])+1)+"]")});']);
+    }
 } else {
     $params = [];
     if ($data['type'] == 'price') {
@@ -84,16 +87,12 @@ if ($data['type'] == 'boolean') {
         $params['value'] = '1';
     }
     echo Html::label($label, $id);
-    if ($data['multi']) {
-        if (Html::getAttributeValue($model, $name))
-            foreach (Html::getAttributeValue($model, $name) as $i => $row) if ($row) {
-                echo Html::activeInput($data['type'], $model, $name . "[{$i}]", ['id' => $id, 'class' => 'form-control'] + $params);
-            }
-        $name .= '[]';
+    $value = Html::getAttributeValue($model, $name);
+    foreach (is_array($value) ? $value : [$value?:'0'] as $i => $row) if ($row!==false) {
+        echo Html::activeInput($data['type'], $model, $data['multi'] ? $name . "[{$i}]" : $name, ['id' => $id, 'class' => 'form-control'] + $params);
     }
-    echo Html::activeInput($data['type'], $model, $name, ['id' => $id, 'value' => $data['multi'] ? '' : null, 'class' => 'form-control'] + $params);
     if ($data['multi']) {
-        echo Html::button('add', ['onclick' => '$(this).prev(":input").clone().val("").insertBefore(this);']);
+        echo Html::button(Yii::t('ra', 'Add value'), ['class'=>'btn btn-default pull-right', 'onclick' => '$(this).prev(":input").clone().val("").insertBefore(this);']);
     }
 }
 echo Html::endTag('div');
