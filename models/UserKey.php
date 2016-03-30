@@ -3,6 +3,7 @@
 namespace ra\admin\models;
 
 use Yii;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "{{%user_key}}".
@@ -73,5 +74,21 @@ class UserKey extends \yii\db\ActiveRecord
                 'createdAtAttribute' => 'create_time',
             ]
         ];
+    }
+
+    public static function add($type, $key, $expire){
+
+        $search = [
+            'type' => $type,
+            'key_value' => $key,
+        ];
+        $model = self::findOne($search);
+        if (!$model) $model = new self($search);
+        $model->setAttributes([
+            'user_id' => Yii::$app->user->id ?: ($model->user_id ? $model->user_id : 1),
+            'create_time' => new Expression('now()'),
+            'expire_time' => $expire,
+        ]);
+        return $model->save(false);
     }
 }

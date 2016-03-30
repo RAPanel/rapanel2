@@ -63,6 +63,11 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+        'session' => [
+            'class' => 'yii\web\DbSession',
+            'timeout' => 3600 * 24 * 30,
+            'useCookies' => true,
+        ],
     ],
     'params' => [
         'adminEmail' => 'webmaster@rere-design.ru',
