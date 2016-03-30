@@ -30,9 +30,9 @@ class ImageController extends Controller
 
         $crop = 1;
         if (strpos($type, 'x') !== false) {
-            if (strpos($type, '!')) $crop = 2;
-            list($width, $height) = explode('x', trim($type, '!'));
-            if (!$width || !$height) $crop = 0;
+            list($width, $height) = explode('x', trim($type, '!^'));
+            if (!$width || !$height || strpos($type, '^')) $crop = 0;
+            elseif (strpos($type, '!')) $crop = 2;
         } else {
             $width = $height = $type;
             $crop = 0;

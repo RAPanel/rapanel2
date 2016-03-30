@@ -73,46 +73,48 @@ class Image
         $resize = max($width / $image->getSize()->getWidth(), $height / $image->getSize()->getHeight());
         if ($resize < 1) $resize = 1;
 
-        $box = new Box($width, $height);
+        // Не увеличиваем, если размер маленький
+        $resizeWidth = $width / $resize;
+        $resizeHeight = $height / $resize;
 
-        // Запрещаем увеличение
-        $newWidth = $width = $width / $resize;
-        $newHeight = $height = $height / $resize;
+        // если пропорции равны - делаем просто ресайз
+        if ($k == $resizeWidth / $resizeHeight) $crop = self::IMAGE_RESIZE;
 
-        if ($k != $width / $height) {
-            if (!$crop) {
-                if ($k > 0)
-                    $newWidth = $newHeight * $k;
-                else
-                    $newHeight = $newWidth / $k;
-            } else {
-                if ($k > $width / $height)
-                    $newWidth = $k > 1 ? $newHeight * $k : $newHeight / $k;
-                else
-                    $newHeight = $newWidth / $k;
-            }
+        switch ($crop):
+            case self::IMAGE_BOX:
+            case self::IMAGE_RESIZE:
+                $smaller = max($image->getSize()->getWidth() / $resizeWidth, $image->getSize()->getHeight() / $resizeHeight);
+                break;
+            case self::IMAGE_CROP:
+                $smaller = min($image->getSize()->getWidth() / $resizeWidth, $image->getSize()->getHeight() / $resizeHeight);
+                break;
+            default:
+                $smaller = 1;
+        endswitch;
 
-        } else $crop = false;
+        list($resizeWidth, $resizeHeight) = [$image->getSize()->getWidth() / $smaller, $image->getSize()->getHeight() / $smaller];
 
-        $image->resize(new Box($newWidth, $newHeight), ImageInterface::FILTER_LANCZOS);
+        $image->resize(new Box($resizeWidth, $resizeHeight), ImageInterface::FILTER_LANCZOS);
 
         if ($crop) {
+            $box = new Box($width, $height);
 
-            // Обрезаем лишнее
-            $startX = 0;
-            $startY = 0;
-            $size = $image->getSize();
-            if ($size->getWidth() > $width) {
-                $startX = ceil($size->getWidth() - $width) / 2;
-            }
-            if ($size->getHeight() > $height) {
-                $startY = ceil($size->getHeight() - $height) / 2;
+            if($crop == self::IMAGE_CROP){
+                // Обрезаем лишнее
+                $startX = 0;
+                $startY = 0;
+                if ($image->getSize()->getWidth() > $width) {
+                    $startX = ceil($image->getSize()->getWidth() - $width) / 2;
+                }
+                if ($image->getSize()->getHeight() > $height) {
+                    $startY = ceil($image->getSize()->getHeight() - $height) / 2;
+                }
+                $image->crop(new Point($startX, $startY), $box);
             }
 
-            $image->crop(new Point($startX, $startY), $box);
 
             // Делаем белый фон
-            if (($size->getWidth() < round($width) || $size->getHeight() < round($height))) {
+            if (($image->getSize()->getWidth() < round($width) || $image->getSize()->getHeight() < round($height))) {
                 $thumb = Image::getImagine()->create($box);
 
                 $size = $image->getSize();
