@@ -17,6 +17,7 @@ class AdminController extends \yii\console\Controller
 
     public function actionUpdate($install = false)
     {
+        $this->command('global require "fxp/composer-asset-plugin:~1.1.1"');
         $this->command('self-update');
         $this->command('update -o --prefer-source --no-dev');
         if ($install) $this->actionInstall(false);
@@ -27,10 +28,8 @@ class AdminController extends \yii\console\Controller
         $dir = \Yii::getAlias('@app');
         $php = PHP_BINDIR . '/php';
         $composer = "{$dir}/composer.phar";
-        if (!file_exists($composer)) {
+        if (!file_exists($composer))
             exec('curl -sS https://getcomposer.org/installer | php');
-            exec("{$php} {$composer} global require \"fxp/composer-asset-plugin:~1.1.1\"");
-        }
         echo `{$php} {$composer} {$command} --working-dir={$dir}/`;
     }
 
@@ -49,15 +48,6 @@ class AdminController extends \yii\console\Controller
         ]);
 
         $this->addRunFile('../index.php');
-
-        $transaction = Yii::$app->db->beginTransaction();
-
-        if ($force)
-            $this->runSqlFile(Yii::getAlias('@ra/admin/data/ra.sql'));
-
-        $this->actionInsert();
-
-        $transaction->commit();
 
         $this->actionUpdate();
     }
