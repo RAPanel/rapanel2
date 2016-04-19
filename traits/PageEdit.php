@@ -135,7 +135,7 @@ trait PageEdit
             $this->_save = true;
             $parent = $this->parent_id ? Page::findOne($this->parent_id) : $this->root;
             if (empty($this->root) || $this->id != $this->root->id) {
-                if (!$this->parent_id)
+                if (!$this->parent_id && $this->root)
                     $this->parent_id = $this->root->id;
                 return $this->appendTo($parent, $runValidation, $attributeNames);
             }
