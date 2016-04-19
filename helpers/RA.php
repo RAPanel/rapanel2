@@ -174,6 +174,7 @@ class RA
                 'url' => $row->getHref(0),
                 'options' => ['class' => $row->url],
                 'items' => isset($items[$row->id]) ? $items[$row->id] : null,
+                'active' => isset(Yii::$app->view->params['active']) && in_array($row->id, (array)Yii::$app->view->params['active']) ? true : null,
             ];
         }
 

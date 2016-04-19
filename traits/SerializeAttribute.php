@@ -15,8 +15,7 @@ trait SerializeAttribute
 
     public function __get($name)
     {
-        if (in_array($name, $this->serializeAttributes)) {
-            if (empty($this->_data)) $this->_data = unserialize($this->data);
+        if (isset($this->{$name})) {
             return isset($this->_data[$name]) ? $this->_data[$name] : null;
         }
         return parent::__get($name);
@@ -24,13 +23,12 @@ trait SerializeAttribute
 
     public function __set($name, $value)
     {
-        if (in_array($name, $this->serializeAttributes)) {
-            if ($this->_data === false) $this->_data = unserialize($this->_data);
+        if (isset($this->{$name})) {
             $this->_data[$name] = $value;
             $this->on($this->isNewRecord ? parent::EVENT_BEFORE_INSERT : parent::EVENT_BEFORE_UPDATE, function ($event) {
-                if ($event->sender->_data) {
+                if (count($event->sender->_data)) {
                     $event->sender->data = serialize($event->sender->_data);
-                    $event->sender->_data = false;
+                    $event->sender->_data = [];
                 }
             });
             return;
@@ -40,8 +38,9 @@ trait SerializeAttribute
 
     public function __isset($name)
     {
-        if (in_array($name, $this->serializeAttributes)) return true;
-        return parent::__get($name);
+        if (empty($this->_data) && $this->data) $this->_data = unserialize($this->data);
+        if (in_array($name, $this->serializeAttributes) || isset($this->_data[$name])) return true;
+        return parent::__isset($name);
     }
 
 }

@@ -53,6 +53,7 @@ class PageController extends Controller
             }
             $this->getView()->params['model'] = $params['base'] = $model;
             $this->getView()->params['pageTitle'] = $model->name;
+            Yii::$app->view->params['active'] = [$model->id, $model->parent_id, $model->module_id];
             $this->getView()->params['breadcrumbs'] = function () use ($model) {
                 $result = [];
                 if ($model->parent_id) {
