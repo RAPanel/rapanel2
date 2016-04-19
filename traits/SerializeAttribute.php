@@ -38,11 +38,11 @@ trait SerializeAttribute
 
     public function __isset($name)
     {
-        if (!parent::__isset($name)) {
+        if($name != 'data'){
             if (empty($this->_data) && $this->data) $this->_data = unserialize($this->data);
-            if (!in_array($name, $this->serializeAttributes) && !isset($this->_data[$name])) return false;
+            if (in_array($name, $this->serializeAttributes) || isset($this->_data[$name])) return true;
         }
-        return true;
+        return parent::__isset($name);
     }
 
 }
