@@ -65,7 +65,7 @@ class ReplaceController extends AdminController
         $model = new Replaces();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->name]);
+            return $this->redirect(['index', 'hash' => $model->name]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -84,7 +84,7 @@ class ReplaceController extends AdminController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->name]);
+            return $this->redirect(['index', 'hash' => $model->name]);
         } else {
             return $this->render('update', [
                 'model' => $model,

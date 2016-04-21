@@ -17,7 +17,7 @@ class AdminController extends \yii\console\Controller
 
     public function actionUpdate($install = false)
     {
-        $this->command('global require "fxp/composer-asset-plugin:~1.1.1"');
+        $this->command('global require "fxp/composer-asset-plugin:~1.1.3"');
         $this->command('self-update');
         $this->command('update -o --prefer-source --no-dev');
         if ($install) $this->actionInstall(false);

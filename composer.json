@@ -25,6 +25,7 @@
         "bower-asset/jquery-tags-input": "*",
         "2amigos/yii2-tinymce-widget": "*",
         "imagine/imagine": "*",
+        "trntv/yii2-aceeditor": "*",
         "creocoder/yii2-nested-sets": "^0.9.0"
     },
     "autoload": {
