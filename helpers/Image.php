@@ -69,8 +69,8 @@ class Image
         if (!$width) $width = $height * $k;
         if (!$height) $height = $width / $k;
 
-        // Считаем насколько больше ли новые размеры
-        $resize = max($width / $image->getSize()->getWidth(), $height / $image->getSize()->getHeight());
+        // Считаем насколько и больше ли новые размеры
+        $resize = min($width / $image->getSize()->getWidth(), $height / $image->getSize()->getHeight());
         if ($resize < 1) $resize = 1;
 
         // Не увеличиваем, если размер маленький
