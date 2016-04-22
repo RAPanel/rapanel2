@@ -176,7 +176,7 @@ class Photo extends \yii\db\ActiveRecord
             if ($k > 1) $height = $width / $k;
             else $width = $height * $k;
         if ($width > $this->width) $width = $this->width;
-        if ($height > $this->height) $height = $this->width;
+        if ($height > $this->height) $height = $this->height;
 
         return [
             'width' => round($width),
