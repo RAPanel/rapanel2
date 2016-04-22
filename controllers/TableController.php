@@ -190,7 +190,7 @@ class TableController extends AdminController
         $_GET['url'] = RA::module($model->module_id);
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if($model->status == 9)
+            if ($model->status == 9)
                 $model->status = (int)!empty($model->module->settings['status']);
             $model->save();
 
@@ -246,20 +246,21 @@ class TableController extends AdminController
             $after = $next ? $this->findModel($next) : null;
             $lft = $before ? $before->lft : 0;
             if ($after) {
-                $count = $after->lft - $lft;
-                var_dump($count);
-                if ($count < 2) Page::updateAllCounters(['lft' => $count == 0 ? 2 : 1], ['and',
-                    ['module_id' => $model->module_id, 'parent_id' => $model->parent_id],
+                $count = $after ? $after->lft - $lft : 0;
+                if ($count < 2) $model::updateAllCounters(['lft' => 2 - $count], ['and',
+                    ['module_id' => $model->module_id],
                     ['or',
                         ['>', 'lft', $lft],
                         ['and', ['=', 'lft', $lft], ['>', 'id', $before ? $before->id : 0]],
                     ],
-                    ['!=', 'id', $model->module_id],
+                    ['or',
+                        ['parent_id' => $model->level > 1 ? $model->parent_id : $model->module_id],
+                        ['parent_id' => null],
+                    ],
+                    ['not in', 'id', [$model->module_id, $model->id]],
                 ]);
             }
-            $model->lft = $lft + 1;
-            var_dump($model->lft, $before->lft, $model->lft);
-            $model->save(false, ['lft']);
+            $model->updateCounters(['lft' => $lft + 1 - $model->lft]);
             return $model->errors;
         }
         return $model;
