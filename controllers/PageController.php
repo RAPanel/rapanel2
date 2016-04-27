@@ -100,7 +100,7 @@ class PageController extends Controller
     public function page($condition)
     {
         /** @var Page $class */
-        $page = Page::find()->where($condition)->with(['pageData', 'photo'])->one();
+        $page = Page::find()->where($condition)->with(['pageData', 'parent', 'photo'])->one();
         if (!$condition || !$page) throw new HttpException(404, Yii::t('ra', 'Can`t find page'));
         return $page;
     }
