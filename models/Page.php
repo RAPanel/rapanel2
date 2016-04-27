@@ -383,7 +383,7 @@ class Page extends \yii\db\ActiveRecord
     {
         if (preg_match('#^character([\w\d]+)$#', $name, $match) && ($id = Yii::$app->ra->getCharacterId(lcfirst($match[1])))) {
             $relation = $this->hasOne(PageCharacters::className(), ['page_id' => 'id'])
-                ->andOnCondition(['character_id' => $id]);
+                ->andOnCondition([$name . '.character_id' => $id]);
         } else
             $relation = parent::getRelation($name, $throwException);
 
