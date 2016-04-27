@@ -116,8 +116,8 @@ trait PageEdit
         )
             $this->addBehavior('tree');
         elseif ($this->isNewRecord && !$this->lft && RA::moduleSetting($this->module_id, 'sort')) {
-            $this->lft = $this::find()->where(['module_id' => $this->module_id, 'parent_id' => $this->parent_id])->select('MAX(lft)')->scalar();
-        }
+            $this->lft = $this::find()->where(['module_id' => $this->module_id, 'parent_id' => $this->parent_id])->select('MAX(lft)')->scalar()?:0;
+        } elseif(is_null($this->lft)) $this->lft = 0;
 
         if (empty($this->parent_id)) $this->parent_id = $this->module_id;
 
