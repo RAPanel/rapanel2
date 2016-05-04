@@ -60,7 +60,7 @@ class Text
         $result = false;
         $stripText = mb_substr($text, 0, $length, 'utf8');
         foreach ((array)$split as $value) {
-            $last = strrpos($text, $value);
+            $last = strrpos($stripText, $value);
             if (!$result && $last > $length * $proportional) {
                 $result = mb_substr($text, 0, $last + 1, 'utf8');
                 break;
