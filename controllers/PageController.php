@@ -10,6 +10,7 @@ namespace ra\admin\controllers;
 
 use creocoder\nestedsets\NestedSetsBehavior;
 use ra\admin\helpers\RA;
+use ra\admin\helpers\Text;
 use ra\admin\models\Page;
 use Yii;
 use yii\web\HttpException;
@@ -41,7 +42,12 @@ class PageController extends Controller
                 if (!Yii::$app->request->isAjax) {
                     // Registry meta seo data
                     if (!empty($data['description'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $data['description']]);
+                    elseif (!empty($model['about'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $data['about']]);
+                    elseif (!empty($data['content'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => Text::cleverStrip($data['content'], 200)]);
+
                     if (!empty($data['keywords'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['keywords']]);
+                    elseif (!empty($data['tags'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['keywords']]);
+
                     // Registry og data
                     if ($this->social) {
                         $this->getView()->registerMetaTag(['property' => 'og:type', 'content' => 'website']);
