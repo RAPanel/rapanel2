@@ -58,7 +58,7 @@ class Text
     public static function cleverStrip($text, $length, $split = ['.', '?', '!', ',', ' '], $proportional = 2 / 3)
     {
         $result = false;
-        $stripText = mb_substr($text, 0, $length, 'utf8');
+        $stripText = mb_substr(strip_tags($text), 0, $length, 'utf8');
         foreach ((array)$split as $value) {
             $last = strrpos($stripText, $value);
             if (!$result && $last > $length * $proportional) {
