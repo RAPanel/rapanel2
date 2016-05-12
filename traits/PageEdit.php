@@ -119,9 +119,9 @@ trait PageEdit
             $this->lft = $this::find()->where(['module_id' => $this->module_id, 'parent_id' => $this->parent_id])->select('MAX(lft)')->scalar()?:0;
         } elseif(is_null($this->lft)) $this->lft = 0;
 
-        if (empty($this->parent_id)) $this->parent_id = $this->module_id;
+        if (empty($this->parent_id) && $this->module_id != $this->id) $this->parent_id = $this->module_id;
 
-        if (($this->isNewRecord || $this->isAttributeChanged('parent_id', false)) && $this->parent_id && $this->parent)
+        if (($this->isNewRecord || $this->isAttributeChanged('parent_id', false)) && $this->parent_id && $this->parent && $this->parent_id != $this->id)
             $this->level = $this->parent->level + 1;
 
         if (!$this->about) $this->about = '';
