@@ -42,11 +42,11 @@ class PageController extends Controller
                 if (!Yii::$app->request->isAjax) {
                     // Registry meta seo data
                     if (!empty($data['description'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $data['description']]);
-                    elseif (!empty($model['about'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $data['about']]);
+                    elseif (!empty($model['about'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $model['about']]);
                     elseif (!empty($data['content'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => Text::cleverStrip($data['content'], 200)]);
 
                     if (!empty($data['keywords'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['keywords']]);
-                    elseif (!empty($data['tags'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['keywords']]);
+                    elseif (!empty($data['tags'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['tags']]);
 
                     // Registry og data
                     if ($this->social) {
