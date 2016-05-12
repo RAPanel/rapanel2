@@ -43,7 +43,7 @@ class Order extends \yii\db\ActiveRecord
                 ->setHtmlBody($event->sender->getBody(true))
                 ->send();
 
-            if($event->sender->email) Yii::$app->mailer->compose()
+            if (!empty($event->sender->email)) Yii::$app->mailer->compose()
                 ->setTo($event->sender->email)
                 ->setFrom([Yii::$app->params['fromEmail'] ?: 'no-reply@' . Yii::$app->request->hostInfo => Yii::$app->name])
                 ->setSubject("Заказ №{$this->id}")
@@ -59,11 +59,11 @@ class Order extends \yii\db\ActiveRecord
         $result[] = 'Способ оплаты: ' . $this->getPay();
         $result[] = 'Способ доставки: ' . $this->getDelivery();
         $result[] = '';
-        foreach (unserialize($this->data) as $key => $row) {
+        if ($this->data && ($data = unserialize($this->data))) foreach ($data as $key => $row) {
             $result[] = $this->getAttributeLabel($key) . ": " . $row;
         }
         $result[] = '';
-        $result[] = Yii::$app->view->render('//cart/_table', ['query' => $this->getItems(), 'admin'=>$admin]);
+        $result[] = Yii::$app->view->render('//cart/_table', ['query' => $this->getItems(), 'admin' => $admin]);
 
         return implode('<br>', $result);
     }
