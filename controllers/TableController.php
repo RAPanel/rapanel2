@@ -35,7 +35,7 @@ class TableController extends AdminController
         $model = $model::findOne($id);
 
         $sort = empty($module->settings['sort']) ? SORT_ASC : SORT_DESC;
-        $query = $model::find()->from(['t' => $model::tableName()])->orderBy(['t.lft' => $sort, 't.id' => $sort]);
+        $query = $model::find()->from(['t' => $model::tableName()])->orderBy(['t.is_category' => SORT_DESC, 't.lft' => $sort, 't.id' => $sort]);
         if ($model->id) $query->andWhere(['!=', 't.id', $model->id]);
         else $query->andWhere(['!=', 't.id', $module->id]);
 
@@ -248,7 +248,7 @@ class TableController extends AdminController
             if ($after) {
                 $count = $after ? $after->lft - $lft : 0;
                 if ($count < 2) $model::updateAllCounters(['lft' => 2 - $count], ['and',
-                    ['module_id' => $model->module_id],
+                    ['module_id' => $model->module_id, 'is_category' => 0],
                     ['or',
                         ['>', 'lft', $lft],
                         ['and', ['=', 'lft', $lft], ['>', 'id', $before ? $before->id : 0]],
