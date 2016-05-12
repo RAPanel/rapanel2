@@ -38,9 +38,9 @@ class ShoppingCart extends Component
         }
         if (empty($item)) {
             $item = new Cart;
-            $item->data = $model;
             $item->setAttributes(['session_id' => $this->getSessionId(), 'item_id' => $model->getId(), 'status' => 0, 'order_id' => 0], false);
         }
+        $item->data = $model;
         $item->price = $model->getPrice(0);
         $item->quantity = $add ? ($item->quantity + $quantity) : $quantity;
         $item->save(false);
@@ -60,6 +60,17 @@ class ShoppingCart extends Component
     {
         if (isset($_COOKIE['PHPSESSID'])) return $_COOKIE['PHPSESSID'];
         return Yii::$app->user->getId() ?: Yii::$app->session->hasSessionId || !Yii::$app->session->open() ? Yii::$app->session->getId() : '';
+    }
+
+    public function delete($id)
+    {
+        foreach ($this->getItems() as $row)
+            if ($row->item_id == $id) {
+                $item = $row;
+                break;
+            }
+        if (!empty($item)) return $item->delete();
+        return false;
     }
 
     public function getQuantity()
