@@ -5,6 +5,7 @@ namespace ra\admin\models;
 use ra\admin\helpers\RA;
 use ra\admin\traits\AutoSet;
 use Yii;
+use yii\db\Transaction;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -135,8 +136,10 @@ class Module extends \yii\db\ActiveRecord
 
     public function fixTree()
     {
+        // Удаляем все черновики
         Page::deleteAll(['module_id' => $this->id, 'status' => 9]);
-        $hasChild = RA::moduleSetting($this->id, 'hasChild');
+
+        // Готовим список товаров в дереве
         $data = Page::find()
             ->where(['and', ['module_id' => $this->id], ['>', 'lft', 0], ['>', 'rgt', 0]])
             ->select(['id', 'parent_id', 'lft', 'rgt', 'level', 'is_category'])
@@ -146,7 +149,10 @@ class Module extends \yii\db\ActiveRecord
         foreach ($data as $row) {
             $items[(int)$row['parent_id']][] = $row;
         }
+
+        // Объявляем ананимную функцию индексации
         $lft = 1;
+        $hasChild = RA::moduleSetting($this->id, 'hasChild');
         $index = function ($parent_id, $level) use ($items, &$lft, &$index, $hasChild) {
             if (!empty($items[$parent_id]))
                 foreach ($items[$parent_id] as $row) {
@@ -161,6 +167,7 @@ class Module extends \yii\db\ActiveRecord
                 }
         };
 
+        // Получаем товары без дерева
         $query = Page::find()
             ->where(['and', ['module_id' => $this->id], ['rgt' => 0]])
             ->with(['parent' => function ($query) {
@@ -169,10 +176,15 @@ class Module extends \yii\db\ActiveRecord
             ->select(['id', 'parent_id'])
             ->orderBy('lft, id DESC')
             ->asArray();
+
+        // Проводим транзакцию
+        $transaction = Yii::$app->db->beginTransaction(Transaction::READ_COMMITTED);
+        // простовляем дочерность для товаров
         foreach ($query->all() as $row)
             Page::updateAll(['level' => $row['parent']['level'] + 1], ['id' => $row['id']]);
-
-        $transaction = Yii::$app->db->beginTransaction();
+        // Обновляем родителя
+        Page::updateAll(['parent_id' => 0, 'status_id' => 2], ['id' => $this->id]);
+        // Запускаем анонимную функцию индексации
         call_user_func($index, 0, 0);
         $transaction->commit();
     }
