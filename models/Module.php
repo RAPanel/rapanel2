@@ -183,7 +183,7 @@ class Module extends \yii\db\ActiveRecord
         foreach ($query->all() as $row)
             Page::updateAll(['level' => $row['parent']['level'] + 1], ['id' => $row['id']]);
         // Обновляем родителя
-        Page::updateAll(['parent_id' => 0, 'status_id' => 2], ['id' => $this->id]);
+        Page::updateAll(['parent_id' => null, 'status_id' => 2], ['id' => $this->id]);
         // Запускаем анонимную функцию индексации
         call_user_func($index, 0, 0);
         $transaction->commit();
