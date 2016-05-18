@@ -35,7 +35,9 @@ class TableController extends AdminController
         $model = $model::findOne($id);
 
         $sort = empty($module->settings['sort']) ? SORT_ASC : SORT_DESC;
-        $query = $model::find()->from(['t' => $model::tableName()])->orderBy(['t.is_category' => SORT_DESC, 't.lft' => $sort, 't.id' => $sort]);
+        $order = [];
+        if($module->settings['hasCategory']) $order['t.is_category']=SORT_DESC;
+        $query = $model::find()->from(['t' => $model::tableName()])->orderBy($order + ['t.lft' => $sort, 't.id' => $sort]);
         if ($model->id) $query->andWhere(['!=', 't.id', $model->id]);
         else $query->andWhere(['!=', 't.id', $module->id]);
 

@@ -111,6 +111,9 @@ trait PageEdit
     {
         /** @var $this NestedSetsBehavior|self|Page */
         if (!$this instanceof ActiveRecord) return false;
+
+        if (empty($this->parent_id) && $this->module_id != $this->id) $this->parent_id = $this->module_id;
+
         if ($this->is_category || /*($this->isNewRecord && RA::moduleSetting($this->module_id, 'hasCategory')) ||*/
             RA::moduleSetting($this->module_id, 'hasChild')
         )
@@ -118,8 +121,6 @@ trait PageEdit
         elseif ($this->isNewRecord && !$this->lft && RA::moduleSetting($this->module_id, 'sort')) {
             $this->lft = $this::find()->where(['module_id' => $this->module_id, 'parent_id' => $this->parent_id])->select('MAX(lft)')->scalar()?:0;
         } elseif(is_null($this->lft)) $this->lft = 0;
-
-        if (empty($this->parent_id) && $this->module_id != $this->id) $this->parent_id = $this->module_id;
 
         if (($this->isNewRecord || $this->isAttributeChanged('parent_id', false)) && $this->parent_id && $this->parent && $this->parent_id != $this->id)
             $this->level = $this->parent->level + 1;
