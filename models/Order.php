@@ -59,7 +59,7 @@ class Order extends \yii\db\ActiveRecord
         $result[] = 'Способ оплаты: ' . $this->getPay();
         $result[] = 'Способ доставки: ' . $this->getDelivery();
         $result[] = '';
-        if ($this->data && ($data = unserialize($this->data))) foreach ($data as $key => $row) {
+        if ($this->data && ($data = unserialize($this->data))) foreach ($data as $key => $row) if($row) {
             $result[] = $this->getAttributeLabel($key) . ": " . $row;
         }
         $result[] = '';
