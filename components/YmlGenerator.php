@@ -63,7 +63,7 @@ abstract class YmlGenerator extends Component
      * @var array
      */
     public $offerElements = ['url', 'price', 'currencyId', 'categoryId', 'market_category',
-        'picture', 'store', 'pickup', 'delivery', 'local_delivery_cost', 'typePrefix',
+        'picture', 'store', 'pickup', 'delivery', 'local_delivery_cost', 'local_delivery_days', 'delivery-options', 'outlets', 'typePrefix',
         'vendor', 'vendorCode', 'name', 'model', 'description', 'sales_notes', 'manufacturer_warranty',
         'seller_warranty', 'country_of_origin', 'downloadable', 'age', 'barcode', 'cpa',
         'rec', 'expiry', 'weight', 'dimensions', 'param'];
