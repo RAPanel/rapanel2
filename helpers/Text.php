@@ -33,6 +33,14 @@ class Text
         return $text;
     }
 
+    /**
+     * @param $number
+     * Количество для скланения
+     * @param $titles
+     * массив в виде <code>['одна', 'две', 'пять']</code>
+     * для подстановки цифры используется символ <i>%</i>
+     * @return string
+     */
     public static function numeric($number, $titles)
     {
         $cases = array(2, 0, 1, 1, 1, 2);
