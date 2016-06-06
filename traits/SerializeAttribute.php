@@ -9,9 +9,19 @@
 namespace ra\admin\traits;
 
 
+use yii\helpers\ArrayHelper;
+
 trait SerializeAttribute
 {
+    public $serializeAttributes = [];
     private $_data = [];
+
+    public function rules()
+    {
+        return ArrayHelper::merge(parent::rules(), [
+            [$this->serializeAttributes, 'safe'],
+        ]);
+    }
 
     public function __get($name)
     {
