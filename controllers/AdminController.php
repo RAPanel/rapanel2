@@ -20,6 +20,7 @@ use yii\web\Cookie;
 
 class AdminController extends Controller
 {
+    
     /**
      * @inheritdoc
      */
