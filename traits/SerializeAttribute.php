@@ -13,7 +13,6 @@ use yii\helpers\ArrayHelper;
 
 trait SerializeAttribute
 {
-    public $serializeAttributes = [];
     private $_data = [];
 
     public function rules()
