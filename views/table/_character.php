@@ -92,7 +92,11 @@ if ($data['type'] == 'boolean') {
         echo Html::activeInput($data['type'], $model, $data['multi'] ? $name . "[{$i}]" : $name, ['id' => $id, 'class' => 'form-control'] + $params);
     }
     if ($data['multi']) {
-        echo Html::button(Yii::t('ra', 'Add value'), ['class'=>'btn btn-default pull-right', 'onclick' => '$(this).prev(":input").clone().val("").each(function(){var i=this.name.match(/\[value\]\[(\d+)\]/);this.name=this.name.replace("[value]["+i[1]+"]","[value]["+(parseInt(i[1])+1)+"]")});.insertBefore(this);']);
+        $js = <<<JS
+$(this).prev(":input").clone().val("").each(function(){var i=this.name.match(/\[value\]\[(\d+)\]/);this.name=this.name.replace("[value]["+i[1]+"]","[value]["+(parseInt(i[1])+1)+"]")}).insertBefore(this);
+JS;
+
+        echo Html::button(Yii::t('ra', 'Add value'), ['class'=>'btn btn-default pull-right', 'onclick' => trim($js)]);
     }
 }
 echo Html::endTag('div');
