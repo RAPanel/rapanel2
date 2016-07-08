@@ -36,7 +36,7 @@ class TableController extends AdminController
 
         $sort = empty($module->settings['sort']) ? SORT_ASC : SORT_DESC;
         $order = [];
-        if($module->settings['hasCategory']) $order['t.is_category']=SORT_DESC;
+        if ($module->settings['hasCategory']) $order['t.is_category'] = SORT_DESC;
         $query = $model::find()->from(['t' => $model::tableName()])->orderBy($order + ['t.lft' => $sort, 't.id' => $sort]);
         if ($model->id) $query->andWhere(['!=', 't.id', $model->id]);
         else $query->andWhere(['!=', 't.id', $module->id]);
@@ -273,5 +273,21 @@ class TableController extends AdminController
         $model = Module::findOne(RA::moduleId($id));
         $model->fixTree();
         return $this->redirect(['index', 'url' => $model->url]);
+    }
+
+    public function actionResort($id, $field = 'id', $type = SORT_ASC)
+    {
+        $model = Module::findOne(RA::moduleId($id));
+
+        $query = Page::find()
+            ->where(['and', ['module_id' => $model->id], ['is_category' => 0]])
+            ->select(['id'])
+            ->orderBy([$field => $type])
+            ->asArray();
+
+        foreach ($query->each() as $key => $row) {
+            Page::updateAll(['lft' => $key], ['id' => $row['id']]);
+
+        }
     }
 }
