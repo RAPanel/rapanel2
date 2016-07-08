@@ -30,7 +30,7 @@ $this->title = Yii::t('ra', 'Sign in now');
 
         <label class="checkbox">
                 <span class="pull-right">
-                    <a data-toggle="modal" href="<?= \yii\helpers\Url::to(['login']) ?>#myModal"> Forgot Password?</a>
+                    <a data-toggle="modal" href="<?= \yii\helpers\Url::to(['login']) ?>#myModal"><?= Yii::t('ra', 'Forgot Password?') ?></a>
                 </span>
         </label>
         <button class="btn btn-theme btn-block" href="index.html" type="submit">
