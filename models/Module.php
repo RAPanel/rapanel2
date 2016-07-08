@@ -140,15 +140,18 @@ class Module extends \yii\db\ActiveRecord
         Page::deleteAll(['module_id' => $this->id, 'status' => 9]);
 
         // Готовим список товаров в дереве
-        $data = Page::find()
+        $query = Page::find()
             ->where(['and', ['module_id' => $this->id], ['>', 'lft', 0], ['>', 'rgt', 0]])
             ->select(['id', 'parent_id', 'lft', 'rgt', 'level', 'is_category'])
             ->orderBy('lft, id DESC')
-            ->asArray()->all();
+            ->asArray();
         $items = array();
-        foreach ($data as $row) {
+        foreach ($query->each() as $row) {
             $items[(int)$row['parent_id']][] = $row;
         }
+
+        // Проводим транзакцию
+        $transaction = Yii::$app->db->beginTransaction(Transaction::READ_COMMITTED);
 
         // Объявляем ананимную функцию индексации
         $lft = 1;
@@ -176,12 +179,13 @@ class Module extends \yii\db\ActiveRecord
             ->select(['id', 'parent_id'])
             ->orderBy('lft, id DESC')
             ->asArray();
-
-        // Проводим транзакцию
-        $transaction = Yii::$app->db->beginTransaction(Transaction::READ_COMMITTED);
         // простовляем дочерность для товаров
-        foreach ($query->all() as $row)
-            Page::updateAll(['level' => $row['parent']['level'] + 1], ['id' => $row['id']]);
+        foreach ($query->each() as $row) {
+            $update = ['level' => $row['parent']['level'] + 1];
+            if (!isset($items[(int)$row['parent_id']])) $update['parent_id'] = $this->id;
+            Page::updateAll($update, ['id' => $row['id']]);
+        }
+
         // Обновляем родителя
         Page::updateAll(['parent_id' => null, 'status' => 2], ['id' => $this->id]);
         // Запускаем анонимную функцию индексации
