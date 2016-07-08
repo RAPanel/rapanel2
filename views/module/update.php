@@ -14,10 +14,13 @@ $this->params['breadcrumbs'][] = Yii::t('ra', 'Settings');
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <div><?= Html::a(Yii::t('ra', 'ReSort'), ['table/resort', 'id' => $model->id], ['class' => 'btn btn-warning pull-right']) ?></div>
     <? if (!empty($model->settings['hasCategory']) || !empty($model->settings['hasChild'])): ?>
         <div><?= Html::a(Yii::t('ra', 'Fix Tree'), ['table/fix-tree', 'id' => $model->id], ['class' => 'btn btn-danger pull-right']) ?></div>
         <div class="clearfix"></div>
     <? endif ?>
+
+
 
     <?= $this->render('_form', [
         'model' => $model,
