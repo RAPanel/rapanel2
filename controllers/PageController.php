@@ -138,7 +138,10 @@ class PageController extends Controller
     public function registerOgMetaPhoto($model)
     {
         if (method_exists($model, 'getPhotos') && $model->photos) {
-            foreach ($model->photos as $row) if ($row->type == 'social') $photo = $row;
+            foreach ($model->photos as $row){
+                var_dump($row->type);
+                if ($row->type == 'social') $photo = $row;
+            }
             if (empty($photo)) $photo = reset($model->photos);
             $this->getView()->registerMetaTag(['property' => 'og:image', 'content' => $photo->getHref('1000', true)]);
             $this->getView()->registerMetaTag(['property' => 'og:image:width', 'content' => $photo->getSizes('1000')['width']]);
