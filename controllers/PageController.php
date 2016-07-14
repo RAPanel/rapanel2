@@ -81,12 +81,15 @@ class PageController extends Controller
                         $query->andWhere(['>', 'parent_id', 0]);
                     $rows = $query->all();
                     if (isset($parent)) $rows[] = $parent;
-                    foreach ($rows as $row) {
-                        $this->getView()->params['active'][] = $row['id'];
+                    foreach ($rows as $row) if (!$model->status || $row->status) {
+                        $this->getView()->params['active'][] = $row->id;
                         $result[] = ['label' => $row->name, 'url' => $row->href];
                     }
                 }
-                $result[] = $model->name;
+                if ($model->href == Yii::$app->request->url)
+                    $result[] = $model->name;
+                else
+                    $result[] = ['label' => $model->name, 'url' => $model->href];
                 return $result;
             };
             // @todo Для удаление в следующей версии
