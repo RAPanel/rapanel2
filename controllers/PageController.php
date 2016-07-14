@@ -45,7 +45,7 @@ class PageController extends Controller
                     $this->registerMetaDescription($model);
                     $this->registerMetaKeywords($model);
                     // Registry og data
-                    if ($this->social){
+                    if ($this->social) {
                         $this->registerOgMeta($model);
                         $this->registerOgMetaPhoto($model);
                     }
@@ -123,6 +123,17 @@ class PageController extends Controller
         if (method_exists($model, 'getHref')) $this->getView()->registerMetaTag(['property' => 'og:url', 'content' => $model->getHref(1, 1)]);
     }
 
+    public function registerOgMetaPhoto($model)
+    {
+        if (method_exists($model, 'getPhotos') && $model->photos) {
+            foreach ($model->photos as $row) if ($row->type == 'social') $photo = $row;
+            if (empty($photo)) $photo = reset($model->photos);
+            $this->getView()->registerMetaTag(['property' => 'og:image', 'content' => $photo->getHref('1000', true)]);
+            $this->getView()->registerMetaTag(['property' => 'og:image:width', 'content' => $photo->getSizes('1000')['width']]);
+            $this->getView()->registerMetaTag(['property' => 'og:image:height', 'content' => $photo->getSizes('1000')['height']]);
+        }
+    }
+
     /**
      * @param $condition
      * @return Page
@@ -134,17 +145,6 @@ class PageController extends Controller
         $page = Page::find()->where($condition)->with(['pageData', 'parent', 'photo'])->one();
         if (!$condition || !$page) throw new HttpException(404, Yii::t('ra', 'Can`t find page'));
         return $page;
-    }
-
-    public function registerOgMetaPhoto($model)
-    {
-        if (method_exists($model, 'getPhotos') && $model->photos) {
-            foreach ($model->photos as $row) if ($row->type == 'social') $photo = $row;
-            if (empty($photo)) $photo = reset($model->photos);
-            $this->getView()->registerMetaTag(['property' => 'og:image', 'content' => $photo->getHref('1000', true)]);
-            $this->getView()->registerMetaTag(['property' => 'og:image:width', 'content' => $photo->getSizes('1000')['width']]);
-            $this->getView()->registerMetaTag(['property' => 'og:image:height', 'content' => $photo->getSizes('1000')['height']]);
-        }
     }
 
     public function actionCategory($url = null)
