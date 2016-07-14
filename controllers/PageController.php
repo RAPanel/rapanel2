@@ -38,28 +38,16 @@ class PageController extends Controller
         /** @var $base Page */
         if (isset($params['model'])) {
             $model = $params['model'];
-            if (method_exists($model, 'getData') && ($data = $model->getData())) {
-                if (!empty($data['title'])) $this->getView()->title = $data['title'];
+            if (method_exists($model, 'getData') && ($data = $model->data)) {
+                $this->registerMetaTitle($model);
                 if (!Yii::$app->request->isAjax) {
                     // Registry meta seo data
-                    if (!empty($data['description'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $data['description']]);
-                    elseif (!empty($model['about'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $model['about']]);
-                    elseif (!empty($data['content'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => Text::cleverStrip($data['content'], 200)]);
-
-                    if (!empty($data['keywords'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['keywords']]);
-                    elseif (!empty($data['tags'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['tags']]);
-
+                    $this->registerMetaDescription($model);
+                    $this->registerMetaKeywords($model);
                     // Registry og data
-                    if ($this->social) {
-                        $this->getView()->registerMetaTag(['property' => 'og:type', 'content' => 'website']);
-                        if (!empty($model['header'])) $this->getView()->registerMetaTag(['property' => 'og:title', 'content' => $model['header']]);
-                        if (!empty($model['about'])) $this->getView()->registerMetaTag(['property' => 'og:description', 'content' => $model['about']]);
-                        if (method_exists($model, 'getHref')) $this->getView()->registerMetaTag(['property' => 'og:url', 'content' => $model->getHref(1, 1)]);
-                        if (method_exists($model, 'getPhoto') && $model->photo) {
-                            $this->getView()->registerMetaTag(['property' => 'og:image', 'content' => $model->photo->getHref('1000', true)]);
-                            $this->getView()->registerMetaTag(['property' => 'og:image:width', 'content' => $model->photo->getSizes('1000')['width']]);
-                            $this->getView()->registerMetaTag(['property' => 'og:image:height', 'content' => $model->photo->getSizes('1000')['height']]);
-                        }
+                    if ($this->social){
+                        $this->registerOgMeta($model);
+                        $this->registerOgMetaPhoto($model);
                     }
                 }
             }
@@ -103,6 +91,38 @@ class PageController extends Controller
         return parent::render($view, $params);
     }
 
+    public function registerMetaTitle($model)
+    {
+        $data = $model->data;
+        if ($data && !empty($data['title']))
+            $this->getView()->title = $data['title'];
+
+    }
+
+    public function registerMetaDescription($model)
+    {
+        $data = $model->data;
+        if (!empty($data['description'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $data['description']]);
+        elseif (!empty($model['about'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $model['about']]);
+        elseif (!empty($data['content'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => Text::cleverStrip($data['content'], 200)]);
+
+    }
+
+    public function registerMetaKeywords($model)
+    {
+        $data = $model->data;
+        if (!empty($data['keywords'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['keywords']]);
+        elseif (!empty($data['tags'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['tags']]);
+    }
+
+    public function registerOgMeta($model)
+    {
+        $this->getView()->registerMetaTag(['property' => 'og:type', 'content' => 'website']);
+        if (!empty($model['header'])) $this->getView()->registerMetaTag(['property' => 'og:title', 'content' => $model['header']]);
+        if (!empty($model['about'])) $this->getView()->registerMetaTag(['property' => 'og:description', 'content' => $model['about']]);
+        if (method_exists($model, 'getHref')) $this->getView()->registerMetaTag(['property' => 'og:url', 'content' => $model->getHref(1, 1)]);
+    }
+
     /**
      * @param $condition
      * @return Page
@@ -114,6 +134,17 @@ class PageController extends Controller
         $page = Page::find()->where($condition)->with(['pageData', 'parent', 'photo'])->one();
         if (!$condition || !$page) throw new HttpException(404, Yii::t('ra', 'Can`t find page'));
         return $page;
+    }
+
+    public function registerOgMetaPhoto($model)
+    {
+        if (method_exists($model, 'getPhotos') && $model->photos) {
+            foreach ($model->photos as $row) if ($row->type == 'social') $photo = $row;
+            if (empty($photo)) $photo = reset($model->photos);
+            $this->getView()->registerMetaTag(['property' => 'og:image', 'content' => $photo->getHref('1000', true)]);
+            $this->getView()->registerMetaTag(['property' => 'og:image:width', 'content' => $photo->getSizes('1000')['width']]);
+            $this->getView()->registerMetaTag(['property' => 'og:image:height', 'content' => $photo->getSizes('1000')['height']]);
+        }
     }
 
     public function actionCategory($url = null)
