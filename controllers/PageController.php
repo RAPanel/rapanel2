@@ -13,6 +13,7 @@ use ra\admin\helpers\RA;
 use ra\admin\helpers\Text;
 use ra\admin\models\Page;
 use Yii;
+use yii\helpers\Url;
 use yii\web\HttpException;
 
 class PageController extends Controller
@@ -80,11 +81,12 @@ class PageController extends Controller
                     if (!RA::moduleSetting($model->module_id, 'controller'))
                         $query->andWhere(['>', 'parent_id', 0]);
                     $rows = $query->all();
-                    if (isset($parent)) $rows[] = $parent;
+                    if (isset($parent) && (!$model->status || $parent->status)) $rows[] = $parent;
                     foreach ($rows as $row) if (!$model->status || $row->status) {
                         $this->getView()->params['active'][] = $row->id;
                         $result[] = ['label' => $row->name, 'url' => $row->href];
                     }
+                    foreach ($result as $key => $row) if (Url::to($row['url']) == '/') unset($result[$key]);
                 }
                 if ($model->href == Yii::$app->request->url)
                     $result[] = $model->name;
