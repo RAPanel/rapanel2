@@ -141,7 +141,7 @@ class PageController extends Controller
             foreach ($model->photos as $row) {
                 if ($row->type == 'social') $photo = $row;
             }
-            if (empty($photo) && count($model->photos)) $photo = $model->photos[0];
+            if (empty($photo) && isset($model->photos[0])) $photo =  $model->photos[0];
         }
         if (empty($photo) && method_exists($model, 'getPhoto') && $model->photo) $photo = $model->photo;
         if (isset($photo)) {
