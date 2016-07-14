@@ -29,7 +29,7 @@ class PageController extends Controller
     public function actionShow($url)
     {
         return $this->render($this->action->id, [
-            'model' => $this->page(compact('url'))
+            'model' => $this->getPage(compact('url'))
         ]);
     }
 
@@ -91,6 +91,9 @@ class PageController extends Controller
         return parent::render($view, $params);
     }
 
+    /**
+     * @param $model Page
+     */
     public function registerMetaTitle($model)
     {
         $data = $model->data;
@@ -99,6 +102,9 @@ class PageController extends Controller
 
     }
 
+    /**
+     * @param $model Page
+     */
     public function registerMetaDescription($model)
     {
         $data = $model->data;
@@ -115,14 +121,20 @@ class PageController extends Controller
         elseif (!empty($data['tags'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $data['tags']]);
     }
 
+    /**
+     * @param $model Page
+     */
     public function registerOgMeta($model)
     {
-        $this->getView()->registerMetaTag(['property' => 'og:type', 'content' => 'website']);
+        $this->getView()->registerMetaTag(['property' => 'og:type', 'content' => $model->is_category ? 'website' : 'article']);
         if (!empty($model['header'])) $this->getView()->registerMetaTag(['property' => 'og:title', 'content' => $model['header']]);
         if (!empty($model['about'])) $this->getView()->registerMetaTag(['property' => 'og:description', 'content' => $model['about']]);
         if (method_exists($model, 'getHref')) $this->getView()->registerMetaTag(['property' => 'og:url', 'content' => $model->getHref(1, 1)]);
     }
 
+    /**
+     * @param $model Page
+     */
     public function registerOgMetaPhoto($model)
     {
         if (method_exists($model, 'getPhotos') && $model->photos) {
@@ -139,7 +151,7 @@ class PageController extends Controller
      * @return Page
      * @throws HttpException
      */
-    public function page($condition)
+    public function getPage($condition)
     {
         /** @var Page $class */
         $page = Page::find()->where($condition)->with(['pageData', 'parent', 'photo'])->one();
