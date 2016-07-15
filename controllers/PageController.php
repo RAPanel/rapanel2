@@ -36,7 +36,7 @@ class PageController extends Controller
     public function render($view, $params = [])
     {
         /** @var $base Page */
-        if (isset($params['model'])) {
+        if (isset($params['model']) && $params['model'] instanceof \ra\admin\models\Page) {
             $model = $params['model'];
             if (method_exists($model, 'getData') && ($data = $model->data)) {
                 $this->registerMetaTitle($model);
