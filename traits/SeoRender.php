@@ -93,16 +93,16 @@ trait SeoRender
      */
     public function registerMetaDescription($model)
     {
-        if (!empty($model->data['description'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $model->data['description']]);
-        elseif (!empty($model['about'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $model['about']]);
-        elseif (!empty($model->data['content'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => Text::cleverStrip($model->data['content'], 200)]);
+        if (!empty($model->data['description'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $model->data['description']], 'mainDescription');
+        elseif (!empty($model['about'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $model['about']], 'mainDescription');
+        elseif (!empty($model->data['content'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => Text::cleverStrip($model->data['content'], 200)], 'mainDescription');
 
     }
 
     public function registerMetaKeywords($model)
     {
-        if (!empty($model->data['keywords'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $model->data['keywords']]);
-        elseif (!empty($model->data['tags'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $model->data['tags']]);
+        if (!empty($model->data['keywords'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $model->data['keywords']], 'mainKeywords');
+        elseif (!empty($model->data['tags'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $model->data['tags']], 'mainKeywords');
     }
 
     /**
