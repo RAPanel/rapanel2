@@ -89,11 +89,6 @@ class Form extends \yii\db\ActiveRecord
         return implode(PHP_EOL, $result);
     }
 
-    public function getSpamAttribute()
-    {
-        return 'controlUserNameExist';
-    }
-
     /** for delete in future */
     public function contact($email = null)
     {
@@ -156,6 +151,11 @@ class Form extends \yii\db\ActiveRecord
     public function getIsSpam()
     {
         return (bool)Yii::$app->request->post($this->getSpamAttribute());
+    }
+
+    public function getSpamAttribute()
+    {
+        return 'controlUserNameExist';
     }
 
     /**
