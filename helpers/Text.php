@@ -153,4 +153,18 @@ class Text
         }
         return preg_replace("/\s{2,}/", ' ', implode(' ', $o));
     }
+
+    function strtoupperFirst($str, $encoding = 'UTF8')
+    {
+        return
+            mb_strtoupper(mb_substr($str, 0, 1, $encoding), $encoding) .
+            mb_substr($str, 1, mb_strlen($str, $encoding), $encoding);
+    }
+
+    function strtolowerFirst($str, $encoding = 'UTF8')
+    {
+        return
+            mb_strtolower(mb_substr($str, 0, 1, $encoding), $encoding) .
+            mb_substr($str, 1, mb_strlen($str, $encoding), $encoding);
+    }
 }
