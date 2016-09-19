@@ -44,6 +44,8 @@ class ShoppingCart extends Component
         $item->price = $model->getPrice(0);
         $item->quantity = $add ? ($item->quantity + $quantity) : $quantity;
         $item->save(false);
+
+        Yii::$app->session->set('updateCart', $model->getId());
     }
 
     /**
@@ -111,5 +113,7 @@ class ShoppingCart extends Component
         }
         $this->_items = false;
         $transaction->commit();
+
+        Yii::$app->session->set('lastOrderId', $order_id);
     }
 }
