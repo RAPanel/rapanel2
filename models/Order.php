@@ -35,6 +35,7 @@ class Order extends \yii\db\ActiveRecord
     {
         $this->on(self::EVENT_AFTER_INSERT, function ($event) {
             Yii::$app->cart->toOrder($event->sender->id);
+            Yii::$app->session->set('lastOrderId', $event->sender->id);
 
             Yii::$app->mailer->compose()
                 ->setTo(explode(',', Yii::$app->params['adminEmail']))

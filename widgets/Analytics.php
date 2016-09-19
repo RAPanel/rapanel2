@@ -85,7 +85,7 @@ class Analytics extends \yii\base\Widget
 
     public function addEvent($event)
     {
-        if ($this->ya) Yii::$app->view->registerJs("window['yaCounter{$this->ya}'].reachGoal({$event});", View::POS_END);
-        if ($this->ga) Yii::$app->view->registerJs("window[window.GoogleAnalyticsObject]('send', 'event', 'siteLog', {$event});", View::POS_READY);
+        if ($this->ya) Yii::$app->view->registerJs("window['yaCounter{$this->ya}'].reachGoal('{$event}');", View::POS_END);
+        if ($this->ga) Yii::$app->view->registerJs("ga('send', 'event', 'siteLog', '{$event}');", View::POS_READY);
     }
 }
