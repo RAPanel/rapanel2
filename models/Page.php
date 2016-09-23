@@ -295,7 +295,7 @@ class Page extends \yii\db\ActiveRecord
                 $result = $row->value;
                 if (RA::character($row->character_id, 'type') == 'dropdown' && $row->reference)
                     $result = $row->reference->value;
-                elseif (RA::character($row->character_id, 'type') == 'extend' )
+                elseif (RA::character($row->character_id, 'type') == 'extend')
                     $result = is_array($result) ? $this::findAll(array_diff($result, ['', null, false])) : $this::findOne($result);
                 $this->_characters[RA::character($row->character_id)] = $result;
             }
@@ -395,5 +395,10 @@ class Page extends \yii\db\ActiveRecord
     public function getCreated()
     {
         return Yii::$app->formatter->asDate($this->created_at);
+    }
+
+    public function setModule($data)
+    {
+        if ($data && is_string($data) || is_numeric($data)) $this->module_id = RA::moduleId($data);
     }
 }
