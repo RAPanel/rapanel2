@@ -68,16 +68,16 @@ class Analytics extends \yii\base\Widget
                 $itemString = '';
                 foreach ($items as $item) {
                     $item['id'] = $order->id;
-                    $itemString .= "ga('ecommerce:addItem', " . yii\helpers\Json::encode($item) . ");";
+                    $itemString .= "window['ga']('ecommerce:addItem', " . yii\helpers\Json::encode($item) . ");";
                 }
 
-                Yii::$app->view->registerJs("ga('require', 'ecommerce');ga('ecommerce:addTransaction', " . yii\helpers\Json::encode([
+                Yii::$app->view->registerJs("window['ga']('require', 'ecommerce');window['ga']('ecommerce:addTransaction', " . yii\helpers\Json::encode([
                         'order_id' => $order->id,
                         'affiliation' => Yii::$app->name,
                         'revenue' => $order->getTotal(),
                         'shipping' => 0,
                         'tax' => 0,
-                    ]) . ");{$itemString}ga('ecommerce:send');", View::POS_READY);
+                    ]) . ");{$itemString}window['ga']('ecommerce:send');", View::POS_READY);
             }
         }
         Yii::$app->session->set('lastOrderId', null);
@@ -85,7 +85,7 @@ class Analytics extends \yii\base\Widget
 
     public function addEvent($event)
     {
-        if ($this->ya) Yii::$app->view->registerJs("window['yaCounter{$this->ya}'].reachGoal('{$event}');", View::POS_END);
-        if ($this->ga) Yii::$app->view->registerJs("ga('send', 'event', 'siteLog', '{$event}');", View::POS_READY);
+        if ($this->ya) Yii::$app->view->registerJs("window['yaCounter{$this->ya}'].reachGoal('{$event}');", View::POS_READY);
+        if ($this->ga) Yii::$app->view->registerJs("window['ga']('send', 'event', 'siteLog', '{$event}');", View::POS_READY);
     }
 }
