@@ -192,4 +192,16 @@ class Form extends \yii\db\ActiveRecord
             }
         }
     }
+
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => '\yii\behaviors\TimestampBehavior',
+                'value' => function () {
+                    return date("Y-m-d H:i:s");
+                },
+            ],
+        ];
+    }
 }
