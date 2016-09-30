@@ -279,7 +279,7 @@ class Page extends \yii\db\ActiveRecord
     public function getCharacter($url)
     {
         if ($this->isRelationPopulated($relation = 'character' . ucfirst($url)))
-            return $this->{$relation} ? $this->{$relation}->value : null;
+            return $this->relatedRecords[$relation] ? $this->relatedRecords[$relation]->value : null;
         $characters = $this->getCharacters();
         return isset($characters[$url]) ? $characters[$url] : null;
     }
