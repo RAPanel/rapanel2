@@ -149,7 +149,9 @@ trait PageEdit
 
     public function __get($name)
     {
-        if (strpos($name, '.')) {
+        if (preg_match('#^character([\w\d]+)$#', $name, $match) && ($id = \Yii::$app->ra->getCharacterId(lcfirst($match[1])))) {
+            return $this->getCharacter(lcfirst($match[1]));
+        } elseif (strpos($name, '.')) {
             $data = $this;
             foreach (explode('.', $name) as $key)
                 $data = isset($data[$key]) ? $data[$key] : null;
@@ -160,7 +162,11 @@ trait PageEdit
 
     public function __set($name, $value)
     {
-        if (strpos($name, '.')) {
+        if (preg_match('#^character([\w\d]+)$#', $name, $match) && ($id = \Yii::$app->ra->getCharacterId(lcfirst($match[1])))) {
+            $characters = $this->getCharacters();
+            $characters[lcfirst($match[1])] = $value;
+            $this->setCharacters($characters);
+        } elseif (strpos($name, '.')) {
             $keys = explode('.', $name);
             $data = array_shift($keys);
             foreach (array_reverse($keys) as $key)
@@ -169,5 +175,14 @@ trait PageEdit
 
         } else
             parent::__set($name, $value);
+    }
+
+    public function rules()
+    {
+        $rules = parent::rules();
+        $rules[] = [array_values(array_map(function ($value) {
+            return 'character' . ucfirst($value);
+        }, \Yii::$app->ra->getCharacters())), 'safe'];
+        return $rules;
     }
 }
