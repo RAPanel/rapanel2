@@ -34,22 +34,24 @@ class Order extends \yii\db\ActiveRecord
     public function init()
     {
         $this->on(self::EVENT_AFTER_INSERT, function ($event) {
-            Yii::$app->cart->toOrder($event->sender->id);
-            Yii::$app->session->set('lastOrderId', $event->sender->id);
+            if(Yii::$app->has('cart')) Yii::$app->cart->toOrder($event->sender->id);
+            if(Yii::$app->has('session')) Yii::$app->session->set('lastOrderId', $event->sender->id);
 
-            Yii::$app->mailer->compose()
-                ->setTo(explode(',', Yii::$app->params['adminEmail']))
-                ->setFrom([Yii::$app->params['fromEmail'] ?: 'no-reply@' . Yii::$app->request->hostInfo => Yii::$app->name])
-                ->setSubject("Новый заказ №{$this->id}")
-                ->setHtmlBody($event->sender->getBody(true))
-                ->send();
+            if(Yii::$app->has('mailer')){
+                Yii::$app->mailer->compose()
+                    ->setTo(explode(',', Yii::$app->params['adminEmail']))
+                    ->setFrom([Yii::$app->params['fromEmail'] ?: 'no-reply@' . Yii::$app->request->hostInfo => Yii::$app->name])
+                    ->setSubject("Новый заказ №{$this->id}")
+                    ->setHtmlBody($event->sender->getBody(true))
+                    ->send();
 
-            if (!empty($event->sender->email)) Yii::$app->mailer->compose()
-                ->setTo($event->sender->email)
-                ->setFrom([Yii::$app->params['fromEmail'] ?: 'no-reply@' . Yii::$app->request->hostInfo => Yii::$app->name])
-                ->setSubject("Заказ №{$this->id}")
-                ->setHtmlBody($event->sender->getBody(false))
-                ->send();
+                if (!empty($event->sender->email)) Yii::$app->mailer->compose()
+                    ->setTo($event->sender->email)
+                    ->setFrom([Yii::$app->params['fromEmail'] ?: 'no-reply@' . Yii::$app->request->hostInfo => Yii::$app->name])
+                    ->setSubject("Заказ №{$this->id}")
+                    ->setHtmlBody($event->sender->getBody(false))
+                    ->send();
+            }
         });
         parent::init();
     }
@@ -104,7 +106,7 @@ class Order extends \yii\db\ActiveRecord
             [['updated_at', 'created_at'], 'safe'],
             [['session_id'], 'string', 'max' => 32],
             [['name', 'phone'], 'required'],
-            [['session_id'], 'default', 'value' => Yii::$app->cart->getSessionId()],
+            [['session_id'], 'default', 'value' => Yii::$app->has('session') ? Yii::$app->session->getId() : ''],
             [['email'], 'email'],
             [$this->serializeAttributes, 'safe'],
         ];
