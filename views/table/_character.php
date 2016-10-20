@@ -31,9 +31,6 @@ if ($data['type'] == 'boolean') {
     echo Html::activeTextarea($model, $name, ['id' => $id, 'class' => 'form-control']);
 } elseif ($data['type'] == 'extend') {
     echo Html::label($label, $id);
-    $filter = [];
-    foreach ($data['filter'] as $key => $row)
-        if ($row && is_numeric($row) && in_array($key, $model->attributes)) $filter[$key] = $row - 1;
     echo \ra\admin\widgets\chosen\Chosen::widget([
         'id' => $id,
         'model' => $model,
