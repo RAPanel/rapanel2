@@ -46,7 +46,7 @@ if ($data['type'] == 'boolean') {
         ],
         'multiple' => $data['multi'],
     ]);
-}elseif ($data['type'] == 'extend') {
+} elseif ($data['type'] == 'extend') {
     echo Html::label($label, $id);
     $filter = [];
     foreach ($data['filter'] as $key => $row)
@@ -92,7 +92,7 @@ if ($data['type'] == 'boolean') {
     }
     echo Html::endTag('table');
     if ($data['multi']) {
-        echo Html::button(Yii::t('ra', 'Add value'), ['class'=>'btn btn-default pull-right', 'onclick' => 'var tr=$(this).prev("table").find("tr:last");tr.clone().insertAfter(tr).find(":input").val("").each(function(){var i=this.name.match(/\[value\]\[(\d+)\]/);this.name=this.name.replace("[value]["+i[1]+"]","[value]["+(parseInt(i[1])+1)+"]")});']);
+        echo Html::button(Yii::t('ra', 'Add value'), ['class' => 'btn btn-default pull-right', 'onclick' => 'var tr=$(this).prev("table").find("tr:last");tr.clone().insertAfter(tr).find(":input").val("").each(function(){var i=this.name.match(/\[value\]\[(\d+)\]/);this.name=this.name.replace("[value]["+i[1]+"]","[value]["+(parseInt(i[1])+1)+"]")});']);
     }
 } else {
     $params = [];
@@ -105,7 +105,7 @@ if ($data['type'] == 'boolean') {
     }
     echo Html::label($label, $id);
     $value = Html::getAttributeValue($model, $name);
-    foreach (is_array($value) ? $value : [$value?:'0'] as $i => $row) if ($row!==false) {
+    foreach (is_array($value) ? $value : [$value ?: '0'] as $i => $row) if ($row !== false) {
         echo Html::activeInput($data['type'], $model, $data['multi'] ? $name . "[{$i}]" : $name, ['id' => $id, 'class' => 'form-control'] + $params);
     }
     if ($data['multi']) {
@@ -113,7 +113,7 @@ if ($data['type'] == 'boolean') {
 $(this).prev(":input").clone().val("").each(function(){var i=this.name.match(/\[value\]\[(\d+)\]/);this.name=this.name.replace("[value]["+i[1]+"]","[value]["+(parseInt(i[1])+1)+"]")}).insertBefore(this);
 JS;
 
-        echo Html::button(Yii::t('ra', 'Add value'), ['class'=>'btn btn-default pull-right', 'onclick' => trim($js)]);
+        echo Html::button(Yii::t('ra', 'Add value'), ['class' => 'btn btn-default pull-right', 'onclick' => trim($js)]);
     }
 }
 echo Html::endTag('div');

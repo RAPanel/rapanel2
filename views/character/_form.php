@@ -25,6 +25,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->errorSummary($model) ?>
 
+    <?= $form->field($model, 'data')->hiddenInput(['value' => ''])->label(false) ?>
+
     <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'value' => $model->getName()]) ?>
 
     <? if (!$model->isNewRecord) echo $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
@@ -62,9 +64,9 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'filter[unit]')->textInput(['disabled' => $disable])->label('Еденица измерения') ?>
         </div>
         <div class="col-md-8">
-            <? if(!empty($model->filter['column'])) foreach($model->filter['column'] as $i => $column) if(trim($column))
-                echo Html::activeTextInput($model, 'filter[column]['.$i.']', ['class' => 'form-control', 'value'=>$column]); ?>
-            <?= Html::activeTextInput($model, 'filter[column][]', ['class' => 'form-control', 'value'=>'']); ?>
+            <? if (!empty($model->filter['column'])) foreach ($model->filter['column'] as $i => $column) if (trim($column))
+                echo Html::activeTextInput($model, 'filter[column][' . $i . ']', ['class' => 'form-control', 'value' => $column]); ?>
+            <?= Html::activeTextInput($model, 'filter[column][]', ['class' => 'form-control', 'value' => '']); ?>
             <?= Html::button('add', ['onclick' => '$(this).prev(":input").clone().val("").insertBefore(this);']); ?>
         </div>
     </div>
