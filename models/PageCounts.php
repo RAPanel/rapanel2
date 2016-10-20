@@ -28,7 +28,7 @@ class PageCounts extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['page_id', 'views', 'likes', 'comments'], 'required'],
+            [['page_id'], 'required'],
             [['page_id', 'views', 'likes', 'comments'], 'integer']
         ];
     }
