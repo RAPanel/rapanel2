@@ -72,7 +72,7 @@ class Analytics extends \yii\base\Widget
                 }
 
                 Yii::$app->view->registerJs("window['ga']('require', 'ecommerce');window['ga']('ecommerce:addTransaction', " . yii\helpers\Json::encode([
-                        'order_id' => $order->id,
+                        'id' => $order->id,
                         'affiliation' => Yii::$app->name,
                         'revenue' => $order->getTotal(),
                         'shipping' => 0,
