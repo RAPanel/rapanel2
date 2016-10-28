@@ -24,6 +24,10 @@ class AuthManager implements ManagerInterface
 
     }
 
+    public function getChildRoles($roleName){
+
+    }
+
     /**
      * Checks if the user has the specified permission.
      * @param string|integer $userId the user ID. This should be either an integer or a string representing
