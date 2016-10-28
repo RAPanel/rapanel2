@@ -45,6 +45,11 @@ class Photo extends \yii\db\ActiveRecord
         preg_match('#.\w{1,4}$#', basename($file), $ext);
         $filename = preg_replace('#.\w{1,4}$#', '', basename($file));
         $newFile = Yii::getAlias('@app/../' . self::$tmpPath . '/') . strtolower(Inflector::slug($filename) . $ext[0]);
+        if (is_string($options)) $options = ['model' => $options];
+
+        //@todo переписать алгоритм сравнения
+        if ($model = Photo::find()->where(['name' => basename($file), 'owner_id' => $owner_id])->andWhere($options)->one())
+            return $model;
 
         if (file_exists($newFile)) {
             $existFile = $newFile;
@@ -73,7 +78,6 @@ class Photo extends \yii\db\ActiveRecord
         $name = basename($file);
 
         if (empty($model)) $model = new self;
-        if (is_string($options)) $options = ['model' => $options];
         $model->setAttributes(compact('owner_id', 'name', 'width', 'height', 'about', 'hash') + $options);
 
         if ($model->save())
