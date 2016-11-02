@@ -21,6 +21,7 @@ return [
 //            'showScriptName' => false,
             'rules' => [
                 '<m_:rapanel>/<a_:auth>/<authclient>' => '<m_>/default/<a_>',
+                '<m_:rapanel>/<a_:(login|logout|success)>' => '<m_>/default/<a_>',
                 '<m_:rapanel>' => '<m_>/default/index',
             ],
         ],

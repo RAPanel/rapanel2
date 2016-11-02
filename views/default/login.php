@@ -18,6 +18,7 @@ $this->title = Yii::t('ra', 'Sign in now');
 
     <?php $form = ActiveForm::begin([
         'id' => 'login-form',
+        'action' => ['login', 'back'=>Yii::$app->request->get('back', \Yii::$app->request->referrer)],
         'options' => ['class' => 'form-login'],
     ]); ?>
 

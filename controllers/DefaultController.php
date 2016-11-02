@@ -54,14 +54,14 @@ class DefaultController extends AdminController
     /**
      * Display login page
      */
-    public function actionLogin()
+    public function actionLogin($back = ['rapanel/default/index'])
     {
         $this->layout = 'lock';
 
         $model = new LoginForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->login(RA::config('user')['loginDuration'])) {
-            return $this->goBack(['rapanel/default/index']);
+            return $this->goBack($back);
         }
 
         return $this->render('login', [
