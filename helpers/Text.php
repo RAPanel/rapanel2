@@ -110,7 +110,7 @@ class Text
 
         if ((int)$rub == 0) { // если 0 рублей
             $o[] = $nol;
-            $o[] = self::morph(0, $forms[1][0], $forms[1][1], $forms[1][2]);
+            $o[] = self::numeric(0, [$forms[1][0], $forms[1][1], $forms[1][2]]);
         } else {
             foreach ($segments as $k => $lev) {
                 $sexi = (int)$forms[$offset][3]; // определяем род
@@ -140,7 +140,7 @@ class Text
                 }
 
                 // Рубли
-                $o[] = self::morph($ri, $forms[$offset][0], $forms[$offset][1], $forms[$offset][2]);
+                $o[] = self::numeric($ri, [$forms[$offset][0], $forms[$offset][1], $forms[$offset][2]]);
                 $offset--;
             }
 
@@ -149,7 +149,7 @@ class Text
         // Копейки
         if (!$stripkop) {
             $o[] = $kop;
-            $o[] = self::morph($kop, $forms[0][0], $forms[0][1], $forms[0][2]);
+            $o[] = self::numeric($kop, [$forms[0][0], $forms[0][1], $forms[0][2]]);
         }
         return preg_replace("/\s{2,}/", ' ', implode(' ', $o));
     }
