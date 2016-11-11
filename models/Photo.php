@@ -40,7 +40,7 @@ class Photo extends \yii\db\ActiveRecord
         return '{{%photo}}';
     }
 
-    public static function add($file, $about, $owner_id, $options)
+    public static function add($file, $about, $owner_id, $options, $delete = true)
     {
         preg_match('#.\w{1,4}$#', basename($file), $ext);
         $filename = preg_replace('#.\w{1,4}$#', '', basename($file));
@@ -48,12 +48,12 @@ class Photo extends \yii\db\ActiveRecord
         if (is_string($options)) $options = ['model' => $options];
 
         //@todo переписать алгоритм сравнения
-        if ($model = Photo::find()->where(['name' => basename($file), 'owner_id' => $owner_id])->andWhere($options)->one())
+        if ($model = self::findOne(['and', ['owner_id' => $owner_id] + $options, ['or', ['name' => basename($newFile)], ['hash' => md5_file($file)]]]))
             return $model;
 
         if (file_exists($newFile)) {
             $existFile = $newFile;
-            $newFile = str_replace(basename($existFile), uniqid() . '-' . basename($file), $existFile);
+            $newFile = str_replace(basename($existFile), uniqid() . '-' . basename($existFile), $existFile);
         } else
             FileHelper::createDirectory(dirname($newFile));
 
@@ -62,13 +62,10 @@ class Photo extends \yii\db\ActiveRecord
             'png_compression_level' => 9,
         ])
         ) {
-            if(file_exists($file)) unlink($file);
+            if ($delete && file_exists($file)) unlink($file);
             if (isset($existFile) && md5_file($existFile) == md5_file($newFile)) {
-                $file = $existFile;
-                unlink($existFile);
-                copy($newFile, $existFile);
                 unlink($newFile);
-                $model = self::findOne(['name' => basename($file), 'owner_id' => $owner_id]);
+                $file = $existFile;
             } else
                 $file = $newFile;
         }
@@ -77,6 +74,7 @@ class Photo extends \yii\db\ActiveRecord
         $hash = md5_file($file);
         $name = basename($file);
 
+        $model = self::findOne(['and', ['owner_id' => $owner_id] + $options, ['or', ['name' => basename($file)], ['hash' => $hash]]]);
         if (empty($model)) $model = new self;
         $model->setAttributes(compact('owner_id', 'name', 'width', 'height', 'about', 'hash') + $options);
 
