@@ -17,6 +17,8 @@ class AdminModule extends \yii\base\Module
 
     public function init()
     {
+        Yii::$app->formatter->dateFormat = 'dd:MM:yyyy';
+
         $this->module->layout = '@ra/admin/views/layouts/main.php';
 
         // импорт всех файлов конфигураций

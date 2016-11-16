@@ -68,26 +68,20 @@ $config = [
             'timeout' => 3600 * 24 * 30,
             'useCookies' => true,
         ],
+        'log' => [
+            'traceLevel' => 0,
+            'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error', 'warning'],
+                ],
+            ],
+        ],
     ],
     'params' => [
         'adminEmail' => 'webmaster@rere-design.ru',
         'fromEmail' => $email,
     ],
 ];
-
-if (YII_ENV_DEV) {
-    $allowedIPs = ['192.168.1.*', '78.159.225.99', '10.*.*.*'];
-    // configuration adjustments for 'dev' environment
-    $config['bootstrap'][] = 'debug';
-    $config['bootstrap'][] = 'gii';
-    $config['modules']['debug'] = [
-        'class' => 'yii\debug\Module',
-        'allowedIPs' => $allowedIPs,
-    ];
-    $config['modules']['gii'] = [
-        'class' => 'yii\gii\Module',
-        'allowedIPs' => $allowedIPs,
-    ];
-}
 
 return $config;

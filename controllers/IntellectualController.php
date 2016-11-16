@@ -16,15 +16,16 @@ class IntellectualController extends Controller
 {
     public function goBack($defaultUrl = null)
     {
-        $defaultUrl = \Yii::$app->request->url;
+        if (\Yii::$app->request->isAjax) return true;
+        $defaultUrl = \Yii::$app->request->referrer;
         return $this->redirect($defaultUrl);
     }
 
-    public function actionDebug()
+    /*public function actionDebug()
     {
-        $_COOKIE['debug'] = $_SESSION['debug'] = true;
+        VarDumper::dump($_COOKIE,10,1);die;
         return $this->goBack();
-    }
+    }*/
 
     public function actionCache()
     {
@@ -33,16 +34,20 @@ class IntellectualController extends Controller
         return $this->goBack();
     }
 
-    public function actionEdit()
+    public function actionEdit($iframe = false)
     {
-        $get = \Yii::$app->urlManager->parseRequest(new Request(['url' => \Yii::$app->request->url]));
-        if (!empty($get['id'])) $model = Page::findOne($get['id']);
-        if (!empty($get['url'])) $model = Page::findOne(['url' => $get['url']]);
-        if(isset($model)) {
-            $c = new TableController('table', $this->module);
-            return $c->actionUpdate($model->id);
+        $url = str_replace(\Yii::$app->request->hostInfo, '', \Yii::$app->request->referrer);
+        $get = \Yii::$app->urlManager->parseRequest(new Request(['url' => $url]));
+        if (isset($get[1])) {
+            $get = $get[1];
+            if ($url) $model = Page::findOne(['url' => $url]);
+            if (empty($model) && !empty($get['id'])) $model = Page::findOne($get['id']);
+            if (empty($model) && !empty($get['url'])) $model = Page::findOne(['url' => $get['url']]);
+            if (isset($model)) {
+                return $this->redirect(['table/update', 'id' => $model->id, 'iframe' => $iframe]);
+            }
         }
-        return false;
+        return $this->renderContent('Page can not be edit');
     }
 
     public function actionLogout()

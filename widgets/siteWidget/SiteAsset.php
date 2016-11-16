@@ -24,7 +24,7 @@ class SiteAsset extends AssetBundle
 
     public $js = [
         'admin.js',
-        'main.min.js',
+        'main.js',
         'svg4everybody.min.js',
     ];
 

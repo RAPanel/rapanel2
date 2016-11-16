@@ -18,6 +18,7 @@ use yii\base\BootstrapInterface;
 use yii\base\Component;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
+use yii\web\Application;
 use yii\web\HttpException;
 
 class RAComponent extends Component implements BootstrapInterface
@@ -30,25 +31,41 @@ class RAComponent extends Component implements BootstrapInterface
 
     public function bootstrap($app)
     {
+        if(Yii::$app->user->can('admin'))
+            defined('YII_DEBUG') or define('YII_DEBUG', !empty($_COOKIE['debug']));
+
+        if (YII_DEBUG) {
+            error_reporting(E_ALL);
+            ini_set('display_errors', true);
+            ini_set('display_startup_errors', true);
+            ini_set('html_errors', true);
+        }
+
         // Configure app
         $this->configure($app, 'default', false);
         foreach ($this->configList as $config)
             $this->configure($app, $config);
+
         if (Yii::$app->request->cookies->getValue('canAdmin'))
-            SiteAsset::register(Yii::$app->view);
+            $app->on(Application::EVENT_BEFORE_REQUEST, function () use ($app) {
+                SiteAsset::register(Yii::$app->view);
+            });
 
         // Import params
         $app->params = $this->getParams();
 
         return true;
+
     }
 
     public function configure($app, $name, $priority = true)
     {
-        $file = Yii::getAlias('@ra/admin/config/' . $name . '.php');
-        if (!file_exists($file))
-            throw new HttpException(400, Yii::t('ra', 'Can`t find file "{file}"', ['file' => $file]));
-        $data = require(Yii::getAlias('@ra/admin/config/' . $name . '.php'));
+        if (is_string($name)) {
+            $file = Yii::getAlias('@ra/admin/config/' . $name . '.php');
+            if (!file_exists($file))
+                throw new HttpException(400, Yii::t('ra', 'Can`t find file "{file}"', ['file' => $file]));
+            $data = require(Yii::getAlias('@ra/admin/config/' . $name . '.php'));
+        } else $data = $name;
         foreach ($data as $key => $value)
             if ($key == 'aliases') {
                 $app->setAliases($value);

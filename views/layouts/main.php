@@ -12,6 +12,8 @@ AppAsset::register($this);
 
 if (!in_array($this->context->module->id, ['rapanel']))
     die($content);
+
+$iframe = Yii::$app->request->get('iframe');
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -74,17 +76,21 @@ if (!in_array($this->context->module->id, ['rapanel']))
 </style>
 <?php $this->beginBody() ?>
 
+<?if(!$iframe):?>
+
 <? require(__DIR__ . '/_header.php') ?>
 
 <? require(__DIR__ . '/_aside.php') ?>
 
-<main id="main-content">
-    <section class="wrapper">
+<?endif?>
+
+<main id="<?= $iframe?'':'main-content' ?>">
+    <section class="<?= $iframe?'':'wrapper' ?>">
         <div class="row">
 
             <?php // \yii\widgets\Pjax::begin(['timeout' => 3000, 'id' => 'pjax-admin-content']); ?>
 
-            <?= Breadcrumbs::widget([
+            <? if(!$iframe) echo  Breadcrumbs::widget([
                 'options' => [
                     'class' => 'breadcrumb',
                     'style' => 'margin-bottom: 0;',

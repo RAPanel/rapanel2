@@ -36,6 +36,9 @@ $config = [
         'authManager' => [
             'class' => 'ra\admin\components\AuthManager',
         ],
+        'session' => [
+            'class' => 'yii\web\DbSession',
+        ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             'useFileTransport' => false,
@@ -44,19 +47,28 @@ $config = [
                 'charset' => 'UTF-8',
             ],
         ],
-        'log' => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
-                [
-                    'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
-        ],
-        'session' => [
-            'class' => 'yii\web\DbSession',
-        ],
     ],
 ];
+
+if (YII_ENV_DEV) {
+    // configuration adjustments for 'dev' environment
+    $config['bootstrap'][] = 'gii';
+    $config['modules']['gii'] = [
+        'class' => 'yii\gii\Module',
+        'allowedIPs' => ['192.168.*.*', '78.159.225.99'],
+    ];
+}
+
+if(YII_DEBUG){
+    $config['bootstrap'][] = 'debug';
+    $config['modules']['debug'] = [
+        'class' => 'yii\debug\Module',
+        'allowedIPs' => ['192.168.*.*', '78.159.225.99'],
+    ];
+
+    $config['components']['assetManager']['forceCopy'] = true;
+    $config['components']['log']['traceLevel'] = 3;
+    $config['components']['cache']['class'] = '\yii\caching\DummyCache';
+}
 
 return $config;
