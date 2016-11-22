@@ -9,9 +9,11 @@
 namespace ra\admin\controllers;
 
 
+use ra\admin\models\PageData;
 use ra\admin\models\Photo;
 use Yii;
 use yii\helpers\FileHelper;
+use yii\helpers\VarDumper;
 
 class ClearController extends AdminController
 {
@@ -69,5 +71,28 @@ class ClearController extends AdminController
         if ($back && !Yii::$app->request->isAjax)
             return $this->back($back);
         return true;
+    }
+
+    public function actionSeo()
+    {
+        $data = [
+            'title' => PageData::find()->joinWith('page', false)->where(['and', ['!=', 'title', ''], ['or', 'title=header', 'title=name']]),
+            'description' => PageData::find()->joinWith('page', false)->where(['and', ['!=', 'description', ''], 'description=about']),
+            'keywords' => PageData::find()->where(['and', ['!=', 'keywords', ''], 'keywords=tags']),
+        ];
+        $result = [];
+        foreach ($data as $key => $query) {
+            $transaction = Yii::$app->db->beginTransaction();
+            if (empty($result[$key])) $result[$key] = 0;
+            foreach ($query->each() as $model) {
+                $model->{$key} = '';
+                $model->save(false, [$key]);
+
+                $result[$key]++;
+            }
+            $transaction->commit();
+        }
+        return VarDumper::dumpAsString($result, 10, 1);
+
     }
 }

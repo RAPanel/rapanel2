@@ -5,7 +5,9 @@ use ra\admin\helpers\RA;
 use ra\admin\helpers\Text;
 use ra\admin\models\Page;
 use Yii;
+use yii\base\Event;
 use yii\helpers\Url;
+use yii\web\View;
 
 /**
  * Created by PhpStorm.
@@ -25,15 +27,15 @@ trait SeoRender
         if (isset($params['model']) && $params['model'] instanceof \ra\admin\models\Page) {
             $model = $params['model'];
             if (method_exists($model, 'getData') && ($data = $model->data)) {
-                $this->registerMetaTitle($model);
                 if (!Yii::$app->request->isAjax) {
                     // Registry meta seo data
-                    $this->registerMetaDescription($model);
-                    $this->registerMetaKeywords($model);
+                    $this->getView()->on(View::EVENT_AFTER_RENDER, [$this, 'registerMetaTitle'], $model);
+                    $this->getView()->on(View::EVENT_AFTER_RENDER, [$this, 'registerMetaDescription'], $model);
+                    $this->getView()->on(View::EVENT_AFTER_RENDER, [$this, 'registerMetaKeywords'], $model);
                     // Registry og data
                     if ($this->social) {
-                        $this->registerOgMeta($model);
-                        $this->registerOgMetaPhoto($model);
+                        $this->getView()->on(View::EVENT_AFTER_RENDER, [$this, 'registerOgMeta'], $model);
+                        $this->getView()->on(View::EVENT_AFTER_RENDER, [$this, 'registerOgMetaPhoto'], $model);
                     }
                 }
             }
@@ -78,49 +80,93 @@ trait SeoRender
     }
 
     /**
-     * @param $model Page
+     * @param $event Event
      */
-    public function registerMetaTitle($model)
+    public function registerMetaTitle($event)
     {
-        if (!$this->getView()->title || $this->forceMeta)
-            if (!empty($model->data['title'])) $this->getView()->title = $model->data['title'];
-            elseif (!empty($model->data['h1'])) $this->getView()->title = $model->data['h1'];
-            elseif (!empty($model['name'])) $this->getView()->title = $model['name'];
+        $view = $event->sender;
+        $model = $event->data;
+
+        if (!$view->title || $this->forceMeta)
+            if (!empty($model->data['title'])) $view->title = $model->data['title'];
+            elseif (!empty($model->data['h1'])) $view->title = $model->data['h1'];
+            elseif (!empty($model['name'])) $view->title = $model['name'];
+    }
+
+    static function metaExist($name, $tags)
+    {
+        foreach ($tags as $tag)
+            if (preg_match('#name=[\"\']?' . $name . '[\"\']?#', $tag) && preg_match('#content=[\"\']?([^\'\"]+)[\"\']?#', $tag, $matches))
+                return $matches[1];
+        return null;
     }
 
     /**
-     * @param $model Page
+     * @param $event Event
      */
-    public function registerMetaDescription($model)
+    public function registerMetaDescription($event)
     {
-        if (!empty($model->data['description'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $model->data['description']], 'mainDescription');
-        elseif (!empty($model['about'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => $model['about']], 'mainDescription');
-        elseif (!empty($model->data['content'])) $this->getView()->registerMetaTag(['name' => 'description', 'content' => Text::cleverStrip($model->data['content'], 200)], 'mainDescription');
+        /** @var View $view */
+        $view = $event->sender;
+        $model = $event->data;
 
-    }
 
-    public function registerMetaKeywords($model)
-    {
-        if (!empty($model->data['keywords'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $model->data['keywords']], 'mainKeywords');
-        elseif (!empty($model->data['tags'])) $this->getView()->registerMetaTag(['name' => 'keywords', 'content' => $model->data['tags']], 'mainKeywords');
+        $description = !empty($model->data['description']) ? $model->data['description'] : (isset($view->params['defaultDescription']) ? $view->params['defaultDescription'] : '');
+
+        if (isset($view->params['description'])) $description = $view->params['description'];
+        elseif (!$description) {
+            if ($content = self::metaExist('description', $view->metaTags)) $description = $content;
+            elseif (!empty($model['about'])) $description = $model['about'];
+            elseif (!empty($model->data['content'])) $description = Text::cleverStrip($model->data['content'], 200);
+
+            $description = trim(preg_replace('#[\r\n\s]+#', ' ', $description));
+            if (mb_strlen($description) > 255)
+                $this->description = mb_substr($description, 0, mb_strrpos(mb_substr($description, 0, 255, 'UTF-8'), ' ', 0, 'UTF-8'), 'UTF-8');
+        }
+
+        if ($description) $view->registerMetaTag(['name' => 'description', 'content' => $description], 'description');
+
     }
 
     /**
-     * @param $model Page
+     * @param $event Event
      */
-    public function registerOgMeta($model)
+    public function registerMetaKeywords($event)
     {
-        $this->getView()->registerMetaTag(['property' => 'og:type', 'content' => $model->is_category ? 'website' : 'article']);
-        if (!empty($model['header'])) $this->getView()->registerMetaTag(['property' => 'og:title', 'content' => $model['header']]);
-        if (!empty($model['about'])) $this->getView()->registerMetaTag(['property' => 'og:description', 'content' => $model['about']]);
-        if (method_exists($model, 'getHref')) $this->getView()->registerMetaTag(['property' => 'og:url', 'content' => $model->getHref(1, 1)]);
+        $view = $event->sender;
+        $model = $event->data;
+
+        $keywords = !empty($model->data['keywords']) ? $model->data['keywords'] : (isset($view->params['defaultKeywords']) ? $view->params['defaultKeywords'] : '');
+
+        if (isset($view->params['keywords'])) $keywords = $view->params['keywords'];
+        elseif (!$keywords) {
+            if ($content = self::metaExist('keywords', $view->metaTags)) $keywords = $content;
+            elseif (!empty($model->data['tags'])) $keywords = $model->data['tags'];
+        }
+
+        if ($keywords) $view->registerMetaTag(['name' => 'keywords', 'content' => $keywords], 'keywords');
     }
 
     /**
-     * @param $model Page
+     * @param $event Event
      */
-    public function registerOgMetaPhoto($model)
+    public function registerOgMeta($event)
     {
+        $view = $event->sender;
+        $model = $event->data;
+        $view->registerMetaTag(['property' => 'og:type', 'content' => $model->is_category ? 'website' : 'article']);
+        if (!empty($model['header'])) $view->registerMetaTag(['property' => 'og:title', 'content' => $model['header']]);
+        if (!empty($model['about'])) $view->registerMetaTag(['property' => 'og:description', 'content' => $model['about']]);
+        if (method_exists($model, 'getHref')) $view->registerMetaTag(['property' => 'og:url', 'content' => $model->getHref(1, 1)]);
+    }
+
+    /**
+     * @param $event Event
+     */
+    public function registerOgMetaPhoto($event)
+    {
+        $view = $event->sender;
+        $model = $event->data;
         if (method_exists($model, 'getPhotos') && $model->photos) {
             foreach ($model->photos as $row) {
                 if ($row->type == 'social') $photo = $row;
@@ -129,9 +175,9 @@ trait SeoRender
         }
         if (empty($photo) && method_exists($model, 'getPhoto') && $model->photo) $photo = $model->photo;
         if (isset($photo)) {
-            $this->getView()->registerMetaTag(['property' => 'og:image', 'content' => $photo->getHref('1000', true)]);
-            $this->getView()->registerMetaTag(['property' => 'og:image:width', 'content' => $photo->getSizes('1000')['width']]);
-            $this->getView()->registerMetaTag(['property' => 'og:image:height', 'content' => $photo->getSizes('1000')['height']]);
+            $view->registerMetaTag(['property' => 'og:image', 'content' => $photo->getHref('1000', true)]);
+            $view->registerMetaTag(['property' => 'og:image:width', 'content' => $photo->getSizes('1000')['width']]);
+            $view->registerMetaTag(['property' => 'og:image:height', 'content' => $photo->getSizes('1000')['height']]);
         }
     }
 }
