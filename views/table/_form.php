@@ -14,7 +14,7 @@ $iframe = Yii::$app->request->get('iframe');
 
 <div class="page-form">
 
-    <? if(!$iframe) echo Html::a(Yii::t('ra', 'Cancel'), ['index', 'url' => $model->module->url, 'id' => $model->parent_id], ['class' => 'btn btn-warning pull-right', 'onclick' => 'return history.back()']) ?>
+    <? if (!$iframe) echo Html::a(Yii::t('ra', 'Cancel'), ['index', 'url' => $model->module->url, 'id' => $model->parent_id], ['class' => 'btn btn-warning pull-right', 'onclick' => 'return history.back()']) ?>
 
     <ul class="nav nav-tabs" style="margin-bottom: 0">
         <? foreach (\ra\admin\helpers\RA::dropDownList($tabs, 'ra') as $key => $value) if ($key == 'main' || !empty($settings[$key])): ?>
@@ -64,7 +64,7 @@ $iframe = Yii::$app->request->get('iframe');
 
                                     <?= $form->field($model, 'user_id')->dropDownList(empty($model->user_id) ? [null => Yii::t('ra', 'Select User')] : [$model->user->id => $model->user->username]) ?>
 
-                                <? elseif ($key == 'seo' && !empty($settings[$key])): ?>
+                                <? elseif ($model->id == $model->module_id || $key == 'seo' && !empty($settings[$key])): ?>
 
                                     <?= $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
 
@@ -98,9 +98,9 @@ $iframe = Yii::$app->request->get('iframe');
                     </div>
 
                     <div class="form-group">
-                        <? if(!$iframe) echo  Html::submitButton(Yii::t('ra', 'Update'), ['class' => 'btn btn-success', 'name' => 'submit', 'value' => 'back']) ?>
+                        <? if (!$iframe) echo Html::submitButton(Yii::t('ra', 'Update'), ['class' => 'btn btn-success', 'name' => 'submit', 'value' => 'back']) ?>
                         <?= Html::submitButton(Yii::t('ra', 'Apply'), ['class' => 'btn btn-primary', 'name' => 'submit', 'value' => 'refresh']) ?>
-                        <? if(!$iframe) echo  Html::submitButton(Yii::t('ra', 'Save&Go'), ['class' => 'btn btn-info pull-right', 'name' => 'submit', 'value' => 'open']) ?>
+                        <? if (!$iframe) echo Html::submitButton(Yii::t('ra', 'Save&Go'), ['class' => 'btn btn-info pull-right', 'name' => 'submit', 'value' => 'open']) ?>
                     </div>
 
                     <div class="clearfix"></div>
