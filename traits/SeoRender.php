@@ -1,6 +1,7 @@
 <?php
 namespace ra\admin\traits;
 
+use creocoder\nestedsets\NestedSetsBehavior;
 use ra\admin\helpers\RA;
 use ra\admin\helpers\Text;
 use ra\admin\models\Page;
@@ -18,27 +19,34 @@ use yii\web\View;
 trait SeoRender
 {
     public $social = true;
+    public $meta = true;
 
     public $forceMeta = false;
 
-    public function render($view, $params = [])
+    public function render($view, $params = [], $context = null)
     {
-        /** @var $base Page */
         if (isset($params['model']) && $params['model'] instanceof \ra\admin\models\Page) {
+            /** @var $model Page */
             $model = $params['model'];
-            if (method_exists($model, 'getData') && ($data = $model->data)) {
-                if (!Yii::$app->request->isAjax) {
-                    // Registry meta seo data
-                    $this->getView()->on(View::EVENT_AFTER_RENDER, [$this, 'registerMetaTitle'], $model);
-                    $this->getView()->on(View::EVENT_AFTER_RENDER, [$this, 'registerMetaDescription'], $model);
-                    $this->getView()->on(View::EVENT_AFTER_RENDER, [$this, 'registerMetaKeywords'], $model);
-                    // Registry og data
-                    if ($this->social) {
-                        $this->getView()->on(View::EVENT_AFTER_RENDER, [$this, 'registerOgMeta'], $model);
-                        $this->getView()->on(View::EVENT_AFTER_RENDER, [$this, 'registerOgMetaPhoto'], $model);
+            if (method_exists($model, 'getData') && ($data = $model->data) && !Yii::$app->request->isAjax) {
+
+                $renderMeta = false;
+                $this->view->on(View::EVENT_AFTER_RENDER, function ($event) use ($params) {
+                    if ($this->meta && $event->params == $params) {
+                        // Registry meta seo data
+                        $this->registerMetaTitle($event->data);
+                        $this->registerMetaDescription($event->data);
+                        $this->registerMetaKeywords($event->data);
+                        // Registry og data
+                        if ($this->social) {
+                            $this->registerOgMeta($event->data);
+                            $this->registerOgMetaPhoto($event->data);
+                        }
+                        $this->meta = false;
                     }
-                }
+                }, $model);
             }
+
             $this->getView()->params['model'] = $model;
             $this->getView()->params['active'] = [$model->id, $model->parent_id, $model->module_id];
             $this->getView()->params['breadcrumbs'] = function () use ($model) {
@@ -70,11 +78,6 @@ trait SeoRender
                     $result[] = ['label' => $model->name, 'url' => $model->href];
                 return $result;
             };
-            // @todo Для удаление в следующей версии
-            {
-                $params['base'] = $model;
-                $this->getView()->params['pageTitle'] = $model->name;
-            }
         }
         return parent::render($view, $params);
     }
@@ -82,10 +85,9 @@ trait SeoRender
     /**
      * @param $event Event
      */
-    public function registerMetaTitle($event)
+    public function registerMetaTitle($model)
     {
-        $view = $event->sender;
-        $model = $event->data;
+        $view = $this->view;
 
         if (!$view->title || $this->forceMeta)
             if (!empty($model->data['title'])) $view->title = $model->data['title'];
@@ -93,9 +95,9 @@ trait SeoRender
             elseif (!empty($model['name'])) $view->title = $model['name'];
     }
 
-    static function metaExist($name, $tags)
+    static function metaExist($name, $tags = [])
     {
-        foreach ($tags as $tag)
+        if (!empty($tags)) foreach ($tags as $tag)
             if (preg_match('#name=[\"\']?' . $name . '[\"\']?#', $tag) && preg_match('#content=[\"\']?([^\'\"]+)[\"\']?#', $tag, $matches))
                 return $matches[1];
         return null;
@@ -104,12 +106,10 @@ trait SeoRender
     /**
      * @param $event Event
      */
-    public function registerMetaDescription($event)
+    public function registerMetaDescription($model)
     {
         /** @var View $view */
-        $view = $event->sender;
-        $model = $event->data;
-
+        $view = $this->view;
 
         $description = !empty($model->data['description']) ? $model->data['description'] : (isset($view->params['defaultDescription']) ? $view->params['defaultDescription'] : '');
 
@@ -131,10 +131,11 @@ trait SeoRender
     /**
      * @param $event Event
      */
-    public function registerMetaKeywords($event)
+    public function registerMetaKeywords($model)
     {
-        $view = $event->sender;
-        $model = $event->data;
+        /** @var View $view */
+        $view = $this->view;
+
 
         $keywords = !empty($model->data['keywords']) ? $model->data['keywords'] : (isset($view->params['defaultKeywords']) ? $view->params['defaultKeywords'] : '');
 
@@ -150,10 +151,11 @@ trait SeoRender
     /**
      * @param $event Event
      */
-    public function registerOgMeta($event)
+    public function registerOgMeta($model)
     {
-        $view = $event->sender;
-        $model = $event->data;
+        /** @var View $view */
+        $view = $this->view;
+
         $view->registerMetaTag(['property' => 'og:type', 'content' => $model->is_category ? 'website' : 'article']);
         if (!empty($model['header'])) $view->registerMetaTag(['property' => 'og:title', 'content' => $model['header']]);
         if (!empty($model['about'])) $view->registerMetaTag(['property' => 'og:description', 'content' => $model['about']]);
@@ -163,10 +165,11 @@ trait SeoRender
     /**
      * @param $event Event
      */
-    public function registerOgMetaPhoto($event)
+    public function registerOgMetaPhoto($model)
     {
-        $view = $event->sender;
-        $model = $event->data;
+        /** @var View $view */
+        $view = $this->view;
+
         if (method_exists($model, 'getPhotos') && $model->photos) {
             foreach ($model->photos as $row) {
                 if ($row->type == 'social') $photo = $row;

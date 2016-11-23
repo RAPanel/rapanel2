@@ -76,12 +76,13 @@ class ClearController extends AdminController
     public function actionSeo()
     {
         $data = [
-            'title' => PageData::find()->joinWith('page', false)->where(['and', ['!=', 'title', ''], ['or', 'title=header', 'title=name']]),
-            'description' => PageData::find()->joinWith('page', false)->where(['and', ['!=', 'description', ''], 'description=about']),
-            'keywords' => PageData::find()->where(['and', ['!=', 'keywords', ''], 'keywords=tags']),
+            'title' => PageData::find()->joinWith('page', false)->where(['or', 'title=header', 'title=name', 'title LIKE REPLACE(name, " ", "%")']),
+            'description' => PageData::find()->joinWith('page', false)->where(['or', 'description=about', 'content LIKE CONCAT_WS("", "%", REPLACE(REPLACE(description, ".", "%"), " ", "%"), "%")']),
+            'keywords' => PageData::find()->where(['or', 'keywords=tags', 'keywords LIKE REPLACE(tags, ",", "%")']),
         ];
         $result = [];
         foreach ($data as $key => $query) {
+            $query->andWhere(['!=', $key, '']);
             $transaction = Yii::$app->db->beginTransaction();
             if (empty($result[$key])) $result[$key] = 0;
             foreach ($query->each() as $model) {
