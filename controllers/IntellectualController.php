@@ -38,14 +38,14 @@ class IntellectualController extends Controller
     {
         $url = str_replace(\Yii::$app->request->hostInfo, '', \Yii::$app->request->referrer);
         $get = \Yii::$app->urlManager->parseRequest(new Request(['url' => $url]));
-        if (isset($get[1])) {
+        if ($url) $model = Page::findOne(['url' => $url]);
+        if (empty($model) && !empty($get[1])) {
             $get = $get[1];
-            if ($url) $model = Page::findOne(['url' => $url]);
             if (empty($model) && !empty($get['id'])) $model = Page::findOne($get['id']);
             if (empty($model) && !empty($get['url'])) $model = Page::findOne(['url' => $get['url']]);
-            if (isset($model)) {
-                return $this->redirect(['table/update', 'id' => $model->id, 'iframe' => $iframe]);
-            }
+        }
+        if (isset($model)) {
+            return $this->redirect(['table/update', 'id' => $model->id, 'iframe' => $iframe]);
         }
         return $this->renderContent('Page can not be edit');
     }
