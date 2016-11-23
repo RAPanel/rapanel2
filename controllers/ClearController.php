@@ -77,7 +77,7 @@ class ClearController extends AdminController
     {
         $data = [
             'title' => PageData::find()->joinWith('page', false)->where(['or', 'title=header', 'title=name', 'title LIKE REPLACE(name, " ", "%")']),
-            'description' => PageData::find()->joinWith('page', false)->where(['or', 'description=about', 'content LIKE CONCAT_WS("", "%", REPLACE(REPLACE(description, ".", "%"), " ", "%"), "%")']),
+            'description' => PageData::find()->joinWith('page', false)->where(['or', 'description=about', 'content LIKE CONCAT_WS("", "%", REPLACE(REPLACE(description, ".", "%"), " ", "%"), "%")', 'about LIKE CONCAT_WS("", "%", REPLACE(REPLACE(description, ".", "%"), " ", "%"), "%")']),
             'keywords' => PageData::find()->where(['or', 'keywords=tags', 'keywords LIKE REPLACE(tags, ",", "%")']),
         ];
         $result = [];
