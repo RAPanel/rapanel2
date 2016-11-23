@@ -93,9 +93,9 @@ trait SeoRender
             elseif (!empty($model['name'])) $view->title = $model['name'];
     }
 
-    static function metaExist($name, $tags)
+    static function metaExist($name, $tags = [])
     {
-        foreach ($tags as $tag)
+        if(!empty($tags)) foreach ($tags as $tag)
             if (preg_match('#name=[\"\']?' . $name . '[\"\']?#', $tag) && preg_match('#content=[\"\']?([^\'\"]+)[\"\']?#', $tag, $matches))
                 return $matches[1];
         return null;
