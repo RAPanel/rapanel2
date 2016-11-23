@@ -65,7 +65,7 @@ $iframe = Yii::$app->request->get('iframe');
 
                                     <?= $form->field($model, 'user_id')->dropDownList(empty($model->user_id) ? [null => Yii::t('ra', 'Select User')] : [$model->user->id => $model->user->username]) ?>
 
-                                <? elseif ($key == 'seo' && !empty($settings[$key])): ?>
+                                <? elseif ($model->id == $model->module_id || $key == 'seo' && !empty($settings[$key])): ?>
 
                                     <?= $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
 
