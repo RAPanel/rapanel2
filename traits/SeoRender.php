@@ -97,9 +97,10 @@ trait SeoRender
 
     static function metaExist($name, $tags = [])
     {
-        if (!empty($tags)) foreach ($tags as $tag)
-            if (preg_match('#name=[\"\']?' . $name . '[\"\']?#', $tag) && preg_match('#content=[\"\']?([^\'\"]+)[\"\']?#', $tag, $matches))
-                return $matches[1];
+        if (!empty($tags)) foreach ($tags as $key => $tag)
+            if (preg_match('#name=[\"\']?' . $name . '[\"\']?#', $tag) && preg_match('#content=[\"\']?([^\'\"]+)[\"\']?#', $tag, $matches)) {
+                return [$key, $matches[1]];
+            }
         return null;
     }
 
@@ -111,11 +112,12 @@ trait SeoRender
         /** @var View $view */
         $view = $this->view;
 
+        $id = 'description';
         $description = !empty($model->data['description']) ? $model->data['description'] : (isset($view->params['defaultDescription']) ? $view->params['defaultDescription'] : '');
 
         if (isset($view->params['description'])) $description = $view->params['description'];
         elseif (!$description) {
-            if ($content = self::metaExist('description', $view->metaTags)) $description = $content;
+            if ($content = self::metaExist('description', $view->metaTags)) list($id, $description) = $content;
             elseif (!empty($model['about'])) $description = $model['about'];
             elseif (!empty($model->data['content'])) $description = Text::cleverStrip($model->data['content'], 200);
 
@@ -124,7 +126,7 @@ trait SeoRender
                 $this->description = mb_substr($description, 0, mb_strrpos(mb_substr($description, 0, 255, 'UTF-8'), ' ', 0, 'UTF-8'), 'UTF-8');
         }
 
-        if ($description) $view->registerMetaTag(['name' => 'description', 'content' => $description], 'description');
+        if ($description) $view->registerMetaTag(['name' => 'description', 'content' => $description], $id);
 
     }
 
@@ -136,16 +138,16 @@ trait SeoRender
         /** @var View $view */
         $view = $this->view;
 
-
+        $id = 'keywords';
         $keywords = !empty($model->data['keywords']) ? $model->data['keywords'] : (isset($view->params['defaultKeywords']) ? $view->params['defaultKeywords'] : '');
 
         if (isset($view->params['keywords'])) $keywords = $view->params['keywords'];
         elseif (!$keywords) {
-            if ($content = self::metaExist('keywords', $view->metaTags)) $keywords = $content;
+            if ($content = self::metaExist('keywords', $view->metaTags)) list($id, $keywords) = $content;
             elseif (!empty($model->data['tags'])) $keywords = $model->data['tags'];
         }
 
-        if ($keywords) $view->registerMetaTag(['name' => 'keywords', 'content' => $keywords], 'keywords');
+        if ($keywords) $view->registerMetaTag(['name' => 'keywords', 'content' => $keywords], $id);
     }
 
     /**
