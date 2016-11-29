@@ -30,9 +30,9 @@ trait SeoRender
             $model = $params['model'];
             if (method_exists($model, 'getData') && ($data = $model->data) && !Yii::$app->request->isAjax) {
 
-                $renderMeta = false;
-                $this->view->on(View::EVENT_AFTER_RENDER, function ($event) use ($params) {
-                    if ($this->meta && $event->params == $params) {
+                $renderMeta = $this->meta;
+                $this->view->on(View::EVENT_AFTER_RENDER, function ($event) use ($params, &$renderMeta) {
+                    if ($renderMeta && json_encode($event->params ) == json_encode($params)) {
                         // Registry meta seo data
                         $this->registerMetaTitle($event->data);
                         $this->registerMetaDescription($event->data);
@@ -42,7 +42,7 @@ trait SeoRender
                             $this->registerOgMeta($event->data);
                             $this->registerOgMetaPhoto($event->data);
                         }
-                        $this->meta = false;
+                        $renderMeta = false;
                     }
                 }, $model);
             }
@@ -106,7 +106,7 @@ trait SeoRender
 
     static function metaRemove($name)
     {
-        foreach (Yii::$app->view->metaTags as $key => $tag)
+        foreach ((array)Yii::$app->view->metaTags as $key => $tag)
             if (preg_match('#name=[\"\']?' . $name . '[\"\']?#', $tag))
                 unset(Yii::$app->view->metaTags[$key]);
     }
@@ -133,7 +133,7 @@ trait SeoRender
                 $this->description = mb_substr($description, 0, mb_strrpos(mb_substr($description, 0, 255, 'UTF-8'), ' ', 0, 'UTF-8'), 'UTF-8');
         }
 
-        if ($description){
+        if ($description) {
             self::metaRemove('description');
             $view->registerMetaTag(['name' => 'description', 'content' => $description], $id);
         }
@@ -158,7 +158,7 @@ trait SeoRender
         }
         if ($content = self::metaExist('keywords', $view->metaTags)) list($id) = $content;
 
-        if ($keywords){
+        if ($keywords) {
             self::metaRemove('keywords');
             $view->registerMetaTag(['name' => 'keywords', 'content' => $keywords], $id);
         }
