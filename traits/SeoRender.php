@@ -32,7 +32,7 @@ trait SeoRender
 
                 $renderMeta = $this->meta;
                 $this->view->on(View::EVENT_AFTER_RENDER, function ($event) use ($params, &$renderMeta) {
-                    if ($renderMeta && json_encode($event->params ) == json_encode($params)) {
+                    if ($renderMeta && ($event->params ) === ($params)) {
                         // Registry meta seo data
                         $this->registerMetaTitle($event->data);
                         $this->registerMetaDescription($event->data);
