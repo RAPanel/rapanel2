@@ -33,10 +33,10 @@ $name = "photos[{$index}]";
                 'height' => $data->height,
                 'type' => $data->type,
                 'about' => Html::encode($data->about),
-                'cx' => $data->cropParams['x'],
-                'cy' => $data->cropParams['y'],
-                'cw' => $data->cropParams['width'],
-                'ch' => $data->cropParams['height'],
+                'cx' => isset($data->cropParams['x'])?$data->cropParams['x']:'',
+                'cy' => isset($data->cropParams['y'])?$data->cropParams['y']:'',
+                'cw' => isset($data->cropParams['width'])?$data->cropParams['width']:'',
+                'ch' => isset($data->cropParams['height'])?$data->cropParams['height']:'',
             ]) ?></div>
     </div>
 </div>
