@@ -8,7 +8,7 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 
 $settings = \ra\admin\helpers\RA::moduleSetting($model->module_id);
-if($model->id == $model->module_id) $settings['seo'] = 1;
+if ($model->id == $model->module_id) $settings['seo'] = 1;
 $tabs = ['main', 'data', 'seo', 'position', 'characters', 'photos'];
 $iframe = Yii::$app->request->get('iframe');
 ?>
@@ -85,7 +85,7 @@ $iframe = Yii::$app->request->get('iframe');
                                 <? elseif ($key == 'photos' && !empty($settings[$key])): ?>
 
                                     <?= $form->field($model, 'photos')->widget(ra\admin\widgets\PhotoUpload::className(), [
-                                        'url' => ['upload', 'id' => $model->id, 'table' => $model->tableName()], 'crop'=>$settings['photosCrop'],
+                                        'url' => ['upload', 'id' => $model->id, 'table' => $model->tableName()], 'crop' => isset($settings['photosCrop']) ? $settings['photosCrop'] : 0,
                                     ])->label(false) ?>
 
                                 <? elseif ($key == 'data' && !empty($settings[$key])): ?>
