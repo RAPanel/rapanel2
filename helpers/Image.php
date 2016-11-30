@@ -11,7 +11,7 @@ use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
-use Yii;
+use ra\admin\models\Photo;
 use yii\base\InvalidConfigException;
 
 /**
@@ -63,6 +63,16 @@ class Image
     {
         $image = self::getImagine()->open($filename);
 
+        if ($crop == self::IMAGE_CROP) {
+            $cropper = Photo::find()->where(['name' => basename($filename)])->select('cropParams')->scalar();
+            if (!empty(unserialize($cropper))) {
+                $cropper = unserialize($cropper);
+                if ($cropper['x'] < 0 || $cropper['y'] < 0) {
+                } else
+                    $image->crop(new Point($cropper['x'], $cropper['y']), new Box($cropper['width'], $cropper['height']));
+            }
+        }
+
         // Уменьшаем размеры
         $k = $image->getSize()->getWidth() / $image->getSize()->getHeight();
 
@@ -97,9 +107,10 @@ class Image
         $image->resize(new Box($resizeWidth, $resizeHeight), ImageInterface::FILTER_LANCZOS);
 
         if ($crop) {
+
             $box = new Box($width, $height);
 
-            if($crop == self::IMAGE_CROP){
+            if ($crop == self::IMAGE_CROP) {
                 // Обрезаем лишнее
                 $startX = 0;
                 $startY = 0;

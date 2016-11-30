@@ -95,7 +95,7 @@ $('.photoWrapper').on('show.bs.modal', '.modal', function (e) {
               });
           }
         });
-    },200);
+    }, 200);
     });
 });
 JS;

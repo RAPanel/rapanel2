@@ -8,7 +8,6 @@
 
 namespace ra\admin\controllers;
 
-use Imagine\Image\Point;
 use ra\admin\helpers\Image;
 use Yii;
 use yii\helpers\FileHelper;
