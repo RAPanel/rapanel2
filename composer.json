@@ -22,6 +22,7 @@
         "yiisoft/yii2-bootstrap": "*",
         "bower-asset/fontawesome": "*",
         "bower-asset/dropzone": "*",
+        "bower-asset/cropper": "*",
         "bower-asset/jquery-tags-input": "*",
         "2amigos/yii2-tinymce-widget": "*",
         "imagine/imagine": "*",

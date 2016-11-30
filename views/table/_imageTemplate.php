@@ -44,6 +44,10 @@ array_unique($types);
                         <div class="col-sm-12"><?=
                             Html::activeTextarea($model, "{$name}[about]", ['rows' => 2, 'class' => 'form-control', 'value' => '{{about}}']) ?></div>
                     </div>
+                    <?= Html::activeHiddenInput($model, "{$name}[cropParams][x]", ['value' => '{{cx}}']); ?>
+                    <?= Html::activeHiddenInput($model, "{$name}[cropParams][y]", ['value' => '{{cy}}']); ?>
+                    <?= Html::activeHiddenInput($model, "{$name}[cropParams][width]", ['value' => '{{cw}}']); ?>
+                    <?= Html::activeHiddenInput($model, "{$name}[cropParams][height]", ['value' => '{{ch}}']); ?>
                     <?= Html::button('ok', ['class' => 'btn btn-primary pull-right', 'data-dismiss' => "modal", 'aria-hidden' => "true"]) ?>
                     <?= Html::button('delete', ['class' => 'btn btn-danger remove']) ?>
                 </div>

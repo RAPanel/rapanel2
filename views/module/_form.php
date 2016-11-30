@@ -59,6 +59,7 @@ use yii\widgets\ActiveForm;
          style="display: <?= !empty($model->settings['photos']) ? 'block' : 'none' ?>">
         <?= $form->field($model, 'settings[photosCount]')->textInput(['type' => 'number', 'class' => 'col-md-10'])->label(Yii::t('ra', 'Photo Count'), ['class' => 'col-md-2 right']) ?>
         <?= $form->field($model, 'settings[photosTypes]')->textInput(['type' => 'text', 'class' => 'col-md-10'])->label(Yii::t('ra', 'Photo Types'), ['class' => 'col-md-2 right']) ?>
+        <?= $form->field($model, 'settings[photosCrop]')->textInput(['type' => 'text', 'class' => 'col-md-10'])->label(Yii::t('ra', 'Photo Crop'), ['class' => 'col-md-2 right']) ?>
     </div>
 
     <?= $form->field($model, 'settings[controller]')->checkbox(['label' => Yii::t('ra', 'Is Controller')]) ?>

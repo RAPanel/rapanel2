@@ -9,7 +9,7 @@
 namespace ra\admin\widgets;
 
 
-use Yii;
+use ra\admin\assets\CropperAsset;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\JsExpression;
@@ -17,6 +17,7 @@ use yii\web\JsExpression;
 class PhotoUpload extends DropZone
 {
     public $types = null;
+    public $crop;
 
     public function init()
     {
@@ -57,7 +58,6 @@ $('.photoWrapper').on('click', '.remove', function(){
     for(var i in data){
         modal = modal.replace(new RegExp('{{' + i + '}}', 'g'), data[i]);
     }
-    console.log(data, data.index, data.type)
     block.after(modal).remove();
     $('[name="Shop[photos]['+data.index+'][type]"]').val(data.type);
 })
@@ -70,7 +70,37 @@ $('.photoWrapper .image').each(function(key, el){
 });
 JS;
         $this->getView()->registerJs($js);
+        if ($this->crop) $this->addCrop();
         parent::init();
+    }
+
+    public function addCrop()
+    {
+        $js = <<<JS
+$('.photoWrapper').on('show.bs.modal', '.modal', function (e) {
+    var modal = this;
+    var data={};
+    $('input[name*="[cropParams]"]', modal).each(function() {
+      data[this.name.match(/\[cropParams\]\[(\w+)\]/)[1]] = parseInt(this.value)
+    });
+    $('img', modal).load(function(){
+    setTimeout(function(){
+        $('img', modal).cropper({
+          autoCropArea: 1,
+          aspectRatio: {$this->crop},
+          data: data,
+          crop: function(e) {
+              $.each(e, function(key, value) {
+                $('input[name*="[cropParams]['+key+']"]', modal).val(Math.round(value));
+              });
+          }
+        });
+    },200);
+    });
+});
+JS;
+        CropperAsset::register($this->getView());
+        $this->getView()->registerJs($js);
     }
 
     /**

@@ -130,8 +130,14 @@ class Photo extends \yii\db\ActiveRecord
                 $event->sender->sort_id = 999;
             if (is_null($event->sender->cropParams))
                 $event->sender->cropParams = serialize([]);
+            if (is_array($event->sender->cropParams))
+                $event->sender->cropParams = serialize($event->sender->cropParams);
             if (!$event->sender->about)
                 $event->sender->about = preg_replace('#.\w+$#iu', '', $event->sender->name);
+        });
+        $this->on(self::EVENT_AFTER_FIND, function ($event) {
+            if ($crop = unserialize($event->sender->cropParams))
+                $event->sender->cropParams = $crop;
         });
         parent::init();
     }

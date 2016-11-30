@@ -77,6 +77,7 @@ return [
     'Show Position' => 'Положение',
     'Show Price' => 'Цены',
     'Show Photos' => 'Изображения',
+    'Photo Crop' => 'Коэффициент обрезки',
     'Photo Count' => 'Количество изображений',
     'Photo Types' => 'Типы изображений',
     'Is Controller' => 'Это контроллер',

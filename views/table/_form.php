@@ -85,7 +85,7 @@ $iframe = Yii::$app->request->get('iframe');
                                 <? elseif ($key == 'photos' && !empty($settings[$key])): ?>
 
                                     <?= $form->field($model, 'photos')->widget(ra\admin\widgets\PhotoUpload::className(), [
-                                        'url' => ['upload', 'id' => $model->id, 'table' => $model->tableName()],
+                                        'url' => ['upload', 'id' => $model->id, 'table' => $model->tableName()], 'crop'=>$settings['photosCrop'],
                                     ])->label(false) ?>
 
                                 <? elseif ($key == 'data' && !empty($settings[$key])): ?>

@@ -33,6 +33,10 @@ $name = "photos[{$index}]";
                 'height' => $data->height,
                 'type' => $data->type,
                 'about' => $data->about,
+                'cx' => $data->cropParams['x'],
+                'cy' => $data->cropParams['y'],
+                'cw' => $data->cropParams['width'],
+                'ch' => $data->cropParams['height'],
             ]) ?></div>
     </div>
 </div>
