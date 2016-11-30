@@ -28,11 +28,11 @@ $name = "photos[{$index}]";
         <div class="dataSerialized hide"><?= \yii\helpers\Json::encode([
                 'index' => $index,
                 'src' => 'src="' . $data->getFile() . '"',
-                'name' => $model->name,
+                'name' => Html::encode($model->name),
                 'width' => $data->width,
                 'height' => $data->height,
                 'type' => $data->type,
-                'about' => $data->about,
+                'about' => Html::encode($data->about),
                 'cx' => $data->cropParams['x'],
                 'cy' => $data->cropParams['y'],
                 'cw' => $data->cropParams['width'],
