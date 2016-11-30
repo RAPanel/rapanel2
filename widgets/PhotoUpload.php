@@ -9,7 +9,7 @@
 namespace ra\admin\widgets;
 
 
-use Yii;
+use ra\admin\assets\CropperAsset;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\JsExpression;
@@ -70,6 +70,7 @@ $('.photoWrapper .image').each(function(key, el){
 });
 JS;
         $this->getView()->registerJs($js);
+        CropperAsset::register($this->getView());
         parent::init();
     }
 
