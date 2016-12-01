@@ -12,16 +12,32 @@
     var icoMenu = document.getElementById('ra-panel-menu');
     var moveEnable = 0;
 
+    if (sessionStorage.getItem('unfixed') == 'true') {
+        rapanel.classList.add('ra-panel-unfixed');
+        labelPanel.style.display = 'none';
+    }
+
     /* Lock/unlock menu */
     lock.addEventListener('click', function (event) {
         event.preventDefault();
-        rapanel.classList.toggle('ra-panel-fixed');
-        this.classList.toggle('ra-unlock');
-        labelPanel.classList.toggle('ra-panel-label-fixed');
-        if (rapanel.classList.contains('ra-panel-fixed')) {
-            sessionStorage.setItem('fixed', 'fixed');
+        rapanel.classList.toggle('ra-panel-unfixed');
+        if (rapanel.classList.contains('ra-panel-unfixed')) {
+            sessionStorage.setItem('unfixed', 'true');
+            rapanel.classList.remove('ra-panel-fixed');
+            labelPanel.style.display = 'none';
         } else {
-            sessionStorage.setItem('fixed', 'unfixed');
+            sessionStorage.setItem('unfixed', 'false');
+        }
+    });
+
+    window.addEventListener('scroll', function () {
+        if (window.pageYOffset > 32) {
+            if (!rapanel.classList.contains('ra-panel-unfixed')) {
+                rapanel.classList.remove('ra-panel-fixed');
+                labelPanel.style.display = 'block';
+            }
+        } else {
+            labelPanel.style.display = 'none';
         }
     });
 
@@ -67,21 +83,20 @@
         document.getElementById('ra-panel-debug').classList.toggle('ra-debug-active');
 
     /* Show menu */
-    document.getElementById('ra-panel-label').addEventListener('click', function () {
+    labelPanel.addEventListener('click', function () {
         if (moveEnable == 1) {
             console.log('1');
             return;
         }
-        rapanel.classList.remove('ra-panel-offset');
+        rapanel.classList.add('ra-panel-fixed');
     });
 
     rapanel.addEventListener('mouseout', function (event) {
         if (!document.querySelector('.ra-panel-loading')) {
             if (!isInside(event.relatedTarget, this)) {
                 timerId = setTimeout(function () {
-                    if (document.getElementById('ra-panel-lock').getAttribute('class') !== 'ra-unlock') {
-                        rapanel.classList.add('ra-panel-offset');
-                        document.getElementById('ra-panel-label').classList.add('ra-panel-label-fixed');
+                    if (!rapanel.classList.contains('ra-panel-unfixed')) {
+                        rapanel.classList.remove('ra-panel-fixed');
                     }
                     menu.classList.remove('ra-show-sub-menu');
                 }, 500);
@@ -142,13 +157,6 @@
     }
 
     offsetMenu();
-
-    if (sessionStorage.getItem('fixed') == 'unfixed') {
-        lock.classList.add('ra-unlock');
-        rapanel.classList.remove('ra-panel-fixed');
-        rapanel.classList.remove('ra-panel-offset');
-        labelPanel.classList.remove('ra-panel-label-fixed');
-    }
 
     document.getElementById('ra-panel-edit').addEventListener('click', function (event) {
         event.preventDefault();
