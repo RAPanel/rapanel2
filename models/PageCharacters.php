@@ -81,7 +81,7 @@ class PageCharacters extends \yii\db\ActiveRecord
         $multi = RA::character($this->character_id, 'multi');
         if (RA::character($this->character_id, 'type') == 'table' && is_array($this->value)) {
             $list = [];
-            foreach ($this->value as $row) $list[] = implode('|-|', $row);
+            foreach ($this->value as $row) if(!empty(array_diff($row, ['']))) $list[] = implode('|-|', $row);
             if (!$multi) $this->value = current($list);
             else $this->value = $list;
         }
