@@ -68,7 +68,7 @@ class Image
             if (!empty(unserialize($cropper))) {
                 $cropper = unserialize($cropper);
                 if ($cropper['x'] < 0 || $cropper['y'] < 0) {
-                } else
+                } elseif($cropper['width'] && $cropper['height'])
                     $image->crop(new Point($cropper['x'], $cropper['y']), new Box($cropper['width'], $cropper['height']));
             }
         }
