@@ -105,7 +105,7 @@ if ($data['type'] == 'boolean') {
     }
     echo Html::label($label, $id);
     $value = Html::getAttributeValue($model, $name);
-    foreach (is_array($value) ? $value : [$value ?: '0'] as $i => $row) if ($row !== false) {
+    foreach (is_array($value) && count($value) ? $value : [$value ?: '0'] as $i => $row) if ($row !== false) {
         echo Html::activeInput($data['type'], $model, $data['multi'] ? $name . "[{$i}]" : $name, ['id' => $id, 'class' => 'form-control'] + $params);
     }
     if ($data['multi']) {

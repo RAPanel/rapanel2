@@ -32,7 +32,7 @@ trait SeoRender
 
                 $renderMeta = $this->meta;
                 $this->view->on(View::EVENT_AFTER_RENDER, function ($event) use ($params, &$renderMeta) {
-                    if ($renderMeta && ($event->params ) === ($params)) {
+                    if ($renderMeta && ($event->params) === ($params)) {
                         // Registry meta seo data
                         $this->registerMetaTitle($event->data);
                         $this->registerMetaDescription($event->data);
@@ -93,6 +93,8 @@ trait SeoRender
             if (!empty($model->data['title'])) $view->title = $model->data['title'];
             elseif (!empty($model->data['h1'])) $view->title = $model->data['h1'];
             elseif (!empty($model['name'])) $view->title = $model['name'];
+        if ($p = Yii::$app->request->get('page'))
+            $view->title = "Страница {$p}: " . $view->title;
     }
 
     static function metaExist($name, $tags = [])
@@ -134,6 +136,8 @@ trait SeoRender
         }
 
         if ($description) {
+            if ($p = Yii::$app->request->get('page'))
+                $description = "Страница {$p}: " . $description;
             self::metaRemove('description');
             $view->registerMetaTag(['name' => 'description', 'content' => $description], $id);
         }
